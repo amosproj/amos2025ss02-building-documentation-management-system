@@ -2,11 +2,9 @@
 
 This folder contains the deliverables for Sprint 1.
 
----
+## Task Checklist
 
-## ✅ Task Checklist
-
--   [ ] Snapshot of the feature board (.tsv & .jpg)
+-   [x] Snapshot of the feature board (.tsv & .jpg)
 -   [ ] Snapshot of the imp-squared backlog (.tsv & .jpg)
 -   [ ] Planning document (.pdf & .xlsx)
 -   [ ] Team logo (.svg & .png)
