@@ -4,9 +4,9 @@
   (dragover)="onDragOver($event)"
   style="border: 2px dashed #ccc; padding: 20px; text-align: center;"
 >
-  <label for="fileInput">📂 Upload Your File</label>
+  <label for="fileInput">📂 Upload Your Document</label>
   <br />
-  <input id="fileInput" type="file" (change)="onFileSelected($event)" />
+  <input id="fileInput" type="file" accept=".pdf" (change)="onFileSelected($event)" />
 </div>
 
 <!-- Separate area to display the selected file -->
