@@ -4,9 +4,9 @@
   (dragover)="onDragOver($event)"
   style="border: 2px dashed #ccc; padding: 20px; text-align: center;"
 >
-  Drag and drop a file here
+  <label for="fileInput">📂 Upload Your File</label>
   <br />
-  <input type="file" (change)="onFileSelected($event)" />
+  <input id="fileInput" type="file" (change)="onFileSelected($event)" />
 </div>
 
 <!-- Separate area to display the selected file -->
