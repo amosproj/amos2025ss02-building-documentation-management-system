@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("BuildDocs.Api")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+e5d71c888589490c4a6d34ccc461d85b6096e355")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+9654cd9b845a36ca97779eb788469c2ba46ddf1d")]
 [assembly: System.Reflection.AssemblyProductAttribute("BuildDocs.Api")]
 [assembly: System.Reflection.AssemblyTitleAttribute("BuildDocs.Api")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
