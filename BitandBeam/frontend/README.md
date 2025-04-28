@@ -1,27 +1,126 @@
-# BuildingUi
+# BitAndBeam Frontend Setup Instructions
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 18.1.0.
+## 💻 Developer Setup Instructions
+
+Follow these steps after cloning the repository to get started (use administrator privileges, if necessary):
+
+### 1. Install Node.js & npm
+
+You need Node.js (v^18.19.1 or newer) and npm. Download and install from: [https://nodejs.org](https://nodejs.org)
+
+Verify installation:
+```bash
+node -v
+npm -v
+```
+
+### 2. Install Angular CLI (global)
+```bash
+npm install -g @angular/cli
+```
+
+### 3. Install Project Dependencies
+Navigate to the frontend folder and install dependencies:
+```bash
+cd BitAndBeam/frontend
+npm install
+```
+
+### 4. Start Development Server
+```bash
+ng serve
+```
+Visit [http://localhost:4200](http://localhost:4200) in your browser.
+
+---
+
+## Initial Project Setup Steps
+
+These are the steps taken to initially set up a minimal Angular application in the `BitAndBeam/frontend` folder. Ignore if already done in master branch.
+
+---
+
+### 🛠 Step 1: Generate Angular Workspace
+Run the following command inside the `BitAndBeam/frontend` directory to create a new Angular project (use administrator privileges, if necessary):
+
+```bash
+cd BitAndBeam/frontend
+npx @angular/cli new frontend --directory=. --routing --style=css
+```
+
+This will:
+- Initialize an Angular app
+- Enable routing
+- Use CSS for styling
+
+---
+
+### 🧱 Step 2: Generate Components
+Generate the required components using Angular CLI:
+
+```bash
+ng generate component pages/home
+ng generate component components/upload-file
+```
+
+---
+
+# Frontend
+
+This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 19.2.9.
 
 ## Development server
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The application will automatically reload if you change any of the source files.
+To start a local development server, run:
+
+```bash
+ng serve
+```
+
+Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
 
 ## Code scaffolding
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
 
-## Build
+```bash
+ng generate component component-name
+```
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory.
+For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+
+```bash
+ng generate --help
+```
+
+## Building
+
+To build the project run:
+
+```bash
+ng build
+```
+
+This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
 
 ## Running unit tests
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
+To execute unit tests with the [Karma](https://karma-runner.github.io) test runner, use the following command:
+
+```bash
+ng test
+```
 
 ## Running end-to-end tests
 
-Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To use this command, you need to first add a package that implements end-to-end testing capabilities.
+For end-to-end (e2e) testing, run:
 
-## Further help
+```bash
+ng e2e
+```
 
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
+
+## Additional Resources
+
+For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
