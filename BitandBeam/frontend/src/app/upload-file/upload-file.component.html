@@ -1,0 +1,19 @@
+<div
+  (drop)="onFileDropped($event)"
+  (dragover)="onDragOver($event)"
+  (dragleave)="onDragLeave($event)"
+  [class.dragover]="isDragOver"
+  class="upload-drop-zone"
+>
+  <p>Drag & Drop your files here</p>
+</div>
+
+<input type="file" (change)="onFileSelected($event)" multiple />
+
+<div class="uploaded-files" *ngIf="files.length > 0">
+  <h3>Uploaded Files:</h3>
+  <ul>
+    <li *ngFor="let file of files">{{ file.name }}</li>
+  </ul>
+</div>
+
