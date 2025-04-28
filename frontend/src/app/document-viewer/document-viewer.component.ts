@@ -1,11 +1,10 @@
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
 
 @Component({
   selector: 'app-document-viewer',
-  imports: [],
   templateUrl: './document-viewer.component.html',
-  styleUrl: './document-viewer.component.scss'
+  styleUrls: ['./document-viewer.component.scss']
 })
 export class DocumentViewerComponent {
-
+  @Input() files: File[] = [];
 }

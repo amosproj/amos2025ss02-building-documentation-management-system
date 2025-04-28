@@ -1,0 +1,78 @@
+.upload-card {
+  background: #23272f;
+  color: #fff;
+  border-radius: 18px;
+  box-shadow: 0 4px 32px rgba(0,0,0,0.20);
+  padding: 0 0 18px 0;
+  max-width: 480px;
+  margin: 0 auto 18px auto;
+  border: 1.5px solid #353a45;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+.upload-body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 36px 24px 18px 24px;
+}
+.upload-icons-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 18px;
+}
+.bci-logo-upload {
+  height: 38px;
+  width: 38px;
+  min-width: 38px;
+  border-radius: 4px;
+  background: #8BC34A;
+  object-fit: contain;
+  box-shadow: 0 1px 4px rgba(44, 62, 80, 0.07);
+}
+.upload-icon {
+  margin-bottom: 0;
+}
+.upload-headline {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin-bottom: 18px;
+  text-align: center;
+}
+.upload-dropzone {
+  border: 2px dashed #4a90e2;
+  border-radius: 10px;
+  background: #23272f;
+  color: #4a90e2;
+  padding: 22px 0;
+  text-align: center;
+  margin-bottom: 0;
+  width: 100%;
+  transition: background 0.2s, border-color 0.2s;
+  cursor: pointer;
+}
+.upload-dropzone.drag-over {
+  background: #1a1d23;
+  border-color: #0078d4;
+}
+.upload-btn {
+  display: inline-block;
+  background: #23272f;
+  border: 2px solid #4a90e2;
+  color: #4a90e2;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 1rem;
+  padding: 10px 24px;
+  margin-bottom: 0;
+  cursor: pointer;
+  transition: background 0.2s, border-color 0.2s;
+  box-shadow: 0 1px 4px rgba(74, 144, 226, 0.09);
+}
+.upload-btn:hover {
+  background: #1a1d23;
+  border-color: #357ab8;
+}
