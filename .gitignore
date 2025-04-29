@@ -34,3 +34,33 @@ bin/
 
 # MacOS
 .DS_Store
+
+# Node & Angular
+/frontend/node_modules/
+/frontend/dist/
+/frontend/.env
+
+# ASP.NET
+/backend/bin/
+/backend/obj/
+/backend/.vs/
+/backend/appsettings.*.json
+
+# General
+*.log
+.env
+.DS_Store
+.idea/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# Docker
+**/.docker/
+**/Dockerfile
+**/docker-compose.yml
+
+# PostgreSQL
+/postgres/data/
+>>>>>>> a86cc94 (Initial project structure: backend, frontend, DB, search, AI, Docker, docs)
