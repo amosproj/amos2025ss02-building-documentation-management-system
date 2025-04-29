@@ -1,0 +1,13 @@
+.home-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 80vh;
+  background: linear-gradient(135deg, #e3f1ff 0%, #f9fafc 100%);
+}
+.brand {
+  color: #4a90e2;
+  font-weight: bold;
+  letter-spacing: 2px;
+}

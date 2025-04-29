@@ -1,0 +1,48 @@
+<div class="app-root">
+  <header class="navbar">
+    <div class="navbar-left">
+      <img src="assets/logo-bci.png" alt="BUILD.ING Logo" class="brand-logo" />
+      <div class="brand-text">
+        <span class="brand-title">BUILD.ING</span>
+        <span class="brand-subtitle">CONSULTANTS + INNOVATORS</span>
+      </div>
+    </div>
+    <button class="upload-btn">
+      <svg height="18" width="18" style="vertical-align:middle;margin-right:6px"><path d="M9 2v10M5 6l4-4 4 4" stroke="#fff" stroke-width="2" fill="none" stroke-linecap="round"/></svg>
+      Upload Document
+    </button>
+  </header>
+  <div class="main-layout">
+    <aside class="sidebar">
+      <input class="search-docs" placeholder="Search documents..." />
+      <div class="sidebar-title">MY DOCUMENTS</div>
+      <app-document-list></app-document-list>
+      <div class="doc-list-empty">No documents uploaded yet</div>
+    </aside>
+    <main class="main-content">
+      <div class="doc-center-panel">
+        <div class="doc-icon-bg">
+          <svg width="56" height="56" fill="none"><circle cx="28" cy="28" r="28" fill="#F2F6F9"/><path d="M28 16v16" stroke="#8BC34A" stroke-width="2.5" stroke-linecap="round"/><path d="M20 24l8-8 8 8" stroke="#8BC34A" stroke-width="2.5" stroke-linecap="round" fill="none"/></svg>
+        </div>
+        <div class="doc-center-title">No Document Selected</div>
+        <div class="doc-center-desc">Upload a document using the button in the top right corner or select one from the sidebar to view it here.</div>
+        <div class="doc-center-formats">Supported formats: PDF, DOC, DOCX, TXT</div>
+        <app-document-viewer [files]="uploadedFiles"></app-document-viewer>
+      </div>
+      <section class="chat-section">
+        <div class="chat-header">
+          <span>Chat</span>
+          <span class="chat-assistant">AI Assistant</span>
+        </div>
+        <div class="chat-card-empty">Select a document to start a conversation</div>
+        <form class="chat-input-row" (submit)="$event.preventDefault()">
+          <input class="chat-input" placeholder="Select a document first..." disabled />
+          <button class="chat-send-btn" type="submit" disabled>
+            <svg width="22" height="22" fill="none"><circle cx="11" cy="11" r="11" fill="#8BC34A"/><path d="M8 11l4-3v6l-4-3z" fill="#fff"/></svg>
+          </button>
+        </form>
+        <app-chatbot></app-chatbot>
+      </section>
+    </main>
+  </div>
+</div>
