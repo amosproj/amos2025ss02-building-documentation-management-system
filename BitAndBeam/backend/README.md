@@ -14,36 +14,41 @@ This project provides a starter template for an ASP.NET Core Web API with built-
 
 Before you begin, ensure you have the following installed:
 
-    -> At least .NET 6 SDK
+-> At least .NET 6 SDK
 
-    -> Any modern IDE (Visual Studio 2022, VS Code)
+-> Any modern IDE (Visual Studio 2022, VS Code)
 
 ## HOW TO RUN LOCALLY
+
 1. Clone the repository:
-
-    git clone https://github.com/amosproj/amos2025ss02-building-documentation-management-system.git
-
-    cd BuildDocs.Api
+```bash
+git clone https://github.com/amosproj/amos2025ss02-building-documentation-management-system.git
+cd BuildDocs.Api
+```
 
 2. Trust the development HTTPS certificate (only needed once per machine):
-
-    dotnet dev-certs https --trust
+```bash
+dotnet dev-certs https --trust
+```
 
 3. Restore dependencies:
-
-    dotnet restore
+```bash
+dotnet restore
+```
 
 4. Run the project:
-
-    dotnet run
+```bash
+dotnet run
+```
 
 5. Access the API: 
 
-    -> Swagger UI: https://localhost:5001/swagger
-    -> Health check endpoint: https://localhost:5001/healthz
+-> Swagger UI: https://localhost:5001/swagger
+
+-> Health check endpoint: https://localhost:5001/healthz
 
 
-        NOTES:
+## NOTES:
 
 -> The default ports are 5000 (HTTP) and 5001 (HTTPS). 
 
