@@ -1,0 +1,28 @@
+.document-viewer {
+  h2 {
+    color: #4a90e2;
+    margin-bottom: 18px;
+  }
+  .file-list {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 12px 0;
+    li {
+      background: #e3f1ff;
+      color: #222;
+      margin-bottom: 8px;
+      padding: 10px 16px;
+      border-radius: 6px;
+      font-weight: 500;
+      transition: background 0.2s;
+    }
+    li:hover {
+      background: #b2d8ff;
+    }
+  }
+  p {
+    color: #888;
+    font-style: italic;
+    margin-top: 20px;
+  }
+}
