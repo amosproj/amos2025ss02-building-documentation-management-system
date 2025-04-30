@@ -7,18 +7,38 @@
         <span class="brand-subtitle">CONSULTANTS + INNOVATORS</span>
       </div>
     </div>
-    <button class="upload-btn" (click)="triggerFileInput()">
+    <button class="upload-btn" (click)="triggerFileInput()" [disabled]="isUploading">
       <svg height="18" width="18" style="vertical-align:middle;margin-right:6px"><path d="M9 2v10M5 6l4-4 4 4" stroke="#fff" stroke-width="2" fill="none" stroke-linecap="round"/></svg>
-      Upload Document
+      {{ isUploading ? 'Uploading...' : 'Upload Document' }}
     </button>
     <input type="file" #fileInput style="display:none" (change)="onFileSelected($event)" multiple />
+    <div *ngIf="showFeedback" class="upload-feedback">
+      <div class="feedback-message">{{ feedbackMessage }}</div>
+      <div *ngIf="isUploading" class="progress-bar-container">
+        <div class="progress-bar" [style.width.%]="uploadProgress"></div>
+      </div>
+    </div>
   </header>
   <div class="main-layout">
     <aside class="sidebar">
       <input class="search-docs" placeholder="Search documents..." />
       <div class="sidebar-title">MY DOCUMENTS</div>
       <app-document-list></app-document-list>
-      <div class="doc-list-empty">No documents uploaded yet</div>
+      <div *ngIf="uploadedFiles.length === 0" class="doc-list-empty">No documents uploaded yet</div>
+      <div *ngIf="uploadedFiles.length > 0" class="doc-list">
+        <div *ngFor="let file of uploadedFiles" class="doc-item">
+          <div class="doc-icon">
+            <svg width="24" height="24" fill="none">
+              <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8l-6-6z" stroke="#8BC34A" stroke-width="2" fill="none"/>
+              <path d="M14 2v6h6" stroke="#8BC34A" stroke-width="2" fill="none"/>
+            </svg>
+          </div>
+          <div class="doc-info">
+            <div class="doc-name">{{ file.name }}</div>
+            <div class="doc-size">{{ (file.size / 1024).toFixed(1) }} KB</div>
+          </div>
+        </div>
+      </div>
     </aside>
     <main class="main-content">
       <div class="doc-center-panel">

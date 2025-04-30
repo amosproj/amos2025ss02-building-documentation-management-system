@@ -1,0 +1,79 @@
+/* Upload feedback and progress bar styles */
+.upload-feedback {
+  position: absolute;
+  top: 64px;
+  right: 20px;
+  background: white;
+  border: 1px solid #e5eaf2;
+  border-radius: 6px;
+  padding: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  z-index: 100;
+  width: 300px;
+}
+
+.feedback-message {
+  margin-bottom: 8px;
+  font-size: 14px;
+}
+
+.progress-bar-container {
+  height: 6px;
+  background: #f0f0f0;
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.progress-bar {
+  height: 100%;
+  background: #8BC34A;
+  transition: width 0.3s ease;
+}
+
+/* Document list styles */
+.doc-list {
+  padding: 0 16px;
+  overflow-y: auto;
+}
+
+.doc-item {
+  display: flex;
+  align-items: center;
+  padding: 12px;
+  border-radius: 6px;
+  margin-bottom: 8px;
+  background: #f9f9f9;
+  transition: background 0.2s;
+  cursor: pointer;
+}
+
+.doc-item:hover {
+  background: #f2f6f9;
+}
+
+.doc-icon {
+  margin-right: 12px;
+}
+
+.doc-info {
+  flex: 1;
+}
+
+.doc-name {
+  font-weight: 500;
+  margin-bottom: 4px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.doc-size {
+  font-size: 12px;
+  color: #6b7280;
+}
+
+/* Style for the upload button when disabled */
+.upload-btn:disabled {
+  background: #a9d17a !important;
+  cursor: not-allowed;
+}
