@@ -6,7 +6,7 @@ This folder contains the deliverables for Sprint 3.
 
 -   [ ] Snapshot of the feature board (.tsv & .jpg)
 -   [ ] Planning documents (.pdf & .xlsx)
--   [ ] Snapshot of the imp-squared backlog (.tsv & .jpg)
+-   [x] Snapshot of the imp-squared backlog (.tsv & .jpg)
 
 ---
 
