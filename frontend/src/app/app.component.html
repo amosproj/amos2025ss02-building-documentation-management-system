@@ -7,10 +7,11 @@
         <span class="brand-subtitle">CONSULTANTS + INNOVATORS</span>
       </div>
     </div>
-    <button class="upload-btn">
+    <button class="upload-btn" (click)="triggerFileInput()">
       <svg height="18" width="18" style="vertical-align:middle;margin-right:6px"><path d="M9 2v10M5 6l4-4 4 4" stroke="#fff" stroke-width="2" fill="none" stroke-linecap="round"/></svg>
       Upload Document
     </button>
+    <input type="file" #fileInput style="display:none" (change)="onFileSelected($event)" multiple />
   </header>
   <div class="main-layout">
     <aside class="sidebar">
