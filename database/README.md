@@ -16,14 +16,11 @@ The database is designed using PostgreSQL and includes the following core tables
 
 ## Entity Relationship Diagram
 
-The database schema can be visualized using the provided `database_diagram.dbml` file. You can view and edit this diagram at [dbdiagram.io](https://dbdiagram.io/):
+The database schema is visualized in the diagram below:
 
-1. Go to [dbdiagram.io](https://dbdiagram.io/)
-2. Create a free account or use the tool without signing in
-3. Copy and paste the contents of `database_diagram.dbml` into the editor
-4. The diagram will be automatically generated
+![Database Schema Diagram](./db_image1.png)
 
-![Database Schema Diagram Example](https://i.imgur.com/example.png)
+You can also visualize and edit this diagram using the provided `database_diagram.dbml` file at [dbdiagram.io](https://dbdiagram.io/).
 
 ## Schema Implementation
 
