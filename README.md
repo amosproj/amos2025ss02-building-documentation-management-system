@@ -1,4 +1,4 @@
-# Intelligent Document Management System
+# Bit&Beam: Intelligent Document Management System
 
 This project is an intelligent document management system for building-related data. It enables automated document classification, metadata extraction, and user access control to streamline document management in building administration.
 
@@ -21,7 +21,7 @@ This project is an intelligent document management system for building-related d
 
 ## Project Structure
 ```
-/document-management-system
+/BitAndBeam
 │
 ├── backend/                # ASP.NET Core API (C#)
 │   ├── src/
@@ -42,8 +42,8 @@ This project is an intelligent document management system for building-related d
 ├── ollama/                 # Ollama AI integration/config
 │
 ├── docker-compose.yml      # Orchestration for all services
-├── README.md
-└── .github/                # CI/CD workflows (GitHub Actions)
+/README.md
+/.github/                # CI/CD workflows (GitHub Actions)
 ```
 
 ## Getting Started
@@ -58,4 +58,3 @@ This project is an intelligent document management system for building-related d
 
 ## License
 MIT License
->>>>>>> a86cc94 (Initial project structure: backend, frontend, DB, search, AI, Docker, docs)
