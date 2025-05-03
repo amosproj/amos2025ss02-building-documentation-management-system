@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("Build.ING")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+fc8b59b9f94ed6a512a54fc14ccbfd996e8f288d")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+c7263bc8c53250b6d180912743afa21a025ecf0d")]
 [assembly: System.Reflection.AssemblyProductAttribute("Build.ING")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Build.ING")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
