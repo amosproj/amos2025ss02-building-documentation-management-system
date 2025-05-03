@@ -1,19 +1,16 @@
 <div
-  (drop)="onFileDropped($event)"
+  class="upload-dropzone"
+  (drop)="onDrop($event)"
   (dragover)="onDragOver($event)"
-  (dragleave)="onDragLeave($event)"
-  [class.dragover]="isDragOver"
-  class="upload-drop-zone"
+  style="border: 2px dashed #ccc; padding: 20px; text-align: center;"
 >
-  <p>Drag & Drop your files here</p>
+  <label for="fileInput">📂 Upload Your Document</label>
+  <br />
+  <input id="fileInput" type="file" accept=".pdf" (change)="onFileSelected($event)" />
 </div>
 
-<input type="file" (change)="onFileSelected($event)" multiple />
-
-<div class="uploaded-files" *ngIf="files.length > 0">
-  <h3>Uploaded Files:</h3>
-  <ul>
-    <li *ngFor="let file of files">{{ file.name }}</li>
-  </ul>
+<!-- Separate area to display the selected file -->
+<div *ngIf="uploadedFile">
+  <h3>Selected File:</h3>
+  <p>{{ uploadedFile.name }}</p>
 </div>
-
