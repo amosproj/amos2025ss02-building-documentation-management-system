@@ -39,7 +39,7 @@ app.MapGet("/weatherforecast", () =>
 .WithName("GetWeatherForecast")
 .WithOpenApi();
 
-//Adds health check endpoint tha returns HTTP 200
+//Adds health check endpoint that returns HTTP 200
 app.MapHealthChecks("/healthz");
 
 app.Run();
