@@ -42,6 +42,10 @@ app.MapGet("/weatherforecast", () =>
 //Adds health check endpoint that returns HTTP 200
 app.MapHealthChecks("/healthz");
 
+//Just to set a route at /
+app.MapGet("/", () => "🚀 API is running! Visit /swagger , /weatherforecast or /healthz.");
+
+
 app.Run();
 
 record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
