@@ -19,7 +19,7 @@ Bit&Beam is an intelligent document management system designed specifically for 
 - Multi-tenancy: Groups only access their assigned data
 - Automated document data extraction (metadata and text fields)
 - Automated document categorization
-- UI for classification & validation (Google Notebook LM style)
+- UI for classification & validation 
 - Natural language querying and intelligent search
 
 ## Tech Stack
