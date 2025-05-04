@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "ks92hxS9kC37SYx07pbx0eVR2NvKX5r3chKySmC4RbNb9lpUI2UGRIGc2VC2V6iriSFO/EadCvrVuIVTZ2xykA==",
+  "dgSpecHash": "7ZC76x5ZEp2pfD8Lx744HXE7SsdFg1yzgWh7G+VGLCmL270VnxAiT7KCWVd/gMLfi8CPERceX+VLjEd6V4Z7OQ==",
   "success": true,
   "projectFilePath": "C:\\Users\\Ouabo Jordan\\The AMOS Project\\amos2025ss02-building-documentation-management-system\\BitAndBeam\\backend\\BUILD.ING\\Build.ING.csproj",
   "expectedPackageFiles": [
@@ -18,6 +18,7 @@
     "C:\\Users\\Ouabo Jordan\\.nuget\\packages\\microsoft.codeanalysis.common\\4.5.0\\microsoft.codeanalysis.common.4.5.0.nupkg.sha512",
     "C:\\Users\\Ouabo Jordan\\.nuget\\packages\\microsoft.codeanalysis.csharp\\4.5.0\\microsoft.codeanalysis.csharp.4.5.0.nupkg.sha512",
     "C:\\Users\\Ouabo Jordan\\.nuget\\packages\\microsoft.codeanalysis.csharp.workspaces\\4.5.0\\microsoft.codeanalysis.csharp.workspaces.4.5.0.nupkg.sha512",
+    "C:\\Users\\Ouabo Jordan\\.nuget\\packages\\microsoft.codeanalysis.netanalyzers\\9.0.0\\microsoft.codeanalysis.netanalyzers.9.0.0.nupkg.sha512",
     "C:\\Users\\Ouabo Jordan\\.nuget\\packages\\microsoft.codeanalysis.workspaces.common\\4.5.0\\microsoft.codeanalysis.workspaces.common.4.5.0.nupkg.sha512",
     "C:\\Users\\Ouabo Jordan\\.nuget\\packages\\microsoft.entityframeworkcore\\8.0.11\\microsoft.entityframeworkcore.8.0.11.nupkg.sha512",
     "C:\\Users\\Ouabo Jordan\\.nuget\\packages\\microsoft.entityframeworkcore.abstractions\\8.0.11\\microsoft.entityframeworkcore.abstractions.8.0.11.nupkg.sha512",
