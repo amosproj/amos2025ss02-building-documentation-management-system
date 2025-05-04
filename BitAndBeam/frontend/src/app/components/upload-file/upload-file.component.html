@@ -2,11 +2,16 @@
   class="upload-dropzone"
   (drop)="onDrop($event)"
   (dragover)="onDragOver($event)"
-  style="border: 2px dashed #ccc; padding: 20px; text-align: center;"
+  style="border: 2px dashed #ccc; padding: 20px; text-align: center"
 >
   <label for="fileInput">📂 Upload Your Document</label>
   <br />
-  <input id="fileInput" type="file" accept=".pdf" (change)="onFileSelected($event)" />
+  <input
+    id="fileInput"
+    type="file"
+    accept=".pdf"
+    (change)="onFileSelected($event)"
+  />
 </div>
 
 <!-- Separate area to display the selected file -->

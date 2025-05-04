@@ -5,11 +5,11 @@ import { UploadFileComponent } from './upload-file/upload-file.component';
 
 export const routes: Routes = [
   { path: '', component: HomeComponent },
-  { path: 'upload', component: UploadFileComponent }
+  { path: 'upload', component: UploadFileComponent },
 ];
 
 @NgModule({
   imports: [RouterModule.forRoot(routes)],
-  exports: [RouterModule]
+  exports: [RouterModule],
 })
-export class AppRoutingModule { }
+export class AppRoutingModule {}

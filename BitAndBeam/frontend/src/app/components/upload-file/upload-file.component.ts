@@ -9,11 +9,12 @@ import { CommonModule } from '@angular/common';
   styleUrls: ['./upload-file.component.css'],
 })
 export class UploadFileComponent {
-  uploadedFile: File | null = null;  // Change to single file
+  uploadedFile: File | null = null; // Change to single file
 
   // Handle file selection
-  onFileSelected(event: any) {
-    const file = event.target.files[0];  // Only get the first file
+  onFileSelected(event: Event) {
+    const input = event.target as HTMLInputElement;
+    const file = input.files?.[0]; // Only get the first file
     if (file) {
       this.uploadedFile = file;
     }
@@ -23,7 +24,7 @@ export class UploadFileComponent {
   onDrop(event: DragEvent) {
     event.preventDefault();
     if (event.dataTransfer?.files) {
-      const file = event.dataTransfer.files[0];  // Only get the first file
+      const file = event.dataTransfer.files[0]; // Only get the first file
       if (file) {
         this.uploadedFile = file;
       }
