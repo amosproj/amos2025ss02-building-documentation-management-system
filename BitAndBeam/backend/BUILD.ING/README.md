@@ -1,3 +1,4 @@
+````bash 
 Build.ING 
 This project provides a starter template for an ASP.NET Core Web API with built-in support for:
 
