@@ -2,11 +2,10 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 @Component({
-  selector: 'app-upload-file',
-  standalone: true,
-  imports: [CommonModule],
-  templateUrl: './upload-file.component.html',
-  styleUrls: ['./upload-file.component.css'],
+    selector: 'app-upload-file', 
+    imports: [CommonModule],
+    templateUrl: './upload-file.component.html',
+    styleUrls: ['./upload-file.component.css']
 })
 export class UploadFileComponent {
   uploadedFile: File | null = null;  // Change to single file
