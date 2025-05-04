@@ -1,4 +1,5 @@
 # top-most EditorConfig file
+#Tells the system to stop searching for .editorconfig files in parent directories — this is the root config.
 root = true
 
 # All files
@@ -7,22 +8,38 @@ charset = utf-8
 indent_style = space
 indent_size = 4
 insert_final_newline = true
+#Removes extra spaces at the end of lines.
 trim_trailing_whitespace = true
 
 # C# files
 [*.cs]
+#Puts using System.* directives first.
 dotnet_sort_system_directives_first = true
+#Controls if this. or Me. is required for fields, properties, etc.
 dotnet_style_qualification_for_field = false:suggestion
 dotnet_style_qualification_for_property = false:suggestion
 dotnet_style_qualification_for_method = false:suggestion
 dotnet_style_qualification_for_event = false:suggestion
 
+#Always places opening { on a new line.
 csharp_new_line_before_open_brace = all
+#Indents case/default labels in switch statements.
 csharp_indent_switch_labels = true
+#Suggests always using braces {} even for one-line if/for.
 csharp_prefer_braces = true:suggestion
+# Adds space after a cast like (int) value.
 csharp_space_after_cast = true
 
 # Naming rules
+
+;Private fields (private string myField) must:
+
+;Be camelCase (lowercase first letter).
+
+;Start with _ (like _logger, _dataService).
+
+;If violated, a warning will be shown during linting.
+
 dotnet_naming_rule.private_fields_should_be_camel_case.severity = warning
 dotnet_naming_rule.private_fields_should_be_camel_case.symbols = private_fields
 dotnet_naming_rule.private_fields_should_be_camel_case.style = camel_case
