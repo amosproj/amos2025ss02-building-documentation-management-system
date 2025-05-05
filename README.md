@@ -53,6 +53,7 @@ This project is an intelligent document management system for building-related d
 1. Clone the repository
 2. Follow setup instructions in each service directory
 3. Use `docker-compose up` to start all services
+4. Setup GitHub Secrets for DOCKER_USERNAME, DOCKER_PASSWORD, SERVER_HOST, SERVER_USER, SERVER_SSH_KEY to trigger Docker image publish on push to main
 
 ## Contributing
 - Please see `CONTRIBUTING.md` (to be added)
