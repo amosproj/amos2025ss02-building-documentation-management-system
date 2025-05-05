@@ -13,9 +13,10 @@
     "isolatedModules": true,
     "esModuleInterop": true,
     "experimentalDecorators": true,
-    "moduleResolution": "bundler",
+    "moduleResolution": "node",
     "importHelpers": true,
     "target": "ES2022",
+    "types": ["@types/json-schema"],
     "module": "ES2022"
   },
   "angularCompilerOptions": {

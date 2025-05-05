@@ -25,7 +25,9 @@ describe('HomeComponent', () => {
 
   it('should contain the upload-file component', () => {
     // Find the upload-file component in the template
-    const uploadFileComponent = fixture.debugElement.query(By.css('app-upload-file'));
+    const uploadFileComponent = fixture.debugElement.query(
+      By.css('app-upload-file'),
+    );
 
     // Assert that the upload-file component is found
     expect(uploadFileComponent).toBeTruthy();

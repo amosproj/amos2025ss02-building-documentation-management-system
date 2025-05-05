@@ -26,7 +26,7 @@ var summaries = new[]
 
 app.MapGet("/weatherforecast", () =>
 {
-    var forecast =  Enumerable.Range(1, 5).Select(index =>
+    var forecast = Enumerable.Range(1, 5).Select(index =>
         new WeatherForecast
         (
             DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
@@ -39,12 +39,20 @@ app.MapGet("/weatherforecast", () =>
 .WithName("GetWeatherForecast")
 .WithOpenApi();
 
-//Adds health check endpoint tha returns HTTP 200
+//Adds health check endpoint that returns HTTP 200
 app.MapHealthChecks("/healthz");
+
+//Just to set a route at /
+app.MapGet("/", () => "🚀 API is running! Visit /swagger , /weatherforecast or /healthz.");
+
 
 app.Run();
 
 record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
 {
-    public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
+
+
+    public int TemperatureF => 32 + (int) (TemperatureC / 0.5556);
 }
+
+

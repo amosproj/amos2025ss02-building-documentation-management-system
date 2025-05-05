@@ -1,6 +1,19 @@
-# Intelligent Document Management System
+<div align="center">
+  <img src="team-logo.png" alt="Bit&Beam Logo" width="250">
 
-This project is an intelligent document management system for building-related data. It enables automated document classification, metadata extraction, and user access control to streamline document management in building administration.
+  # Bit&Beam
+  ### Intelligent Document Management System for Building Data
+
+  <p align="center">
+    A modern solution for organizing, analyzing, and retrieving building-related documents with AI-powered features
+  </p>
+</div>
+
+![Build and Deploy](https://github.com/amosproj/amos2025ss02-building-documentation-management-system/actions/workflows/docker-ci.yml/badge.svg)
+
+## Overview
+
+Bit&Beam is an intelligent document management system designed specifically for building-related data. The system streamlines document workflows by providing automated classification, metadata extraction, and smart search capabilities, making it easier for construction professionals and building administrators to manage critical documentation.
 
 ## Features
 - Store, organize, and manage building-related documents
@@ -8,7 +21,7 @@ This project is an intelligent document management system for building-related d
 - Multi-tenancy: Groups only access their assigned data
 - Automated document data extraction (metadata and text fields)
 - Automated document categorization
-- UI for classification & validation (Google Notebook LM style)
+- UI for classification & validation 
 - Natural language querying and intelligent search
 
 ## Tech Stack
@@ -21,7 +34,7 @@ This project is an intelligent document management system for building-related d
 
 ## Project Structure
 ```
-/document-management-system
+/BitAndBeam
 │
 ├── backend/                # ASP.NET Core API (C#)
 │   ├── src/
@@ -42,14 +55,15 @@ This project is an intelligent document management system for building-related d
 ├── ollama/                 # Ollama AI integration/config
 │
 ├── docker-compose.yml      # Orchestration for all services
-├── README.md
-└── .github/                # CI/CD workflows (GitHub Actions)
+/README.md
+/.github/                # CI/CD workflows (GitHub Actions)
 ```
 
 ## Getting Started
 1. Clone the repository
 2. Follow setup instructions in each service directory
-3. Use `docker-compose up` to start all services
+3. Use `docker-compose up` inside BitAndBeam, to start all services
+4. Setup GitHub Secrets for DOCKER_USERNAME, DOCKER_PASSWORD, SERVER_HOST, SERVER_USER, SERVER_SSH_KEY to trigger Docker image publish on push to main
 
 ## Contributing
 - Please see `CONTRIBUTING.md` (to be added)
@@ -58,4 +72,3 @@ This project is an intelligent document management system for building-related d
 
 ## License
 MIT License
->>>>>>> a86cc94 (Initial project structure: backend, frontend, DB, search, AI, Docker, docs)

@@ -1,6 +1,0 @@
-@Build.ING_HostAddress = http://localhost:5289
-
-GET {{Build.ING_HostAddress}}/weatherforecast/
-Accept: application/json
-
-###
