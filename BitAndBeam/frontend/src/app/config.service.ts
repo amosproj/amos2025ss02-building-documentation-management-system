@@ -4,7 +4,7 @@ import { Injectable } from '@angular/core';
 declare const window: any;
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class ConfigService {
   get apiUrl(): string {
