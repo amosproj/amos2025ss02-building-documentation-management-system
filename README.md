@@ -3,13 +3,13 @@
 
   # Bit&Beam
   ### Intelligent Document Management System for Building Data
+  
+  [![Deploy to AMOS Server](https://github.com/amosproj/amos2025ss02-building-documentation-management-system/actions/workflows/docker-ci.yml/badge.svg)](https://github.com/amosproj/amos2025ss02-building-documentation-management-system/actions/workflows/docker-ci.yml)
 
   <p align="center">
     A modern solution for organizing, analyzing, and retrieving building-related documents with AI-powered features
   </p>
 </div>
-
-![Build and Deploy](https://github.com/amosproj/amos2025ss02-building-documentation-management-system/actions/workflows/docker-ci.yml/badge.svg)
 
 ## Overview
 

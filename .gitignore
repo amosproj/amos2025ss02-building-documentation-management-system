@@ -58,6 +58,8 @@ BitAndBeam/backend/BUILD.ING/.vs/
 
 # Docker
 **/.docker/
+**/Dockerfile
+# docker-compose.yml is now tracked
 
 # PostgreSQL
 /postgres/data/
