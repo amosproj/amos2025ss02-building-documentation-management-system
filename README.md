@@ -60,7 +60,7 @@ Bit&Beam is an intelligent document management system designed specifically for 
 ## Getting Started
 1. Clone the repository
 2. Follow setup instructions in each service directory
-3. Use `docker-compose up` to start all services
+3. Use `docker-compose up` inside BitAndBeam, to start all services
 
 ## Contributing
 - Please see `CONTRIBUTING.md` (to be added)
