@@ -34,3 +34,30 @@ bin/
 
 # MacOS
 .DS_Store
+
+# Node & Angular
+BitAndBeam/frontend/node_modules/
+BitAndBeam/frontend/dist/
+BitAndBeam/frontend/.env
+
+# ASP.NET
+amos2025ss02-building-documentation-management-system.sln
+BitAndBeam/backend/BUILD.ING/bin/
+BitAndBeam/backend/BUILD.ING/obj/
+BitAndBeam/backend/BUILD.ING/.vs/
+
+# General
+*.log
+.env
+.DS_Store
+.idea/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# Docker
+**/.docker/
+
+# PostgreSQL
+/postgres/data/
