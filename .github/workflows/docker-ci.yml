@@ -52,3 +52,4 @@ jobs:
           git pull origin main
           docker-compose down
           docker-compose up -d --build
+# GitHub Secrets for DOCKER_USERNAME, DOCKER_PASSWORD, SERVER_HOST, SERVER_USER, SERVER_SSH_KEY need to be set for successful deployment.
