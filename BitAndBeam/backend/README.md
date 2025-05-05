@@ -47,6 +47,18 @@ dotnet run
 
 -> Health check endpoint: https://localhost:5001/healthz
 
+## Code formatting
+
+```bash
+## Formatting Code
+
+#To check formatting compliance:
+dotnet format --verify-no-changes
+
+#To fix formatting:
+dotnet format
+```
+
 
 ## NOTES:
 
