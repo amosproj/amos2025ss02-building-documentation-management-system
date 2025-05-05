@@ -1,6 +1,7 @@
 # Angular Frontend Dockerization Guide
 
 ## 📊 Purpose
+
 This guide documents how to build, run, and configure an Angular frontend as a production-grade Docker image. It is intended for team members who are new to Angular, Docker, or both.
 
 ---
@@ -8,9 +9,13 @@ This guide documents how to build, run, and configure an Angular frontend as a p
 ## ✅ Criterion 1: Multi-Stage Dockerfile
 
 ### 📉 Goal
+
 Use a multi-stage Dockerfile to:
+
 - Build the Angular app using Node.js
+
 - Serve static files with NGINX
+
 - Minimize image size by copying only required files
 
 ### 📈 Implementation
@@ -42,10 +47,26 @@ Ensure `angular.json` has `outputPath` as `dist/building-ui/browser`
 
 ### 🔧 How It Works
 - NGINX serves static Angular files on port 80.
+
 - Dockerfile exposes port 80.
+
 - Locally mapped to port 8080 for testing.
 
 ### ▶️ Run It
+#### Start Docker Desktop (for local setup on Windows)
+
+- Open Start Menu → Search for Docker Desktop → Click to launch it.
+
+- Wait for it to say "Docker is running" (check the tray icon).
+
+- Verify It’s Running
+
+```bash
+docker info
+```
+
+#### Build and Run
+
 ```bash
 docker build -t my-angular-app .
 docker run --rm -p 8080:80 my-angular-app
@@ -57,6 +78,7 @@ Then open `http://localhost:8080` in the browser.
 ## ✅ Criterion 3: Runtime Environment Variables
 
 ### 🌐 Goal
+
 Allow passing values like `API_URL` **without rebuilding** the Docker image.
 
 ### 📁 File: `env.template.js`
@@ -106,7 +128,12 @@ xport class UploadFileComponent implements OnInit{
 ```
 This lets you log and use the environment URL in your logic without recompiling the app.
 
-### 💲 Run With Env but build first as previously shown
+### 💲 Run With Env
+
+- Start Docker Desktop (for local setup on Windows)
+
+- build first as previously shown
+
 ```bash
 docker run --rm -p 8080:80 -e API_URL=https://api.example.com my-angular-app
 ```
@@ -117,23 +144,6 @@ API URL from config service: https://api.example.com
 ```
 
 ---
-
-## ✅ Criterion 4: Project Documentation
-
-### 📖 File: `frontend/README.md`
-```markdown
-# Frontend Docker Setup
-
-## Build Docker Image
-```bash
-docker build -t my-angular-app .
-```
-
-## Run the App
-```bash
-docker run --rm -p 8080:80 my-angular-app
-```
-Visit: http://localhost:8080
 
 
 ## Folder Structure
@@ -148,14 +158,16 @@ frontend/
 ├── nginx.conf
 └── README.md
 ```
-```
 
 ---
 
 ## 🏦 Full Build & Test Summary
+
+- Start Docker Desktop (for local setup on Windows)
+
 ```bash
 # Build
-cd frontend
+cd BitAndBeam/frontend
 docker build -t my-angular-app .
 
 # Run
