@@ -1,5 +1,3 @@
-version: '3.9'
-
 services:
   backend:
     build:
@@ -25,7 +23,7 @@ services:
       - API_URL=http://localhost:5000
 
   postgres:
-    image: postgres:15
+    image: postgres:17
     container_name: bitandbeam_postgres
     restart: always
     ports:
