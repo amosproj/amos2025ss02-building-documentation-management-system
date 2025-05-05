@@ -121,6 +121,16 @@ ng e2e
 
 Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
 
+## Running linting and formatting
+
+For linting and formatting, run:
+
+```bash
+cd BitAndBeam/frontend
+npm run lint
+npm run format
+```
+
 ## Additional Resources
 
 For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
