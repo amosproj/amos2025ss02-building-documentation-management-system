@@ -53,6 +53,23 @@ Ensure `angular.json` has `outputPath` as `dist/building-ui/browser`
 - Locally mapped to port 8080 for testing.
 
 ### ▶️ Run It
+
+#### 🧰 Prerequisites
+
+Make sure Docker is installed and running on your system.
+
+##### 🔗 Install Docker
+
+- **Windows/macOS**: [https://www.docker.com/products/docker-desktop](https://www.docker.com/products/docker-desktop)
+- **Linux (Ubuntu/Debian)**:
+
+  sudo apt update
+  sudo apt install docker.io
+  sudo systemctl start docker
+  sudo systemctl enable docker
+
+NB:🔁 You may need to restart your system or log out/in after installing Docker
+
 #### Start Docker Desktop (for local setup on Windows)
 
 - Open Start Menu → Search for Docker Desktop → Click to launch it.
