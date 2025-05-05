@@ -1,19 +1,20 @@
-// @ts-check
-const eslint = require("@eslint/js");
 const tseslint = require("typescript-eslint");
-const angular = require("angular-eslint");
+const angular = require("@angular-eslint/eslint-plugin");
+const angularTemplate = require("@angular-eslint/eslint-plugin-template");
 
-module.exports = tseslint.config(
+module.exports = [
   {
     files: ["**/*.ts"],
-    extends: [
-      eslint.configs.recommended,
-      ...tseslint.configs.recommended,
-      ...tseslint.configs.stylistic,
-      ...angular.configs.tsRecommended,
-      "plugin:prettier/recommended"
-    ],
-    processor: angular.processInlineTemplates,
+    languageOptions: {
+      parser: require("@typescript-eslint/parser"),
+      parserOptions: {
+        project: ["./tsconfig.json"],
+        tsconfigRootDir: __dirname,
+      },
+    },
+    plugins: {
+      "@angular-eslint": angular,
+    },
     rules: {
       "@angular-eslint/directive-selector": [
         "error",
@@ -35,10 +36,16 @@ module.exports = tseslint.config(
   },
   {
     files: ["**/*.html"],
-    extends: [
-      ...angular.configs.templateRecommended,
-      ...angular.configs.templateAccessibility,
-    ],
-    rules: {},
-  }
-);
+    plugins: {
+      "@angular-eslint/template": angularTemplate,
+    },
+    languageOptions: {
+      parser: require("@angular-eslint/template-parser"),
+    },
+    rules: {
+      "@angular-eslint/template/no-negated-async": "error",
+      "@angular-eslint/template/eqeqeq": "error",
+      // add other template rules here if needed
+    },
+  },
+];
