@@ -9,7 +9,6 @@
     "test": "ng test",
     "lint": "ng lint",
     "format": "prettier --write \"src/**/*.{ts,html,scss}\""
-
   },
   "private": true,
   "dependencies": {
