@@ -1,6 +1,17 @@
-# Bit&Beam: Intelligent Document Management System
+<div align="center">
+  <img src="team-logo.png" alt="Bit&Beam Logo" width="250">
 
-This project is an intelligent document management system for building-related data. It enables automated document classification, metadata extraction, and user access control to streamline document management in building administration.
+  # Bit&Beam
+  ### Intelligent Document Management System for Building Data
+
+  <p align="center">
+    A modern solution for organizing, analyzing, and retrieving building-related documents with AI-powered features
+  </p>
+</div>
+
+## Overview
+
+Bit&Beam is an intelligent document management system designed specifically for building-related data. The system streamlines document workflows by providing automated classification, metadata extraction, and smart search capabilities, making it easier for construction professionals and building administrators to manage critical documentation.
 
 ## Features
 - Store, organize, and manage building-related documents
@@ -8,7 +19,7 @@ This project is an intelligent document management system for building-related d
 - Multi-tenancy: Groups only access their assigned data
 - Automated document data extraction (metadata and text fields)
 - Automated document categorization
-- UI for classification & validation (Google Notebook LM style)
+- UI for classification & validation 
 - Natural language querying and intelligent search
 
 ## Tech Stack
