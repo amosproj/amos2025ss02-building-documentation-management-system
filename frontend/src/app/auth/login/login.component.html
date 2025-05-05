@@ -1,0 +1,65 @@
+<div class="login-container">
+  <div class="login-card">
+    <div class="login-header">
+      <div class="brand-container">
+        <img src="assets/logo-bci.png" alt="BCI Logo" class="brand-logo">
+        <div class="brand-text">
+          <div class="brand-title">BUILD.ING</div>
+          <div class="brand-subtitle">CONSULTANTS + INNOVATORS</div>
+        </div>
+      </div>
+      <h1 class="login-title">Login</h1>
+    </div>
+    
+    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="login-form">
+      <div class="form-group">
+        <label for="username">Username</label>
+        <input 
+          type="text" 
+          id="username" 
+          formControlName="username" 
+          class="form-control" 
+          [class.is-invalid]="loginForm.get('username')?.invalid && loginForm.get('username')?.touched"
+          placeholder="Enter username"
+        >
+        <div *ngIf="loginForm.get('username')?.invalid && loginForm.get('username')?.touched" class="error-message">
+          Username is required
+        </div>
+      </div>
+      
+      <div class="form-group">
+        <label for="password">Password</label>
+        <input 
+          type="password" 
+          id="password" 
+          formControlName="password" 
+          class="form-control"
+          [class.is-invalid]="loginForm.get('password')?.invalid && loginForm.get('password')?.touched"
+          placeholder="Enter password"
+        >
+        <div *ngIf="loginForm.get('password')?.invalid && loginForm.get('password')?.touched" class="error-message">
+          Password is required
+        </div>
+      </div>
+      
+      <div *ngIf="loginError" class="alert-error">
+        {{ loginError }}
+      </div>
+      
+      <button 
+        type="submit" 
+        class="login-button" 
+        [disabled]="loginForm.invalid || isLoading"
+      >
+        <span *ngIf="isLoading" class="spinner"></span>
+        <span *ngIf="!isLoading">Login</span>
+      </button>
+      
+      <div class="login-help">
+        <p>Default credentials:</p>
+        <p>Username: admin, Password: admin123</p>
+        <p>Username: user, Password: user123</p>
+      </div>
+    </form>
+  </div>
+</div>

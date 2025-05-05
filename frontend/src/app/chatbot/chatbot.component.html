@@ -1,0 +1,48 @@
+<div class="chat-container">
+  <div class="messages-area" #chatMessages>
+    <!-- Chat messages -->
+    <div *ngFor="let message of messages" 
+         [ngClass]="{'message': true, 'user-message': message.sender === 'user', 'bot-message': message.sender === 'assistant'}">
+      <ng-container *ngIf="message.sender === 'assistant'">
+        <div class="avatar-placeholder">A</div>
+      </ng-container>
+      <div class="message-content">
+        <div class="message-sender">
+          <span *ngIf="message.sender === 'user'">You</span>
+          <span *ngIf="message.sender === 'assistant'">AI Assistant</span>
+        </div>
+        <div class="message-text">{{ message.content }}</div>
+        <div class="message-time">{{ message.timestamp | date:'shortTime' }}</div>
+      </div>
+      <ng-container *ngIf="message.sender === 'user'">
+        <div class="avatar-placeholder">U</div>
+      </ng-container>
+    </div>
+    
+    <!-- Typing indicator -->
+    <div *ngIf="isProcessing" class="message bot-message">
+      <div class="message-content">
+        <div class="message-sender">AI Assistant</div>
+        <div class="typing-indicator">
+          <span></span>
+          <span></span>
+          <span></span>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Fixed input area -->
+  <div class="input-area">
+    <input type="text" 
+           [(ngModel)]="userInput" 
+           placeholder="Ask a question about your document..."
+           (keyup.enter)="sendMessage()"
+           [disabled]="isProcessing"
+           autocomplete="off"
+           autofocus>
+    <button (click)="sendMessage()" [disabled]="!userInput.trim() || isProcessing">
+      <span class="material-icons">send</span>
+    </button>
+  </div>
+</div>

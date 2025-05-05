@@ -1,4 +1,42 @@
 <div class="home-container">
-  <h1>Welcome to <span class="brand">BUILD.ING</span></h1>
-  <app-upload-file (filesUploaded)="onFilesUploaded($event)"></app-upload-file>
+  <div class="hero-section">
+    <div class="hero-content">
+      <div class="brand-container">
+        <img src="assets/logo-bci.png" alt="BCI Logo" class="brand-logo-large">
+        <div class="brand-text-large">
+          <div class="brand-title-large">BUILD.ING</div>
+          <div class="brand-subtitle-large">CONSULTANTS + INNOVATORS</div>
+        </div>
+      </div>
+      <h1 class="hero-title">Document Management System</h1>
+      <p class="hero-description">
+        A powerful AI-assisted platform for managing, analyzing, and extracting insights from your documents.
+      </p>
+      <div class="cta-buttons">
+        <a routerLink="/login" class="login-cta">Dashboard</a>
+        <a routerLink="/chat" class="learn-more">AI Assistant</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="features-section">
+    <h2 class="section-title">Key Features</h2>
+    <div class="features-grid">
+      <div class="feature-card">
+        <div class="feature-icon">📄</div>
+        <h3 class="feature-title">Document Management</h3>
+        <p class="feature-description">Upload, organize, and search through your documents with ease.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🤖</div>
+        <h3 class="feature-title">AI Assistant</h3>
+        <p class="feature-description">Get intelligent insights and answers from your documents using our AI chatbot.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🔍</div>
+        <h3 class="feature-title">Advanced Search</h3>
+        <p class="feature-description">Find exactly what you need with powerful search capabilities.</p>
+      </div>
+    </div>
+  </div>
 </div>

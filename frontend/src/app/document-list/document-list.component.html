@@ -1,0 +1,26 @@
+<div class="document-list-container">
+  <h2 class="document-list-title">Documents</h2>
+  
+  <div *ngIf="uploadedFiles.length === 0" class="no-documents">
+    <p>No documents uploaded yet.</p>
+    <p class="hint">Use the upload button in the navbar to add documents.</p>
+  </div>
+  
+  <ul class="document-list" *ngIf="uploadedFiles.length > 0">
+    <li *ngFor="let file of uploadedFiles; let i = index" 
+        class="document-item" 
+        [class.selected]="selectedFile === file"
+        (click)="selectDocument(file)">
+      <div class="document-icon">
+        <span class="material-icons">{{ getFileIcon(file) }}</span>
+      </div>
+      <div class="document-info">
+        <div class="document-name">{{ file.name }}</div>
+        <div class="document-meta">
+          <span class="document-size">{{ (file.size / 1024).toFixed(1) }} KB</span>
+          <span class="document-type">{{ file.type || 'Unknown type' }}</span>
+        </div>
+      </div>
+    </li>
+  </ul>
+</div>

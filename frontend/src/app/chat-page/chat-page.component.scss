@@ -1,0 +1,256 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+.chat-page-container {
+  font-family: 'Inter', system-ui, Arial, sans-serif;
+  background: #f7fafc;
+  color: #25324B;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.upload-button-container {
+  display: flex;
+  justify-content: flex-end;
+  padding: 12px 32px;
+  position: relative;
+}
+
+.upload-feedback {
+  position: absolute;
+  top: 60px;
+  right: 32px;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  padding: 16px;
+  width: 300px;
+  z-index: 100;
+}
+
+.feedback-message {
+  margin-bottom: 10px;
+  color: #25324B;
+  font-size: 0.9rem;
+}
+
+.progress-bar-container {
+  height: 6px;
+  background: #e4e9f0;
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.progress-bar {
+  height: 100%;
+  background: #8BC34A;
+  transition: width 0.3s ease;
+}
+
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #232B44;
+  padding: 0 32px;
+  height: 64px;
+  border-bottom: 1px solid #e4e9f0;
+}
+
+.navbar-left {
+  display: flex;
+  align-items: center;
+}
+
+.brand-logo {
+  height: 38px;
+  width: 38px;
+  min-width: 38px;
+  border-radius: 4px;
+  background: #8BC34A;
+  object-fit: contain;
+  margin-right: 16px;
+}
+
+.brand-text {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.brand-title {
+  color: #fff;
+  font-size: 1.35rem;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  line-height: 1.1;
+}
+
+.brand-subtitle {
+  color: #B5C1D8;
+  font-size: 0.93rem;
+  font-weight: 400;
+  letter-spacing: 0.2px;
+  margin-top: 1px;
+}
+
+.upload-btn {
+  background: #8BC34A;
+  color: #fff;
+  font-weight: 600;
+  border: none;
+  outline: none;
+  border-radius: 6px;
+  padding: 10px 22px;
+  font-size: 1rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  transition: background 0.17s;
+  box-shadow: none;
+}
+
+.upload-btn:hover {
+  background: #7bb13c;
+}
+
+.main-layout {
+  display: flex;
+  height: calc(100vh - 64px);
+  overflow: hidden; /* Prevent scrolling of the main layout */
+}
+
+.sidebar {
+  width: 260px;
+  background: #fff;
+  border-right: 1px solid #E5EAF2;
+  padding: 20px 0 0 0;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+}
+
+.search-docs {
+  margin: 0 20px 14px 20px;
+  padding: 10px 12px;
+  border-radius: 6px;
+  border: 1px solid #E5EAF2;
+  background: #F7FAFC;
+  font-size: 1rem;
+  outline: none;
+}
+
+.sidebar-title {
+  margin: 0 20px 10px 20px;
+  font-size: 0.97rem;
+  color: #8A97B2;
+  font-weight: 700;
+  letter-spacing: 0.3px;
+  text-transform: uppercase;
+}
+
+.doc-list-empty {
+  margin: 0 20px;
+  color: #B5C1D8;
+  font-size: 1.01rem;
+  padding-top: 6px;
+}
+
+.main-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  background: #f7fafc;
+  padding: 0;
+}
+
+.doc-icon-bg {
+  margin-top: 16px;
+  margin-bottom: 18px;
+  background: #F4FAF1;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 72px;
+  height: 72px;
+}
+
+.doc-center-title {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: #25324B;
+  margin-bottom: 4px;
+  margin-top: 4px;
+}
+
+.doc-center-desc {
+  color: #6C7A93;
+  font-size: 1.02rem;
+  margin-bottom: 2px;
+  text-align: center;
+  max-width: 420px;
+}
+
+.doc-center-formats {
+  color: #A4B1C7;
+  font-size: 0.93rem;
+  margin-bottom: 6px;
+}
+
+.chat-section {
+  flex: 1;
+  margin: 0 auto;
+  width: 100%;
+  max-width: 900px;
+  background: #fff;
+  padding: 0;
+  border-radius: 12px;
+  border: 1px solid #e4e9f0;
+  margin: 20px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  height: calc(100vh - 140px); /* Take up most of the viewport height */
+}
+
+.chat-header {
+  display: flex;
+  align-items: center;
+  font-weight: 700;
+  font-size: 1.09rem;
+  color: #232B44;
+  padding: 15px 20px;
+  border-bottom: 1px solid #e4e9f0;
+  background-color: #f7fafc;
+}
+
+.chat-assistant {
+  background: #D8F2B2;
+  color: #5A9216;
+  border-radius: 6px;
+  font-size: 0.94rem;
+  padding: 2px 10px;
+  margin-left: 12px;
+  font-weight: 600;
+  letter-spacing: 0.2px;
+}
+
+// Chat input styles are now defined in the chatbot component
+
+@media (max-width: 900px) {
+  .main-layout {
+    flex-direction: column;
+  }
+  .sidebar {
+    width: 100%;
+    border-right: none;
+    border-bottom: 1px solid #E5EAF2;
+    flex-direction: row;
+    align-items: flex-start;
+    min-height: 120px;
+  }
+  .main-content {
+    padding: 0;
+  }
+}

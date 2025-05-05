@@ -1,0 +1,69 @@
+<div class="document-viewer-container">
+  <!-- No document selected state -->
+  <div *ngIf="!selectedFile && files.length === 0" class="no-document-selected">
+    <div class="doc-icon-bg">
+      <svg width="56" height="56" fill="none"><circle cx="28" cy="28" r="28" fill="#F2F6F9"/><path d="M28 16v16" stroke="#8BC34A" stroke-width="2.5" stroke-linecap="round"/><path d="M20 24l8-8 8 8" stroke="#8BC34A" stroke-width="2.5" stroke-linecap="round" fill="none"/></svg>
+    </div>
+    <div class="doc-center-title">No Document Selected</div>
+    <div class="doc-center-desc">Upload a document using the button in the top right corner or select one from the sidebar to view it here.</div>
+    <div class="doc-center-formats">Supported formats: PDF, DOC, DOCX, TXT</div>
+  </div>
+  
+  <!-- Loading state -->
+  <div *ngIf="isLoading" class="loading-container">
+    <div class="loading-spinner"></div>
+    <div class="loading-text">Loading document...</div>
+  </div>
+  
+  <!-- Error state -->
+  <div *ngIf="errorMessage" class="error-container">
+    <div class="error-icon">
+      <span class="material-icons">error_outline</span>
+    </div>
+    <div class="error-message">{{ errorMessage }}</div>
+  </div>
+  
+  <!-- Document content -->
+  <div *ngIf="selectedFile && fileContent && !isLoading && !errorMessage" class="document-content">
+    <div class="document-header">
+      <div class="document-title">
+        <span class="material-icons">{{ getFileIcon(selectedFile) }}</span>
+        <h2>{{ selectedFile.name }}</h2>
+      </div>
+      <div class="document-meta">
+        <span>{{ (selectedFile.size / 1024).toFixed(1) }} KB</span>
+        <span>{{ selectedFile.type || 'Unknown type' }}</span>
+      </div>
+    </div>
+    
+    <div class="document-body">
+      <!-- Text content -->
+      <div *ngIf="fileType.includes('text') || selectedFile.name.endsWith('.txt') || selectedFile.name.endsWith('.md') || selectedFile.name.endsWith('.json') || selectedFile.name.endsWith('.csv')" class="text-content">
+        <pre>{{ fileContent }}</pre>
+      </div>
+      
+      <!-- Image content -->
+      <div *ngIf="fileType.includes('image')" class="image-content">
+        <img [src]="fileContent" alt="{{ selectedFile.name }}" />
+      </div>
+      
+      <!-- PDF content (placeholder) -->
+      <div *ngIf="fileType.includes('pdf')" class="pdf-content">
+        <div class="pdf-placeholder">
+          <span class="material-icons">picture_as_pdf</span>
+          <p>PDF preview is not available. Please download the file to view it.</p>
+          <button class="download-btn">Download PDF</button>
+        </div>
+      </div>
+      
+      <!-- Other file types -->
+      <div *ngIf="!fileType.includes('text') && !fileType.includes('image') && !fileType.includes('pdf') && !selectedFile.name.endsWith('.txt') && !selectedFile.name.endsWith('.md') && !selectedFile.name.endsWith('.json') && !selectedFile.name.endsWith('.csv')" class="unsupported-content">
+        <div class="unsupported-placeholder">
+          <span class="material-icons">insert_drive_file</span>
+          <p>Preview not available for this file type.</p>
+          <button class="download-btn">Download File</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

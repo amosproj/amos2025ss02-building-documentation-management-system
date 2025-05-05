@@ -26,6 +26,45 @@
   border-bottom: 1px solid #e4e9f0;
 }
 
+.navbar-right {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.user-info {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-right: 8px;
+}
+
+.user-name {
+  color: #fff;
+  font-size: 0.95rem;
+  font-weight: 500;
+}
+
+.logout-btn {
+  background: transparent;
+  color: #B5C1D8;
+  font-weight: 500;
+  border: 1px solid #3D4A6B;
+  outline: none;
+  border-radius: 4px;
+  padding: 6px 12px;
+  font-size: 0.9rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  transition: all 0.17s;
+}
+
+.logout-btn:hover {
+  background: rgba(255, 255, 255, 0.05);
+  color: #fff;
+}
+
 .navbar-left {
   display: flex;
   align-items: center;

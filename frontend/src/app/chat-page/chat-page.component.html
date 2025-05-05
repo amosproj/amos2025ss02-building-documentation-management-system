@@ -1,0 +1,22 @@
+<div class="chat-page-container">
+
+
+  <div class="main-layout">
+    <aside class="sidebar">
+      <input class="search-docs" placeholder="Search documents..." />
+      <div class="sidebar-title">MY DOCUMENTS</div>
+      <app-document-list (fileSelected)="onDocumentSelected($event)"></app-document-list>
+      <div class="doc-list-empty" *ngIf="uploadedFiles.length === 0">No documents uploaded yet</div>
+    </aside>
+    
+    <main class="main-content">
+      <section class="chat-section">
+        <div class="chat-header">
+          <span>Chat</span>
+          <span class="chat-assistant">AI Assistant</span>
+        </div>
+        <app-chatbot [selectedDocument]="selectedDocument"></app-chatbot>
+      </section>
+    </main>
+  </div>
+</div>

@@ -1,4 +1,5 @@
-<div class="app-root">
+<div class="app-root" *ngIf="isInitialized">
+  <!-- Navbar - Always visible -->
   <header class="navbar">
     <div class="navbar-left">
       <img src="assets/logo-bci.png" alt="BUILD.ING Logo" class="brand-logo" />
@@ -7,10 +8,24 @@
         <span class="brand-subtitle">CONSULTANTS + INNOVATORS</span>
       </div>
     </div>
-    <button class="upload-btn" (click)="triggerFileInput()" [disabled]="isUploading">
-      <svg height="18" width="18" style="vertical-align:middle;margin-right:6px"><path d="M9 2v10M5 6l4-4 4 4" stroke="#fff" stroke-width="2" fill="none" stroke-linecap="round"/></svg>
-      {{ isUploading ? 'Uploading...' : 'Upload Document' }}
-    </button>
+    <div class="navbar-right">
+      <!-- Show user info and logout when authenticated -->
+      <div *ngIf="isAuthenticated" class="user-info">
+        <span class="user-name">{{ currentUser?.displayName }}</span>
+        <button class="logout-btn" (click)="logout()">
+          <svg height="16" width="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="margin-right:6px">
+            <path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M16 17l5-5-5-5M21 12H9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          Logout
+        </button>
+      </div>
+      <!-- Show upload button when authenticated or on chat page -->
+      <button *ngIf="isAuthenticated || isOnChatPage()" class="upload-btn" (click)="triggerFileInput()" [disabled]="isUploading">
+        <svg height="18" width="18" style="vertical-align:middle;margin-right:6px"><path d="M9 2v10M5 6l4-4 4 4" stroke="#fff" stroke-width="2" fill="none" stroke-linecap="round"/></svg>
+        {{ isUploading ? 'Uploading...' : 'Upload Document' }}
+      </button>
+    </div>
     <input type="file" #fileInput style="display:none" (change)="onFileSelected($event)" multiple />
     <div *ngIf="showFeedback" class="upload-feedback">
       <div class="feedback-message">{{ feedbackMessage }}</div>
@@ -19,7 +34,12 @@
       </div>
     </div>
   </header>
-  <div class="main-layout">
+  
+  <!-- Router Outlet - This is where routed components will be displayed -->
+  <router-outlet></router-outlet>
+  
+  <!-- Main Application Layout - Only show when authenticated and not on login/home page -->
+  <div class="main-layout" *ngIf="isAuthenticated && !isPublicRoute()">
     <aside class="sidebar">
       <input class="search-docs" placeholder="Search documents..." />
       <div class="sidebar-title">MY DOCUMENTS</div>
@@ -55,14 +75,19 @@
           <span>Chat</span>
           <span class="chat-assistant">AI Assistant</span>
         </div>
-        <div class="chat-card-empty">Select a document to start a conversation</div>
-        <form class="chat-input-row" (submit)="$event.preventDefault()">
-          <input class="chat-input" placeholder="Select a document first..." disabled />
-          <button class="chat-send-btn" type="submit" disabled>
-            <svg width="22" height="22" fill="none"><circle cx="11" cy="11" r="11" fill="#8BC34A"/><path d="M8 11l4-3v6l-4-3z" fill="#fff"/></svg>
-          </button>
-        </form>
         <app-chatbot></app-chatbot>
+        <div class="chat-card-empty">
+          Select a document from the sidebar or upload a new one to start the conversation.
+        </div>
+        <div class="chat-input-row">
+          <input type="text" class="chat-input" placeholder="Select a document to start chatting..." disabled />
+          <button class="chat-send-btn" disabled>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+              <path d="M22 2L11 13" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M22 2l-7 20-4-9-9-4 20-7z" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </button>
+        </div>
       </section>
     </main>
   </div>
