@@ -1,0 +1,49 @@
+name: Deploy to AMOS Server
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Validate deployment configuration
+      run: |
+        if [ ! -f "./docker-compose.yml" ]; then
+          echo "Error: docker-compose.yml not found"
+          exit 1
+        fi
+        if [ ! -d "./BitAndBeam/web-content" ]; then
+          echo "Error: web-content directory not found"
+          exit 1
+        fi
+    
+    - name: Set up SSH
+      uses: webfactory/ssh-agent@v0.7.0
+      with:
+        ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+        
+    - name: Add SSH known hosts
+      run: |
+        mkdir -p ~/.ssh
+        ssh-keyscan amos.b-iq.net >> ~/.ssh/known_hosts
+        
+    - name: Deploy to server
+      run: |
+        # Create remote directory if it doesn't exist
+        ssh ${{ secrets.SSH_USER }}@amos.b-iq.net "mkdir -p /home/${{ secrets.SSH_USER }}/bitbeam-app"
+        
+        # Copy deployment files
+        scp -r ./docker-compose.yml ${{ secrets.SSH_USER }}@amos.b-iq.net:/home/${{ secrets.SSH_USER }}/bitbeam-app/
+        scp -r ./BitAndBeam/web-content ${{ secrets.SSH_USER }}@amos.b-iq.net:/home/${{ secrets.SSH_USER }}/bitbeam-app/
+        
+        # Deploy using docker-compose
+        ssh ${{ secrets.SSH_USER }}@amos.b-iq.net "cd /home/${{ secrets.SSH_USER }}/bitbeam-app && docker-compose down && docker-compose up -d"
+        
+        echo "Deployment completed successfully"
