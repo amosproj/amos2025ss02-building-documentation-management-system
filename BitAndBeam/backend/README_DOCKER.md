@@ -1,5 +1,3 @@
-```bash
-
 # 🐳 Docker Guide for Building Document Management API
 
 This guide helps you run the **ASP.NET Core Web API** using Docker.
@@ -22,16 +20,18 @@ Make sure Docker is installed and running on your system.
 NB:🔁 You may need to restart your system or log out/in after installing Docker
 
 ### 🛠️ Build the Docker Image
-
+```bash
 docker build -t building-backend .
+```
 
         -t building-backend assigns a name (tag) to the built image.
 
         . tells Docker to use the current directory for the build context.
 
-###▶️ Run the Docker Container
-
+### ▶️ Run the Docker Container
+```bash
 docker run -d -p 5000:5000 --name building-api building-backend
+```
 
         -d: Run in detached mode
 
@@ -39,7 +39,7 @@ docker run -d -p 5000:5000 --name building-api building-backend
 
         --name building-api: Optional name for the container
 
-###🌐 Access the API
+### 🌐 Access the API
 
 Once running, open your browser or use curl to access:
 
@@ -51,8 +51,9 @@ Once running, open your browser or use curl to access:
 
     http://localhost:5000/swagger	Swagger UI (in development)
 
-###🧼 Stop and Remove the Container
-
-    docker stop building-api
+### 🧼 Stop and Remove the Container
+```bash
+docker stop building-api
     
-    docker rm building-api
+docker rm building-api
+```
