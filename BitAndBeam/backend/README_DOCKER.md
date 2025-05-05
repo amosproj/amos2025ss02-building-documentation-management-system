@@ -43,13 +43,13 @@ docker run -d -p 5000:5000 --name building-api building-backend
 
 Once running, open your browser or use curl to access:
 
-    http://localhost:5000	Optional root message
+`http://localhost:5000`	Optional root message
 
-    http://localhost:5000/weatherforecast	Sample data endpoint
+`http://localhost:5000/weatherforecast`	Sample data endpoint
 
-    http://localhost:5000/healthz	Health check (200 OK)
+`http://localhost:5000/healthz`	Health check (200 OK)
 
-    http://localhost:5000/swagger	Swagger UI (in development)
+`http://localhost:5000/swagger`	Swagger UI (in development)
 
 ### 🧼 Stop and Remove the Container
 ```bash
