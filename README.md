@@ -1,5 +1,8 @@
 # Bit&Beam: Intelligent Document Management System
 
+![Build and Deploy](https://github.com/amosproj/amos2025ss02-building-documentation-management-system/actions/workflows/docker-ci.yml/badge.svg)
+
+
 This project is an intelligent document management system for building-related data. It enables automated document classification, metadata extraction, and user access control to streamline document management in building administration.
 
 ## Features
