@@ -58,8 +58,6 @@ BitAndBeam/backend/BUILD.ING/.vs/
 
 # Docker
 **/.docker/
-**/Dockerfile
-**/docker-compose.yml
 
 # PostgreSQL
 /postgres/data/
