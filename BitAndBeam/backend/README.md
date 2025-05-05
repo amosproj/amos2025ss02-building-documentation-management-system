@@ -23,7 +23,7 @@ Before you begin, ensure you have the following installed:
 1. Clone the repository:
 ```bash
 git clone https://github.com/amosproj/amos2025ss02-building-documentation-management-system.git
-cd backend/BUILD.ING
+cd BitAndBeam/backend/BUILD.ING
 ```
 
 2. Trust the development HTTPS certificate (only needed once per machine):
@@ -46,6 +46,18 @@ dotnet run
 -> Swagger UI: https://localhost:5001/swagger
 
 -> Health check endpoint: https://localhost:5001/healthz
+
+## Code formatting
+
+```bash
+## Formatting Code
+
+#To check formatting compliance:
+dotnet format --verify-no-changes
+
+#To fix formatting:
+dotnet format
+```
 
 
 ## NOTES:
