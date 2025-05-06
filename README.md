@@ -9,7 +9,7 @@
   </p>
 </div>
 
-![Build and Deploy](https://github.com/amosproj/amos2025ss02-building-documentation-management-system/actions/workflows/docker-ci.yml/badge.svg)
+![Start web service](https://github.com/amosproj/amos2025ss02-building-documentation-management-system/actions/workflows/docker-ci.yml/badge.svg)
 
 ## Overview
 
