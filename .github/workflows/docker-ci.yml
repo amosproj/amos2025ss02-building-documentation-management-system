@@ -14,11 +14,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Show workspace structure
-        run: |
-          echo "Current working directory: $(pwd)"
-          echo "Listing all files and folders:"
-          ls -alR
+
       - name: Checkout code
         uses: actions/checkout@v3
 
@@ -58,6 +54,11 @@ jobs:
       #     mkdir -p ~/.ssh
       #     ssh-keyscan -H ${{ secrets.PROJECT_SERVER_IP }} >> ~/.ssh/known_hosts
 
+      - name: Show workspace structure
+        run: |
+          echo "Current working directory: $(pwd)"
+          echo "Listing all files and folders:"
+          ls -alR
       - name: Deploy to Remote Server
         uses: appleboy/ssh-action@v1.0.0
         with:
