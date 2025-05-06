@@ -70,8 +70,8 @@ jobs:
             echo ${{ secrets.GITHUB_TOKEN }} | docker login ghcr.io -u ${{ github.actor }} --password-stdin
 
             # Pull latest images using the prod compose file
-            docker-compose -f docker-compose-prod.yml pull
+            docker compose -f docker-compose-prod.yml pull
 
             # Recreate containers using the prod compose file
-            docker-compose -f docker-compose-prod.yml down
-            docker-compose -f docker-compose-prod.yml up -d
+            docker compose -f docker-compose-prod.yml down
+            docker compose -f docker-compose-prod.yml up -d
