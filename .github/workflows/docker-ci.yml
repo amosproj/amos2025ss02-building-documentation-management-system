@@ -59,6 +59,15 @@ jobs:
       #     echo "Current working directory: $(pwd)"
       #     echo "Listing all files and folders:"
       #     ls -alR
+      - name: Upload project to server
+        uses: appleboy/scp-action@v0.1.4
+        with:
+          host: ${{ secrets.PROJECT_SERVER_IP }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          source: "BitAndBeam"
+          target: "~/"
+
       - name: Deploy to Remote Server
         uses: appleboy/ssh-action@v1.0.0
         with:
@@ -66,14 +75,10 @@ jobs:
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
-            echo "Listing all files and folders:"
-            ls -alR
-            # Log in to GHCR
+            cd ~/BitAndBeam
+
             echo ${{ secrets.GITHUB_TOKEN }} | docker login ghcr.io -u ${{ github.actor }} --password-stdin
 
-            # Pull latest images using the prod compose file
             docker compose -f docker-compose-prod.yml pull
-
-            # Recreate containers using the prod compose file
             docker compose -f docker-compose-prod.yml down
             docker compose -f docker-compose-prod.yml up -d
