@@ -17,11 +17,6 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Set up SSH key
-        uses: webfactory/ssh-agent@v0.5.3
-        with:
-          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
-
       - name: Log in to GitHub Container Registry
         uses: docker/login-action@v2
         with:
@@ -29,16 +24,50 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Pull and Deploy Docker Images
-        run: |
-          cd BitAndBeam
-          
-          # Log in to GHCR (if not already done)
-          echo ${{ secrets.GITHUB_TOKEN }} | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+      - name: Build and Push Backend
+        uses: docker/build-push-action@v5
+        with:
+          context: ./BitAndBeam/backend
+          file: ./BitAndBeam/backend/Dockerfile
+          push: true
+          tags: ghcr.io/amosproj/bitandbeam-backend:latest
 
-          # Pull the images using the prod compose file
-          docker-compose -f docker-compose-prod.yml pull
+      - name: Build and Push Frontend
+        uses: docker/build-push-action@v5
+        with:
+          context: ./BitAndBeam/frontend
+          file: ./BitAndBeam/frontend/Dockerfile
+          push: true
+          tags: ghcr.io/amosproj/bitandbeam-frontend:latest
 
-          # Recreate containers using the prod compose file
-          docker-compose -f docker-compose-prod.yml down
-          docker-compose -f docker-compose-prod.yml up -d
+      - name: Build and Push Web
+        uses: docker/build-push-action@v5
+        with:
+          context: ./BitAndBeam/web
+          file: ./BitAndBeam/web/Dockerfile
+          push: true
+          tags: ghcr.io/amosproj/bitandbeam-web:latest
+
+      # - name: Add known hosts
+      #   run: |
+      #     mkdir -p ~/.ssh
+      #     ssh-keyscan -H ${{ secrets.PROJECT_SERVER_IP }} >> ~/.ssh/known_hosts
+
+      - name: Deploy to Remote Server
+        uses: appleboy/ssh-action@v1.0.0
+        with:
+          host: ${{ secrets.PROJECT_SERVER_IP }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            cd BitAndBeam
+
+            # Log in to GHCR
+            echo ${{ secrets.GITHUB_TOKEN }} | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+
+            # Pull latest images using the prod compose file
+            docker-compose -f docker-compose-prod.yml pull
+
+            # Recreate containers using the prod compose file
+            docker-compose -f docker-compose-prod.yml down
+            docker-compose -f docker-compose-prod.yml up -d
