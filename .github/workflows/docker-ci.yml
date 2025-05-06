@@ -3,7 +3,7 @@ name: Start default web service
 on:
   push:
     branches:
-      - main
+      - main_cleanup
 
 permissions:
   contents: read
@@ -14,6 +14,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+
       - name: Checkout code
         uses: actions/checkout@v3
 
@@ -24,29 +25,14 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Build and Push Backend
-        uses: docker/build-push-action@v5
+      - name: Upload project to server
+        uses: appleboy/scp-action@v0.1.4
         with:
-          context: ./BitAndBeam/backend
-          file: ./BitAndBeam/backend/Dockerfile
-          push: true
-          tags: ghcr.io/amosproj/bitandbeam-backend:latest
-
-      - name: Build and Push Frontend
-        uses: docker/build-push-action@v5
-        with:
-          context: ./BitAndBeam/frontend
-          file: ./BitAndBeam/frontend/Dockerfile
-          push: true
-          tags: ghcr.io/amosproj/bitandbeam-frontend:latest
-
-      - name: Build and Push Web
-        uses: docker/build-push-action@v5
-        with:
-          context: ./BitAndBeam/web
-          file: ./BitAndBeam/web/Dockerfile
-          push: true
-          tags: ghcr.io/amosproj/bitandbeam-web:latest
+          host: ${{ secrets.PROJECT_SERVER_IP }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          source: "BitAndBeam"
+          target: "~/"
 
       - name: Deploy to Remote Server
         uses: appleboy/ssh-action@v1.0.0
@@ -55,14 +41,10 @@ jobs:
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
-            cd BitAndBeam
+            cd ~/BitAndBeam
 
-            # Log in to GHCR
             echo ${{ secrets.GITHUB_TOKEN }} | docker login ghcr.io -u ${{ github.actor }} --password-stdin
 
-            # Pull latest images using the prod compose file
-            docker-compose -f docker-compose-prod.yml pull
-
-            # Recreate containers using the prod compose file
-            docker-compose -f docker-compose-prod.yml down
-            docker-compose -f docker-compose-prod.yml up -d
+            docker compose -f docker-compose-prod.yml pull
+            docker compose -f docker-compose-prod.yml down
+            docker compose -f docker-compose-prod.yml up -d
