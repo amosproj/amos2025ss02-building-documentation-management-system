@@ -54,11 +54,11 @@ jobs:
       #     mkdir -p ~/.ssh
       #     ssh-keyscan -H ${{ secrets.PROJECT_SERVER_IP }} >> ~/.ssh/known_hosts
 
-      - name: Show workspace structure
-        run: |
-          echo "Current working directory: $(pwd)"
-          echo "Listing all files and folders:"
-          ls -alR
+      # - name: Show workspace structure
+      #   run: |
+      #     echo "Current working directory: $(pwd)"
+      #     echo "Listing all files and folders:"
+      #     ls -alR
       - name: Deploy to Remote Server
         uses: appleboy/ssh-action@v1.0.0
         with:
@@ -66,6 +66,7 @@ jobs:
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
+            echo "Current working directory: $(pwd)"
             # Log in to GHCR
             echo ${{ secrets.GITHUB_TOKEN }} | docker login ghcr.io -u ${{ github.actor }} --password-stdin
 
