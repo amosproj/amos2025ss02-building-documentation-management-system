@@ -24,6 +24,9 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Show workspace contents
+        run: ls -R
+
       - name: Build and Push Backend
         uses: docker/build-push-action@v5
         with:
