@@ -1,50 +1,50 @@
-name: Start default web service
+# name: Start default web service
 
-on:
-  push:
-    branches:
-      - main
+# on:
+#   push:
+#     branches:
+#       - main
 
-permissions:
-  contents: read
-  packages: write
+# permissions:
+#   contents: read
+#   packages: write
 
-jobs:
-  build-and-deploy:
-    runs-on: ubuntu-latest
+# jobs:
+#   build-and-deploy:
+#     runs-on: ubuntu-latest
 
-    steps:
+#     steps:
 
-      - name: Checkout code
-        uses: actions/checkout@v3
+#       - name: Checkout code
+#         uses: actions/checkout@v3
 
-      - name: Log in to GitHub Container Registry
-        uses: docker/login-action@v2
-        with:
-          registry: ghcr.io
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
+#       - name: Log in to GitHub Container Registry
+#         uses: docker/login-action@v2
+#         with:
+#           registry: ghcr.io
+#           username: ${{ github.actor }}
+#           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Upload project to server
-        uses: appleboy/scp-action@v0.1.4
-        with:
-          host: ${{ secrets.PROJECT_SERVER_IP }}
-          username: ${{ secrets.SSH_USER }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          source: "BitAndBeam"
-          target: "~/"
+#       - name: Upload project to server
+#         uses: appleboy/scp-action@v0.1.4
+#         with:
+#           host: ${{ secrets.PROJECT_SERVER_IP }}
+#           username: ${{ secrets.SSH_USER }}
+#           key: ${{ secrets.SSH_PRIVATE_KEY }}
+#           source: "BitAndBeam"
+#           target: "~/"
 
-      - name: Deploy to Remote Server
-        uses: appleboy/ssh-action@v1.0.0
-        with:
-          host: ${{ secrets.PROJECT_SERVER_IP }}
-          username: ${{ secrets.SSH_USER }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          script: |
-            cd ~/BitAndBeam
+#       - name: Deploy to Remote Server
+#         uses: appleboy/ssh-action@v1.0.0
+#         with:
+#           host: ${{ secrets.PROJECT_SERVER_IP }}
+#           username: ${{ secrets.SSH_USER }}
+#           key: ${{ secrets.SSH_PRIVATE_KEY }}
+#           script: |
+#             cd ~/BitAndBeam
 
-            echo ${{ secrets.GITHUB_TOKEN }} | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+#             echo ${{ secrets.GITHUB_TOKEN }} | docker login ghcr.io -u ${{ github.actor }} --password-stdin
 
-            docker compose -f docker-compose-prod.yml pull
-            docker compose -f docker-compose-prod.yml down
-            docker compose -f docker-compose-prod.yml up -d
+#             docker compose -f docker-compose-prod.yml pull
+#             docker compose -f docker-compose-prod.yml down
+#             docker compose -f docker-compose-prod.yml up -d
