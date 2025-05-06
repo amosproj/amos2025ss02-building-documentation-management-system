@@ -66,8 +66,8 @@ Bit&Beam is an intelligent document management system designed specifically for 
 2. Follow setup instructions in each service directory
 3. Use `docker compose up` inside BitAndBeam, to start all services in development mode
 4. Use `docker compose -f docker-compose-prod.yml up` inside BitAndBeam, to start all services in production mode
-4. Setup GitHub Secrets for PROJECT_SERVER_IP, SSH_USER, SSH_PRIVATE_KEY to trigger web service start by GitHub Actions on push to main
-5. Access web service at [amos.b-iq.net](http://amos.b-iq.net/) after successful Github Actions workflow
+5. Setup GitHub Secrets for PROJECT_SERVER_IP, SSH_USER, SSH_PRIVATE_KEY to trigger web service start by GitHub Actions on push to main
+6. Access web service at [amos.b-iq.net](http://amos.b-iq.net/) after successful Github Actions workflow. Use port 5000 for backend, 8080 for frontend. Postgres is not a web service, hence not accessible.
 
 ## Contributing
 - Please see `CONTRIBUTING.md` (to be added)
