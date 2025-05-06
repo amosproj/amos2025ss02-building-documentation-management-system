@@ -2,9 +2,9 @@ name: Build and Deploy Docker Image through GitHub Actions
 
 on:
   push:
-    branches: [ "main" ]
+    branches: [ "main_cleanup" ]
   pull_request:
-    branches: [ "main" ]
+    branches: [ "main_cleanup" ]
 
 jobs:
 
