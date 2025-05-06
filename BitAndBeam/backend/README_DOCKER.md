@@ -49,7 +49,7 @@ Once running, open your browser or use curl to access:
 
 `http://localhost:5000/healthz`	Health check (200 OK)
 
-`http://localhost:5000/swagger`	Swagger UI (in development)
+`http://localhost:5000/swagger`	Swagger UI (only in development environment)
 
 ### 🧼 Stop and Remove the Container
 ```bash

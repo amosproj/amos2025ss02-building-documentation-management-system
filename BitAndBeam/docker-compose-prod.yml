@@ -7,6 +7,8 @@ services:
       - ConnectionStrings__DefaultConnection=Host=postgres;Port=5432;Database=bitandbeam;Username=postgres;Password=postgres
     depends_on:
       - postgres
+    ports:
+      - "5000:5000" 
 
   frontend:
     image: ghcr.io/amosproj/bitandbeam-frontend:latest
