@@ -14,6 +14,11 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - name: Show workspace structure
+        run: |
+          echo "Current working directory: $(pwd)"
+          echo "Listing all files and folders:"
+          ls -alR
       - name: Checkout code
         uses: actions/checkout@v3
 
@@ -24,29 +29,29 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Build and Push Backend
-        uses: docker/build-push-action@v5
-        with:
-          context: ./BitAndBeam/backend
-          file: ./BitAndBeam/backend/Dockerfile
-          push: true
-          tags: ghcr.io/amosproj/bitandbeam-backend:latest
+      # - name: Build and Push Backend
+      #   uses: docker/build-push-action@v5
+      #   with:
+      #     context: ./BitAndBeam/backend
+      #     file: ./BitAndBeam/backend/Dockerfile
+      #     push: true
+      #     tags: ghcr.io/amosproj/bitandbeam-backend:latest
 
-      - name: Build and Push Frontend
-        uses: docker/build-push-action@v5
-        with:
-          context: ./BitAndBeam/frontend
-          file: ./BitAndBeam/frontend/Dockerfile
-          push: true
-          tags: ghcr.io/amosproj/bitandbeam-frontend:latest
+      # - name: Build and Push Frontend
+      #   uses: docker/build-push-action@v5
+      #   with:
+      #     context: ./BitAndBeam/frontend
+      #     file: ./BitAndBeam/frontend/Dockerfile
+      #     push: true
+      #     tags: ghcr.io/amosproj/bitandbeam-frontend:latest
 
-      - name: Build and Push Web
-        uses: docker/build-push-action@v5
-        with:
-          context: ./BitAndBeam/web
-          file: ./BitAndBeam/web/Dockerfile
-          push: true
-          tags: ghcr.io/amosproj/bitandbeam-web:latest
+      # - name: Build and Push Web
+      #   uses: docker/build-push-action@v5
+      #   with:
+      #     context: ./BitAndBeam/web
+      #     file: ./BitAndBeam/web/Dockerfile
+      #     push: true
+      #     tags: ghcr.io/amosproj/bitandbeam-web:latest
 
       # - name: Add known hosts
       #   run: |
