@@ -3,7 +3,7 @@ name: Start default web service
 on:
   push:
     branches:
-      - main_cleanup
+      - main
 
 permissions:
   contents: read
