@@ -48,6 +48,11 @@ jobs:
           push: true
           tags: ghcr.io/amosproj/bitandbeam-web:latest
 
+      - name: Add known hosts
+        run: |
+          mkdir -p ~/.ssh
+          ssh-keyscan -H ${{ secrets.PROJECT_SERVER_IP }} >> ~/.ssh/known_hosts
+
       - name: Deploy to Remote Server
         uses: appleboy/ssh-action@v1.0.0
         with:
