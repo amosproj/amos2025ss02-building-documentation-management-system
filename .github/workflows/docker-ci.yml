@@ -31,6 +31,8 @@ jobs:
 
       - name: Pull and Deploy Docker Images
         run: |
+          cd BitAndBeam
+          
           # Log in to GHCR (if not already done)
           echo ${{ secrets.GITHUB_TOKEN }} | docker login ghcr.io -u ${{ github.actor }} --password-stdin
 
