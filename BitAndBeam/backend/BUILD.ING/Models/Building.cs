@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using NetTopologySuite.Geometries; // Needed to map PostgreSQL POINT to EF Core (via Npgsql types)
 
-namespace BuildIngBackend.Models
+namespace Building.Models
 {
     // Maps this class to the "buildings" table in PostgreSQL
     [Table("buildings")]
