@@ -45,6 +45,15 @@ app.MapHealthChecks("/healthz");
 //Just to set a route at /
 app.MapGet("/", () => "🚀 API is running! Visit /swagger , /weatherforecast or /healthz.");
 
+// Register the BuildIngDbContext in the dependency injection container.
+// This allows it to be injected into controllers and services where needed.
+builder.Services.AddDbContext<BuildIngDbContext>(options =>
+    options.UseNpgsql(
+        builder.Configuration.GetConnectionString("DefaultConnection"),
+        npgsqlOptions => npgsqlOptions.UseNetTopologySuite()
+    ));
+
+
 
 app.Run();
 
