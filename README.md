@@ -9,7 +9,13 @@
   </p>
 </div>
 
+<<<<<<< HEAD
 ![Build and Deploy](https://github.com/amosproj/amos2025ss02-building-documentation-management-system/actions/workflows/docker-ci.yml/badge.svg)
+=======
+![Start web service](https://github.com/amosproj/amos2025ss02-building-documentation-management-system/actions/workflows/docker-ci.yml/badge.svg?branch=main_cleanup&nocache=1)
+
+Web service available at: [amos.b-iq.net](http://amos.b-iq.net/)
+>>>>>>> 4ade57caef817e5be287f976bd60e1be05ccc527
 
 ## Overview
 
@@ -62,8 +68,15 @@ Bit&Beam is an intelligent document management system designed specifically for 
 ## Getting Started
 1. Clone the repository
 2. Follow setup instructions in each service directory
+<<<<<<< HEAD
 3. Use `docker-compose up` inside BitAndBeam, to start all services
 4. Setup GitHub Secrets for DOCKER_USERNAME, DOCKER_PASSWORD, SERVER_HOST, SERVER_USER, SERVER_SSH_KEY to trigger Docker image publish on push to main
+=======
+3. Use `docker compose up` inside BitAndBeam, to start all services in development mode
+4. Use `docker compose -f docker-compose-prod.yml up` inside BitAndBeam, to start all services in production mode
+5. Setup GitHub Secrets for PROJECT_SERVER_IP, SSH_USER, SSH_PRIVATE_KEY to trigger web service start by GitHub Actions on push to main
+6. Access web service at [amos.b-iq.net](http://amos.b-iq.net/) after successful Github Actions workflow. Use port 5000 for backend, 8080 for frontend. Postgres is not a web service, hence not accessible.
+>>>>>>> 4ade57caef817e5be287f976bd60e1be05ccc527
 
 ## Contributing
 - Please see `CONTRIBUTING.md` (to be added)
@@ -71,4 +84,8 @@ Bit&Beam is an intelligent document management system designed specifically for 
 ---
 
 ## License
+<<<<<<< HEAD
 MIT License
+=======
+MIT License
+>>>>>>> 4ade57caef817e5be287f976bd60e1be05ccc527
