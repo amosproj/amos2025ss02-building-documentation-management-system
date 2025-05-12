@@ -11,11 +11,6 @@
   </p>
 </div>
 
-<<<<<<< HEAD
-![Start web service](https://github.com/amosproj/amos2025ss02-building-documentation-management-system/actions/workflows/docker-ci.yml/badge.svg?branch=main&nocache=1)
-
-Web service available at: [amos.b-iq.net](http://amos.b-iq.net/)
-
 =======
 >>>>>>> 693e4d4 (Remove build and deploy status badge from README.md)
 ## Overview
