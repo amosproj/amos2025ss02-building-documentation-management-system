@@ -9,7 +9,7 @@
   </p>
 </div>
 
-![Start web service](https://github.com/amosproj/amos2025ss02-building-documentation-management-system/actions/workflows/docker-ci.yml/badge.svg?branch=main_cleanup&nocache=1)
+![Start web service](https://github.com/amosproj/amos2025ss02-building-documentation-management-system/actions/workflows/docker-ci.yml/badge.svg?branch=main_new&nocache=1)
 
 Web service available at: [amos.b-iq.net](http://amos.b-iq.net/)
 
