@@ -56,7 +56,7 @@ namespace Building.Data
                 .OnDelete(DeleteBehavior.SetNull);
 
 
-            // You can add more configurations here for other entities
+            
         }
     }
 }
