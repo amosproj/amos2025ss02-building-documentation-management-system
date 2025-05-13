@@ -4,7 +4,7 @@ services:
       context: ./backend
       dockerfile: Dockerfile
     ports:
-      - "5000:5000"
+      - "5001:5000"
     depends_on:
       - postgres
     environment:
@@ -29,6 +29,7 @@ services:
     ports:
       - "5432:5432"
     volumes:
+      - .:/app
       - pgdata:/var/lib/postgresql/data
       - ./postgres/init.sql:/docker-entrypoint-initdb.d/init.sql
     environment:
