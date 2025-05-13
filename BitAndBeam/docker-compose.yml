@@ -22,6 +22,15 @@ services:
     environment:
       - API_URL=http://localhost:5000
 
+  ollama:
+    build:
+      context: ./ollama
+      dockerfile: Dockerfile
+    container_name: ollama
+    ports:
+      - "11434:11434"   # Ollama internal API
+      - "8000:8000"    # FastAPI external endpoint
+
   postgres:
     image: postgres:17
     container_name: bitandbeam_postgres
