@@ -1,7 +1,7 @@
 
-# 🐳 Docker Guide for Ollama AI Microservice
+### 🐳 Docker Guide for Ollama AI Microservice
 
-This guide helps you run the **Ollama AI microservice** using Docker.  
+This guide helps you run the **Ollama AI microservice** using Docker.
 It includes both development and production setups, which are managed from the root `BitAndBeam/` directory.
 
 ---
@@ -12,16 +12,17 @@ Make sure Docker is installed and running on your system.
 
 ### 🔗 Install Docker
 
-- **Windows/macOS**:  
-  https://www.docker.com/products/docker-desktop
+* **Windows/macOS**:
+  [https://www.docker.com/products/docker-desktop](https://www.docker.com/products/docker-desktop)
 
-- **Linux (Ubuntu/Debian)**:
+* **Linux (Ubuntu/Debian)**:
+
 ```bash
 sudo apt update
 sudo apt install docker.io
 sudo systemctl start docker
 sudo systemctl enable docker
-````
+```
 
 > 🔁 You may need to restart your system or log out/in after installing Docker
 
@@ -30,6 +31,8 @@ sudo systemctl enable docker
 ## ▶️ Run in Development Mode
 
 > Make sure you're in the **BitAndBeam/** root directory (not inside `ollama/`)
+
+### 🔧 Option 1: Using Docker Compose (Recommended)
 
 ```bash
 docker compose up --build
@@ -44,6 +47,23 @@ This will:
 
   * `11434` – Ollama's native API
   * `8000` – FastAPI wrapper (`/ask` endpoint)
+
+---
+
+### 🐳 Option 2: Manual Docker Commands (No Compose)
+
+> Run these inside the `ollama/` directory:
+
+```bash
+docker build -t ollama .
+docker run -d -p 8000:8000 --name ollama-container ollama
+```
+
+This will:
+
+* Build the container image and tag it as `ollama`
+* Start the container in detached mode
+* Expose the FastAPI service at `http://localhost:8000`
 
 ---
 
@@ -62,7 +82,7 @@ This will:
 * Make it available at:
 
 ```
-http://localhost:8000/ask       ← POST prompt API
+http://localhost:8000/ask       ← POST prompt API  
 http://localhost:8000/docs      ← FastAPI Swagger UI (interactive)
 ```
 
@@ -100,8 +120,8 @@ Expected response:
 ## 🧼 Stop and Remove Ollama Container
 
 ```bash
-docker stop ollama
-docker rm ollama
+docker stop ollama-container
+docker rm ollama-container
 ```
 
 ---
@@ -113,7 +133,7 @@ docker rm ollama
 * If you update the model, don’t forget to rebuild:
 
 ```bash
-docker compose build ollama
+docker compose up --build
 ```
 
 ---
