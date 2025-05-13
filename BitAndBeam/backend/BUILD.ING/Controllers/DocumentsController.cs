@@ -19,25 +19,6 @@ namespace Build.ING.Controllers
         }
 
         [HttpPost]
-        // GET: /api/documents
-        [HttpGet]
-        public IActionResult GetAllDocuments()
-        {
-            var documents = _context.Documents.ToList();
-            return Ok(documents);
-        }
-
-        // GET: /api/documents/{id}
-        [HttpGet("{id}")]
-        public IActionResult GetDocumentById(int id)
-        {
-            var document = _context.Documents.FirstOrDefault(d => d.Id == id);
-            if (document == null)
-                return NotFound();
-
-            return Ok(document);
-        }
-
         public async Task<IActionResult> UploadDocument(IFormFile file)
         {
             if (file == null || file.Length == 0)
@@ -66,5 +47,21 @@ namespace Build.ING.Controllers
 
             return Ok(new { document.Id });
         }
+        [HttpGet]
+        public IActionResult GetAllDocuments()
+        {
+            var documents = _context.Documents.ToList();
+            return Ok(documents);
+        }
+        [HttpGet("{id}")]
+        public IActionResult GetDocumentById(int id)
+        {
+            var document = _context.Documents.FirstOrDefault(d => d.Id == id);
+            if (document == null)
+                return NotFound();
+
+            return Ok(document);
+        }
+
     }
 }
