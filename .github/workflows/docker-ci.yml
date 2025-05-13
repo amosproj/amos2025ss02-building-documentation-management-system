@@ -96,7 +96,7 @@ jobs:
             docker rmi ghcr.io/amosproj/bitandbeam-web:latest || true
 
             # Re-pull latest versions
-            docker compose -f docker-compose-prod.yml pull
+            docker compose -f docker-compose-prod.yml pull --no-cache
 
             # Start fresh with latest images
             docker compose -f docker-compose-prod.yml up -d --force-recreate
