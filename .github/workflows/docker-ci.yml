@@ -38,8 +38,6 @@ jobs:
           push: true
           tags: |
             ghcr.io/amosproj/bitandbeam-frontend:latest
-            ghcr.io/amosproj/bitandbeam-frontend:${{ github.sha }}
-            ghcr.io/amosproj/bitandbeam-frontend:main-${{ steps.date.outputs.DATE_TAG }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
@@ -50,8 +48,6 @@ jobs:
           push: true
           tags: |
             ghcr.io/amosproj/bitandbeam-backend:latest
-            ghcr.io/amosproj/bitandbeam-backend:${{ github.sha }}
-            ghcr.io/amosproj/bitandbeam-backend:main-${{ steps.date.outputs.DATE_TAG }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
@@ -62,8 +58,6 @@ jobs:
           push: true
           tags: |
             ghcr.io/amosproj/bitandbeam-web:latest
-            ghcr.io/amosproj/bitandbeam-web:${{ github.sha }}
-            ghcr.io/amosproj/bitandbeam-web:main-${{ steps.date.outputs.DATE_TAG }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
