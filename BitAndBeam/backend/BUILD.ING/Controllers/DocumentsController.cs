@@ -23,7 +23,11 @@ namespace Build.ING.Controllers
         {
             return "group2"; // change this to test other groups later
         }
-
+        /// <summary>
+        /// Uploads a document (PDF, DOCX, etc.)
+        /// </summary>
+        /// <param name="file">The file to upload</param>
+        /// <returns>Document ID</returns>
         [HttpPost]
         public async Task<IActionResult> UploadDocument(IFormFile file)
         {
@@ -53,6 +57,9 @@ namespace Build.ING.Controllers
 
             return Ok(new { document.Id });
         }
+        /// <summary>
+        /// Update a document (for example: title)
+        /// </summary>
         [HttpGet]
         public IActionResult GetAllDocuments()
         {
