@@ -1,9 +1,16 @@
+using Npgsql.EntityFrameworkCore.PostgreSQL;
+using Build.ING.Data;
+using Microsoft.EntityFrameworkCore;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.AddDbContext<AppDbContext>(options =>
+    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
+
 
 // Add health check service
 builder.Services.AddHealthChecks();
@@ -11,11 +18,8 @@ builder.Services.AddHealthChecks();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
+app.UseSwagger();
+app.UseSwaggerUI();
 
 app.UseHttpsRedirection();
 
@@ -45,6 +49,7 @@ app.MapHealthChecks("/healthz");
 //Just to set a route at /
 app.MapGet("/", () => "🚀 API is running! Visit /swagger , /weatherforecast or /healthz.");
 
+app.MapControllers();
 
 app.Run();
 
