@@ -1,84 +1,41 @@
 # Ollama AI Setup
 
-This directory sets up a fully Dockerized [Ollama](https://ollama.com) application with the `gemma3:1b` model.  
-It includes a test script to send a prompt and return a response from the model using the local HTTP API.
+This directory sets up a FastAPI-based microservice inside a Docker container that wraps the Ollama LLM engine.
+It provides a clean /ask endpoint to query the gemma3:1b model via HTTP (e.g., from Postman or your backend).
 
 ---
 
 ## ✅ Features
 
-- Installs and runs **Ollama** inside a Docker container
-- Automatically pulls the `gemma3:1b` model
-- Sends a test prompt to the Ollama HTTP API from inside the container
-- Exposes API on port `11434` for external access
-- No external APIs required
+- Dockerized Ollama LLM runtime with FastAPI wrapper
+- Automatically pulls and loads the `gemma3:1b` model
+- `/ask` endpoint to send prompts and get responses
+- Exposes:
+  - Ollama internal API on port `11434`
+  - FastAPI external API on port `8000`
+- Runs with no external APIs or API keys
 
 ---
 
 ## 🚀 How to Run
 
-### 1. Build and Start Container
+To build and run this service using Docker,  
+please follow the instructions in the Docker setup guide:
 
-```bash
-docker-compose up --build
-````
-
-> This will:
->
-> * Build the container
-> * Start Ollama
-> * Pull the `gemma3:1b` model
-> * Send a test prompt: `"What is the capital of Germany?"`
+🔗 [Ollama Docker Setup Guide](https://github.com/amosproj/amos2025ss02-building-documentation-management-system/blob/main/BitAndBeam/ollama/README_DOCKER.md)
 
 ---
 
-### 2. Expected Output
-
-```bash
-Prompt: What is the capital of Germany?
-Response: Berlin
-```
-
----
-
-## ⚙️ API Details
-
-* **Base URL**: `http://localhost:11434`
-* **Endpoint**: `/api/generate`
-* **Method**: `POST`
-
-### Example Payload:
-
-```json
-{
-  "model": "gemma3:1b",
-  "prompt": "What is the capital of Germany?",
-  "stream": false
-}
-```
-
----
-
-## 📂 Folder Structure
+## 📁 Project Structure
 
 ```
 ollama/
 ├── app/
-│   ├── test_prompt.py
-│   └── requirements.txt
-├── Dockerfile
-├── docker-compose.yml
+│   ├── main.py              # FastAPI app with /ask endpoint
+│   └── requirements.txt     # Python dependencies
+├── Dockerfile               # Builds Ollama + FastAPI combo
 ├── README.md
+├── README_DOCKER.md
 ```
 
 ---
-
-## 🧪 Notes
-
-* You can change the model in `test_prompt.py` and Dockerfile (e.g., to `llama3`, `mistral`, etc.)
-* To stop the container:
-
-```bash
-docker stop ollama
-docker rm ollama
-```
