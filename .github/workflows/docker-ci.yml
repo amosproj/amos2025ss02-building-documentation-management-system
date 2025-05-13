@@ -24,6 +24,10 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Set date-based image tag
+        id: date
+        run: echo "DATE_TAG=$(date +'%Y-%m-%d')" >> $GITHUB_OUTPUT
+
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
@@ -35,6 +39,7 @@ jobs:
           tags: |
             ghcr.io/amosproj/bitandbeam-frontend:latest
             ghcr.io/amosproj/bitandbeam-frontend:${{ github.sha }}
+            ghcr.io/amosproj/bitandbeam-frontend:main-${{ steps.date.outputs.DATE_TAG }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
@@ -46,6 +51,7 @@ jobs:
           tags: |
             ghcr.io/amosproj/bitandbeam-backend:latest
             ghcr.io/amosproj/bitandbeam-backend:${{ github.sha }}
+            ghcr.io/amosproj/bitandbeam-backend:main-${{ steps.date.outputs.DATE_TAG }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
@@ -57,6 +63,7 @@ jobs:
           tags: |
             ghcr.io/amosproj/bitandbeam-web:latest
             ghcr.io/amosproj/bitandbeam-web:${{ github.sha }}
+            ghcr.io/amosproj/bitandbeam-web:main-${{ steps.date.outputs.DATE_TAG }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
