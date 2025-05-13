@@ -10,6 +10,8 @@
 
     <AnalysisMode>AllEnabledByDefault</AnalysisMode>
     <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <NoWarn>$(NoWarn);1591</NoWarn> <!-- Optional: suppress missing comment warnings -->
   </PropertyGroup>
 
   <ItemGroup>
