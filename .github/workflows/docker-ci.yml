@@ -87,11 +87,21 @@ jobs:
 
             echo ${{ secrets.GITHUB_TOKEN }} | docker login ghcr.io -u ${{ github.actor }} --password-stdin
 
-            # Remove old local image to force update
-            docker image rm ghcr.io/amosproj/bitandbeam-frontend:latest || true
-
-            docker compose -f docker-compose-prod.yml pull --ignore-pull-failures
+            # Remove old containers
             docker compose -f docker-compose-prod.yml down
+
+            # Remove only specific old images to force update
+            docker rmi ghcr.io/amosproj/bitandbeam-frontend:latest || true
+            docker rmi ghcr.io/amosproj/bitandbeam-backend:latest || true
+            docker rmi ghcr.io/amosproj/bitandbeam-web:latest || true
+
+            # Re-pull latest versions
+            docker compose -f docker-compose-prod.yml pull
+
+            # Start fresh with latest images
             docker compose -f docker-compose-prod.yml up -d --force-recreate
-            docker system prune -af  # Free up space, clear dangling layers
+
+            # Optional: clean up unused resources
+            docker system prune -af
+
 
