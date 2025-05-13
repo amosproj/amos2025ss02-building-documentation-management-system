@@ -22,7 +22,7 @@ It provides a clean /ask endpoint to query the gemma3:1b model via HTTP (e.g., f
 To build and run this service using Docker,  
 please follow the instructions in the Docker setup guide:
 
-🔗 [Ollama Docker Setup Guide](https://github.com/amosproj/amos2025ss02-building-documentation-management-system/blob/main/BitAndBeam/ollama/README_DOCKER.md)
+🔗 [Ollama Docker Setup Guide](./README_DOCKER.md)
 
 ---
 
