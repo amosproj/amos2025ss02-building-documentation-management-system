@@ -1,9 +1,20 @@
+using BUILD.ING.Data;
+using Microsoft.EntityFrameworkCore;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+//Add controllers
+builder.Services.AddControllers();
+
+//Add AppDbContext 
+builder.Services.AddDbContext<AppDbContext>(options =>
+    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
+
 
 // Add health check service
 builder.Services.AddHealthChecks();
@@ -44,6 +55,9 @@ app.MapHealthChecks("/healthz");
 
 //Just to set a route at /
 app.MapGet("/", () => "🚀 API is running! Visit /swagger , /weatherforecast or /healthz.");
+
+//Makes routes from controller classes available
+app.MapControllers();
 
 
 app.Run();
