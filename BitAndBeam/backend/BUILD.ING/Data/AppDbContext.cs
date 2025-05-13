@@ -98,6 +98,8 @@ namespace BUILD.ING.Data
                 .WithMany(c => c.Documents)
                 .HasForeignKey(d => d.CategoryId)
                 .OnDelete(DeleteBehavior.SetNull);
+
+            modelBuilder.Entity<Building>().ToTable("Buildings");
         }
     }
 }
