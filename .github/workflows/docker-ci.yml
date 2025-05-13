@@ -90,6 +90,8 @@ jobs:
             # Remove old local image to force update
             docker image rm ghcr.io/amosproj/bitandbeam-frontend:latest || true
 
-            docker compose -f docker-compose-prod.yml pull
+            docker compose -f docker-compose-prod.yml pull --ignore-pull-failures
             docker compose -f docker-compose-prod.yml down
-            docker compose -f docker-compose-prod.yml up -d
+            docker compose -f docker-compose-prod.yml up -d --force-recreate
+            docker system prune -af  # Free up space, clear dangling layers
+
