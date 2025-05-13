@@ -62,6 +62,35 @@ namespace Build.ING.Controllers
 
             return Ok(document);
         }
+        [HttpPut("{id}")]
+        public IActionResult UpdateDocumentTitle(int id, [FromBody] DocumentUpdateRequest request)
+        {
+            var document = _context.Documents.FirstOrDefault(d => d.Id == id);
+            if (document == null)
+                return NotFound();
 
+            document.Title = request.Title;
+            _context.SaveChanges();
+
+            return Ok(document);
+        }
+        [HttpDelete("{id}")]
+        public IActionResult DeleteDocument(int id)
+        {
+            var document = _context.Documents.FirstOrDefault(d => d.Id == id);
+            if (document == null)
+                return NotFound();
+
+            // Try to delete the physical file
+            if (System.IO.File.Exists(document.FilePath))
+            {
+                System.IO.File.Delete(document.FilePath);
+            }
+
+            _context.Documents.Remove(document);
+            _context.SaveChanges();
+
+            return NoContent(); // 204 - success, no body
+        }
     }
 }
