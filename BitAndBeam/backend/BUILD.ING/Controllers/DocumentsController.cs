@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using Build.ING.Data;
 using Build.ING.Models;
 
+
 namespace Build.ING.Controllers
 {
     [ApiController]
@@ -16,6 +17,11 @@ namespace Build.ING.Controllers
             Console.WriteLine("🚀 DocumentsController loaded");
             _context = context;
             _env = env;
+        }
+        // Simulate current user group (hardcoded for now)
+        private string GetCurrentUserGroupId()
+        {
+            return "group2"; // change this to test other groups later
         }
 
         [HttpPost]
@@ -39,7 +45,7 @@ namespace Build.ING.Controllers
                 FilePath = filePath,
                 UploadedAt = DateTime.UtcNow,
                 UploadedBy = "someUser@example.com", // for now hardcoded
-                GroupId = "group1" //
+                GroupId = GetCurrentUserGroupId()
             };
 
             _context.Documents.Add(document);
@@ -50,13 +56,15 @@ namespace Build.ING.Controllers
         [HttpGet]
         public IActionResult GetAllDocuments()
         {
-            var documents = _context.Documents.ToList();
+            var groupId = GetCurrentUserGroupId();
+            var documents = _context.Documents.Where(d => d.GroupId == groupId).ToList();
             return Ok(documents);
         }
         [HttpGet("{id}")]
         public IActionResult GetDocumentById(int id)
         {
-            var document = _context.Documents.FirstOrDefault(d => d.Id == id);
+            var groupId = GetCurrentUserGroupId();
+            var document = _context.Documents.FirstOrDefault(d => d.Id == id && d.GroupId == groupId);
             if (document == null)
                 return NotFound();
 
@@ -65,7 +73,7 @@ namespace Build.ING.Controllers
         [HttpPut("{id}")]
         public IActionResult UpdateDocumentTitle(int id, [FromBody] DocumentUpdateRequest request)
         {
-            var document = _context.Documents.FirstOrDefault(d => d.Id == id);
+            var document = _context.Documents.FirstOrDefault(d => d.Id == id && d.GroupId == GetCurrentUserGroupId());
             if (document == null)
                 return NotFound();
 
@@ -77,7 +85,7 @@ namespace Build.ING.Controllers
         [HttpDelete("{id}")]
         public IActionResult DeleteDocument(int id)
         {
-            var document = _context.Documents.FirstOrDefault(d => d.Id == id);
+            var document = _context.Documents.FirstOrDefault(d => d.Id == id && d.GroupId == GetCurrentUserGroupId());
             if (document == null)
                 return NotFound();
 
