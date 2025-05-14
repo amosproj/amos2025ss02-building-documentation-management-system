@@ -12,7 +12,13 @@ namespace BUILD.ING.Models
         public bool IsActive { get; set; } = true;
 
         // Navigation properties (optional, for future relationships)
-        public ICollection<User>? Users { get; set; }
-        public ICollection<Building>? Buildings { get; set; }
+        public ICollection<User> Users { get; set; }
+        public ICollection<Building> Buildings { get; set; }
+
+        public Organization()
+        {
+            Users = new HashSet<User>();
+            Buildings = new HashSet<Building>();
+        }
     }
 }
