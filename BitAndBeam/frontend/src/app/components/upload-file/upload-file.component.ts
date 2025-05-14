@@ -2,8 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ConfigService } from '../../config.service';
 
-
-
 import { AuthService } from '../../services/auth.service';
 import { RouterModule } from '@angular/router';
 
@@ -15,7 +13,10 @@ import { RouterModule } from '@angular/router';
   styleUrls: ['./upload-file.component.css'],
 })
 export class UploadFileComponent implements OnInit {
-  constructor(private config: ConfigService , public authService: AuthService) {}
+  constructor(
+    private config: ConfigService,
+    public authService: AuthService,
+  ) {}
   ngOnInit() {
     console.log('API URL from config service:', this.config.apiUrl);
   }
@@ -44,8 +45,4 @@ export class UploadFileComponent implements OnInit {
   onDragOver(event: Event) {
     event.preventDefault();
   }
-
-
-
-  
 }
