@@ -12,6 +12,10 @@ jobs:
   lint:
     runs-on: ubuntu-latest
 
+    defaults:
+      run:
+        working-directory: BitAndBeam/frontend
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
@@ -22,19 +26,14 @@ jobs:
           node-version: '22'
 
       - name: Install dependencies
-        run: |
-          cd BitAndBeam\frontend
-          npm install
+        run: npm ci
 
-      - name: Run Linting
+      - name: Run lint & format checks
         run: |
-          cd BitAndBeam\frontend
           npm run lint
           npm run format
 
       - name: Fail if linting issues are detected
         run: |
-          cd BitAndBeam\frontend
-          if ! npm run lint; then
-            exit 1
-          fi
+          npm run lint || exit 1
+          npm run format || exit 1
