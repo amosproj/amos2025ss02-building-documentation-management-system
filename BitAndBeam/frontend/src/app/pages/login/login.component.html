@@ -1,0 +1,22 @@
+<div class="home-container">
+  <header class="header">
+    <div class="logo">Bit and Beam</div>
+    <nav class="nav-links">
+      <a routerLink="/">Home</a>
+      <a routerLink="/login">Login</a>
+      <a routerLink="/upload">Upload</a>
+      <!--  <button class="action-button">Button</button> -->
+    </nav>
+  </header>
+<div class="login-container">
+  <h1>Bit and Beam</h1>
+  <p class="subtitle">Log in with your Username and Password</p>
+
+  <form (ngSubmit)="login()" class="login-form">
+    <input [(ngModel)]="username" name="username" placeholder="Username" required />
+    <input [(ngModel)]="password" name="password" type="password" placeholder="Password" required />
+    <button type="submit">Login</button>
+    <p *ngIf="error" class="error-message">Invalid credentials</p>
+  </form>
+</div>
+</div>
