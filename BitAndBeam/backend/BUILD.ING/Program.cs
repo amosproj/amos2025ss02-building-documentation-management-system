@@ -55,6 +55,7 @@ app.MapGet("/", () => "🚀 API is running! Visit /swagger , /weatherforecast or
 
 app.Run();
 
+
 record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
 {
 
