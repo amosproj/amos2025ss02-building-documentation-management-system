@@ -5,9 +5,11 @@ using BUILD.ING.Models;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Linq;
+using Microsoft.AspNetCore.Authorization;
 
 namespace BUILD.ING.Controllers
 {
+    //[Authorize]
     [ApiController]
     [Route("api/[controller]")]
     public class BuildingsController : ControllerBase
@@ -19,11 +21,40 @@ namespace BUILD.ING.Controllers
             _context = context;
         }
 
+        private int GetUserGroupId()
+        {
+            /*var groupClaim = User.Claims.FirstOrDefault(c =>
+                c.Type == "groupId" ||
+                c.Type.EndsWith("groupid", StringComparison.OrdinalIgnoreCase));
+
+            if (groupClaim == null)
+            {
+                Console.WriteLine("⚠ Available claims:");
+                foreach (var claim in User.Claims)
+                    Console.WriteLine($"- {claim.Type}: {claim.Value}");
+
+                throw new UnauthorizedAccessException("No group ID in token.");
+            }
+
+            return int.Parse(groupClaim.Value);*/
+            return -1;
+        }
+
+        /*[HttpGet("generate-token")]
+        public IActionResult GenerateToken() =>
+        Ok(JwtGenerator.GenerateToken("testuser", 42, "test", 120));*/
+
+
         // POST: api/Buildings
         // Creates a new building and returns its ID
         [HttpPost]
         public async Task<IActionResult> CreateBuilding(Building building)
         {
+            int groupId = GetUserGroupId();
+
+             // Assign group ID to the new building
+            building.GroupId = groupId;
+
             building.CreatedAt = DateTime.UtcNow;
             building.UpdatedAt = DateTime.UtcNow;
 
@@ -33,13 +64,39 @@ namespace BUILD.ING.Controllers
             return Ok(new { id = building.BuildingId });
         }
 
+       /* [HttpGet("me")]
+        public IActionResult WhoAmI()
+        {
+            if (!User.Identity.IsAuthenticated)
+            {
+                return Unauthorized("Token was not accepted.");
+            }
+
+            return Ok(new
+            {
+                user = User.Identity.Name,
+                claims = User.Claims.Select(c => new { c.Type, c.Value })
+            });
+        }
+
+        [HttpGet("debug-token")]
+        public IActionResult DebugToken()
+        {
+            return Ok(User.Claims.Select(c => new { c.Type, c.Value }));
+        }*/
+
+
+
         // GET: api/Buildings
         // Returns a list of all buildings
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Building>>> GetBuildings()
         {
-            //We can apply later group-based filtering here
-            return await _context.Buildings.ToListAsync();
+            int groupId = GetUserGroupId();
+
+            return await _context.Buildings
+                //.Where(b => b.GroupId == groupId)
+                .ToListAsync();
         }
 
         // GET: api/Buildings/{id}
@@ -47,10 +104,13 @@ namespace BUILD.ING.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<Building>> GetBuilding(int id)
         {
+            int groupId = GetUserGroupId();
+
             var building = await _context.Buildings
+               // .Where(b.BuildingId == id) //b => b.GroupId == groupId && 
                 .Include(b => b.Documents)
                 .Include(b => b.BuildingDocumentRelations)
-                .FirstOrDefaultAsync(b => b.BuildingId == id);
+                .FirstOrDefaultAsync();
 
             if (building == null)
                 return NotFound();
@@ -63,10 +123,14 @@ namespace BUILD.ING.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateBuilding(int id, [FromBody] Building updatedBuilding)
         {
+            int groupId = GetUserGroupId();
+            
             if (id != updatedBuilding.BuildingId)
                 return BadRequest("Mismatched Building ID");
 
-            var existingBuilding = await _context.Buildings.FindAsync(id);
+            var existingBuilding = await _context.Buildings
+                .FirstOrDefaultAsync(b => b.BuildingId == id); // && b.GroupId == groupId
+
             if (existingBuilding == null)
                 return NotFound();
 
@@ -89,9 +153,11 @@ namespace BUILD.ING.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteBuilding(int id)
         {
+            int groupId = GetUserGroupId();
+
             var building = await _context.Buildings
                 .Include(b => b.BuildingDocumentRelations)
-                .FirstOrDefaultAsync(b => b.BuildingId == id);
+                .FirstOrDefaultAsync(b => b.BuildingId == id); // && b.GroupId == groupId
 
             if (building == null)
                 return NotFound();

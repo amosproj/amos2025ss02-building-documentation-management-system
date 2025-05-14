@@ -1,11 +1,13 @@
 using System;
 using System.Collections.Generic;
 using NpgsqlTypes;
+using System.ComponentModel.DataAnnotations;
 
 namespace BUILD.ING.Models
 {
     public class Building
     {
+        [Key]
         public int BuildingId { get; set; }
         public string Name { get; set; }
         public string Address { get; set; }
@@ -19,6 +21,8 @@ namespace BUILD.ING.Models
 
         public ICollection<Document> Documents { get; set; }
         public ICollection<BuildingDocumentRelation> BuildingDocumentRelations { get; set; }
+
+        public int GroupId { get; set; }
 
         // Constructor of the class 
             public Building()
