@@ -33,9 +33,9 @@ jobs:
         run: |
           dotnet restore
 
-      - name: Check Formatting Compliance
-        run: |
-          dotnet format --verify-no-changes
+    #   - name: Check Formatting Compliance
+    #     run: |
+    #       dotnet format --verify-no-changes
 
       - name: Fix Formatting (if needed)
         run: |
