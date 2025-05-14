@@ -37,9 +37,9 @@ jobs:
     #     run: |
     #       dotnet format --verify-no-changes
 
-      - name: Fix Formatting (if needed)
-        run: |
-          dotnet format
+    #   - name: Fix Formatting (if needed)
+    #     run: |
+    #       dotnet format
 
       - name: Fail if linting issues are detected
         run: |
