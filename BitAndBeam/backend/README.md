@@ -47,6 +47,31 @@ dotnet run
 
 -> Health check endpoint: https://localhost:5001/healthz
 
+---
+
+## Data Model: Organization Entity
+
+### Organization
+The `Organization` entity represents a logical grouping for users and buildings. Every user and building must belong to exactly one organization. This enables multi-tenancy and strict data access boundaries between organizations.
+
+**Fields:**
+- `OrganizationId` (int, PK)
+- `Name` (string, unique, required)
+- `Description` (string, optional)
+- `CreatedAt` (DateTime)
+- `IsActive` (bool)
+
+**Relationships:**
+- **Users:** Each user is required to have an `OrganizationId` and only has access to data within their organization.
+- **Buildings:** Each building is required to have an `OrganizationId` and belongs to one organization.
+
+**Navigation properties:**
+- `Organization.Users` — All users in the organization
+- `Organization.Buildings` — All buildings owned by the organization
+
+**Purpose:**
+The addition of the Organization model enforces data segregation and access control, ensuring users can only interact with data belonging to their organization.
+
 ## Code formatting
 
 ```bash
