@@ -15,14 +15,10 @@ describe('LoginComponent', () => {
   beforeEach(async () => {
     authServiceSpy = jasmine.createSpyObj('AuthService', ['login']);
 
-    routerSpy = jasmine.createSpyObj(
-      'Router',
-      ['navigate', 'createUrlTree'],
-      {
-        events: of(), // ✅ Required for router.events.subscribe
-        serializeUrl: (tree: any) => '/mock-url' // ✅ Return string for routerLink logic
-      }
-    );
+    routerSpy = jasmine.createSpyObj('Router', ['navigate', 'createUrlTree'], {
+      events: of(), // ✅ Required for router.events.subscribe
+      serializeUrl: (tree: any) => '/mock-url', // ✅ Return string for routerLink logic
+    });
 
     const activatedRouteStub = {
       snapshot: {
