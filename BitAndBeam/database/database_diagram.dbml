@@ -13,6 +13,7 @@ Table users {
   created_at timestamp [default: `CURRENT_TIMESTAMP`]
   last_login timestamp
   is_active boolean [default: true]
+  organization_id integer [not null, ref: > organizations.organization_id]
 }
 
 Table buildings {
@@ -26,6 +27,7 @@ Table buildings {
   coordinates point
   created_at timestamp [default: `CURRENT_TIMESTAMP`]
   updated_at timestamp [default: `CURRENT_TIMESTAMP`]
+  organization_id integer [not null, ref: > organizations.organization_id]
 }
 
 Table document_categories {
@@ -81,6 +83,14 @@ Table document_permissions {
   }
 }
 
+
+Table organizations {
+  organization_id serial [pk]
+  name varchar(200) [unique, not null]
+  description text
+  created_at timestamp [default: `CURRENT_TIMESTAMP`]
+  is_active boolean [default: true]
+}
 
 Table building_document_relations {
   building_id integer [ref: > buildings.building_id]
