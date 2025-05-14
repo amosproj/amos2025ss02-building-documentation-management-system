@@ -2,9 +2,13 @@ name: Frontend Linting
 
 on:
   push:
+    branches:
+      - main
     paths:
       - 'BitAndBeam/frontend/**'
   pull_request:
+    branches:
+      - main
     paths:
       - 'BitAndBeam/frontend/**'
 

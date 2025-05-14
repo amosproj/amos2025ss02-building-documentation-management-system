@@ -16,6 +16,10 @@ jobs:
   lint:
     runs-on: ubuntu-latest
 
+    defaults:
+      run:
+        working-directory: BitAndBeam/backend/BUILD.ING
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
@@ -27,22 +31,18 @@ jobs:
 
       - name: Install dependencies
         run: |
-          cd BitAndBeam/backend/BUILD.ING
           dotnet restore
 
       - name: Check Formatting Compliance
         run: |
-          cd BitAndBeam/backend/BUILD.ING
           dotnet format --verify-no-changes
 
       - name: Fix Formatting (if needed)
         run: |
-          cd BitAndBeam/backend/BUILD.ING
           dotnet format
 
       - name: Fail if linting issues are detected
         run: |
-          cd BitAndBeam/backend/BUILD.ING
           if ! dotnet format --verify-no-changes; then
             exit 1
           fi
