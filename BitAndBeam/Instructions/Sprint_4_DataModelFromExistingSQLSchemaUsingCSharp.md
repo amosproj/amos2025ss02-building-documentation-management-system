@@ -137,13 +137,13 @@ dotnet ef database update
 
 ### Example: Testing Connection in DBeaver
 
-![Test Connection dialog in DBeaver](images/test-connection.png)
+![Test Connection dialog in DBeaver](images/testconnection.png)
 
 _A successful connection test in DBeaver._
 
 ### Example: DBeaver Interface with Database Tables
 
-![DBeaver main interface showing tables](images/dbeaver-overview.png)
+![DBeaver main interface showing tables](images/dbeaver.png)
 
 _The DBeaver interface showing the connected database and tables._
 
