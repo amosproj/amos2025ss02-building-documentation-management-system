@@ -1,0 +1,48 @@
+name: Backend Linting
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'BitAndBeam/backend/BUILD.ING/**'
+  pull_request:
+    branches:
+      - main
+    paths:
+      - 'BitAndBeam/backend/BUILD.ING/**'
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up .NET SDK
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: '8.0'
+
+      - name: Install dependencies
+        run: |
+          cd BitAndBeam/backend/BUILD.ING
+          dotnet restore
+
+      - name: Check Formatting Compliance
+        run: |
+          cd BitAndBeam/backend/BUILD.ING
+          dotnet format --verify-no-changes
+
+      - name: Fix Formatting (if needed)
+        run: |
+          cd BitAndBeam/backend/BUILD.ING
+          dotnet format
+
+      - name: Fail if linting issues are detected
+        run: |
+          cd BitAndBeam/backend/BUILD.ING
+          if ! dotnet format --verify-no-changes; then
+            exit 1
+          fi
