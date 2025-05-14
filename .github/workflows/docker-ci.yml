@@ -57,7 +57,7 @@ jobs:
           context: ./BitAndBeam/ollama
           push: true
           tags: |
-            ghcr.io/amosproj/bitandbeam-ollama:latest
+            ghcr.io/amosproj/bitandbeam_ollama:latest
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
