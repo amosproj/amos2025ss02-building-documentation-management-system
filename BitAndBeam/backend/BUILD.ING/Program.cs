@@ -1,9 +1,13 @@
-using Npgsql.EntityFrameworkCore.PostgreSQL;
-using Build.ING.Data;
+using BUILD.ING.Data;
+using BUILD.ING.Models;
 using Microsoft.EntityFrameworkCore;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+builder.Services.AddDbContext<AppDbContext>(options =>
+    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
+
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
@@ -60,8 +64,6 @@ app.Run();
 
 record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
 {
-
-
     public int TemperatureF => 32 + (int) (TemperatureC / 0.5556);
 }
 

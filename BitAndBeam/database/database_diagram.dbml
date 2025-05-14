@@ -81,16 +81,6 @@ Table document_permissions {
   }
 }
 
-Table document_versions {
-  version_id serial [pk]
-  document_id integer [ref: > documents.document_id]
-  version_number varchar(20) [not null]
-  file_path varchar(255) [not null]
-  file_size integer [not null]
-  created_at timestamp [default: `CURRENT_TIMESTAMP`]
-  created_by integer [ref: > users.user_id]
-  change_summary text
-}
 
 Table building_document_relations {
   building_id integer [ref: > buildings.building_id]
