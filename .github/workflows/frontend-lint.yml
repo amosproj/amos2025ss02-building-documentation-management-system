@@ -1,0 +1,40 @@
+name: Frontend Linting
+
+on:
+  push:
+    paths:
+      - 'frontend/**'
+  pull_request:
+    paths:
+      - 'frontend/**'
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '16'
+
+      - name: Install dependencies
+        run: |
+          cd BitAndBeam\frontend
+          npm install
+
+      - name: Run Linting
+        run: |
+          cd BitAndBeam\frontend
+          npm run lint
+          npm run format
+
+      - name: Fail if linting issues are detected
+        run: |
+          cd BitAndBeam\frontend
+          if ! npm run lint; then
+            exit 1
+          fi
