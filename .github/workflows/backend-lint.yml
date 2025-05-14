@@ -4,11 +4,13 @@ on:
   push:
     branches:
       - main
+      - dev
     paths:
       - 'BitAndBeam/backend/BUILD.ING/**'
   pull_request:
     branches:
       - main
+      - dev
     paths:
       - 'BitAndBeam/backend/BUILD.ING/**'
 
