@@ -147,12 +147,3 @@ _A successful connection test in DBeaver._
 
 _The DBeaver interface showing the connected database and tables._
 
----
-
-### Validation Checklist
-
-- [ ] All expected tables (Users, Buildings, Documents, DocumentTags, etc.) appear in DBeaver.
-- [ ] Table columns and types match your C# models and ER diagram.
-- [ ] Relationships (foreign keys, many-to-many join tables) are present.
-- [ ] Unique constraints and indexes are created as required.
-- [ ] No errors during migration or Docker container startup.
