@@ -43,6 +43,6 @@ jobs:
 
       - name: Fail if linting issues are detected
         run: |
-          if ! dotnet format --verify-no-changes; then
+          if ! dotnet format --verify-no-changes --no-restore --severity error; then
             exit 1
           fi
