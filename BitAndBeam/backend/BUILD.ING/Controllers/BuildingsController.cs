@@ -1,10 +1,10 @@
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using BUILD.ING.Data;
 using BUILD.ING.Models;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using System.Linq;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace BUILD.ING.Controllers
 {
@@ -28,7 +28,7 @@ namespace BUILD.ING.Controllers
             building.UpdatedAt = DateTime.UtcNow;
 
             _context.Buildings.Add(building);
-            await _context.SaveChangesAsync();
+            await _context.SaveChangesAsync().ConfigureAwait(false);
 
             return Ok(new { id = building.BuildingId });
         }
@@ -39,7 +39,7 @@ namespace BUILD.ING.Controllers
         public async Task<ActionResult<IEnumerable<Building>>> GetBuildings()
         {
             //We can apply later group-based filtering here
-            return await _context.Buildings.ToListAsync();
+            return await _context.Buildings.ToListAsync().ConfigureAwait(false);
         }
 
         // GET: api/Buildings/{id}
@@ -50,7 +50,7 @@ namespace BUILD.ING.Controllers
             var building = await _context.Buildings
                 .Include(b => b.Documents)
                 .Include(b => b.BuildingDocumentRelations)
-                .FirstOrDefaultAsync(b => b.BuildingId == id);
+                .FirstOrDefaultAsync(b => b.BuildingId == id).ConfigureAwait(false);
 
             if (building == null)
                 return NotFound();
@@ -66,7 +66,7 @@ namespace BUILD.ING.Controllers
             if (id != updatedBuilding.BuildingId)
                 return BadRequest("Mismatched Building ID");
 
-            var existingBuilding = await _context.Buildings.FindAsync(id);
+            var existingBuilding = await _context.Buildings.FindAsync(id).ConfigureAwait(false);
             if (existingBuilding == null)
                 return NotFound();
 
@@ -80,7 +80,7 @@ namespace BUILD.ING.Controllers
             existingBuilding.Coordinates = updatedBuilding.Coordinates;
             existingBuilding.UpdatedAt = DateTime.UtcNow;
 
-            await _context.SaveChangesAsync();
+            await _context.SaveChangesAsync().ConfigureAwait(false);
             return NoContent();
         }
 
@@ -91,7 +91,7 @@ namespace BUILD.ING.Controllers
         {
             var building = await _context.Buildings
                 .Include(b => b.BuildingDocumentRelations)
-                .FirstOrDefaultAsync(b => b.BuildingId == id);
+                .FirstOrDefaultAsync(b => b.BuildingId == id).ConfigureAwait(false);
 
             if (building == null)
                 return NotFound();
@@ -103,7 +103,7 @@ namespace BUILD.ING.Controllers
             // _context.Documents.RemoveRange(building.Documents);
 
             _context.Buildings.Remove(building);
-            await _context.SaveChangesAsync();
+            await _context.SaveChangesAsync().ConfigureAwait(false);
 
             return NoContent();
         }
