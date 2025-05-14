@@ -33,10 +33,6 @@ jobs:
         run: |
           dotnet restore
 
-      - name: Fix Formatting
-        run: |
-          dotnet format
-
       - name: Fail if formatting issues are detected
         run: |
           dotnet format --verify-no-changes --no-restore --severity error || exit 1
