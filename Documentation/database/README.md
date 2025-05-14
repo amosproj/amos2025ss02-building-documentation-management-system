@@ -18,7 +18,7 @@ The database is designed using PostgreSQL and includes the following core tables
 
 The database schema is visualized in the diagram below:
 
-![Database Schema Diagram](./db_image1.png)
+![Database Schema Diagram](./db_image2.png)
 
 You can also visualize and edit this diagram using the provided `database_diagram.dbml` file at [dbdiagram.io](https://dbdiagram.io/).
 
