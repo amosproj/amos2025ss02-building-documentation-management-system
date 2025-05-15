@@ -57,7 +57,7 @@ namespace BUILD.ING.Controllers
                 Description = "No description provided",
                 Metadata = "{}", // or "{}" for JSON structure if you plan to support that later
                 UploadedAt = DateTime.UtcNow,
-                UploadedBy = 1, // temp ID
+                UploadedBy = null,
                 GroupId = GetCurrentUserGroupId()
             };
 
