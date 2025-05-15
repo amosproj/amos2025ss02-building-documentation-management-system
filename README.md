@@ -41,27 +41,41 @@ Bit&Beam is an intelligent document management system designed specifically for 
 /BitAndBeam
 │
 ├── backend/                # ASP.NET Core API (C#)
-│   ├── src/
-│   ├── tests/
+│   ├── BUILD.ING/          # Main backend source code and migrations
 │   └── Dockerfile
 │
 ├── frontend/               # Angular app (TypeScript)
 │   ├── src/
-│   ├── e2e/
+│   ├── public/
 │   └── Dockerfile
 │
 ├── opensearch/             # Opensearch config/scripts
+│   └── README.md
 │
 ├── postgres/               # PostgreSQL init scripts, pgai setup
+│   └── init.sql
 │
 ├── tika/                   # Apache Tika integration/config
+│   └── README.md
 │
 ├── ollama/                 # Ollama AI integration/config
+│   └── README.md
+│
+├── web/                    # Static web content
+│   ├── Dockerfile
+│   └── index.html
+│
+├── Instructions/           # Project instructions and sprint docs
+│
+├── database/               # Database schema and diagrams
+│   ├── database_diagram.dbml
+│   └── schema.sql
 │
 ├── docker-compose.yml      # Orchestration for all services
-/README.md
-/.github/                # CI/CD workflows (GitHub Actions)
+├── docker-compose-prod.yml # Production orchestration
+├── README.md               # Project root readme
 ```
+
 
 ## Getting Started
 1. Clone the repository

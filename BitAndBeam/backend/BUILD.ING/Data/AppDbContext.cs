@@ -16,9 +16,19 @@ namespace BUILD.ING.Data
         public DbSet<DocumentTagRelation> DocumentTagRelations { get; set; }
         public DbSet<DocumentPermission> DocumentPermissions { get; set; }
         public DbSet<BuildingDocumentRelation> BuildingDocumentRelations { get; set; }
+        public DbSet<Organization> Organizations { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            // Organization
+            modelBuilder.Entity<Organization>(entity =>
+            {
+                entity.HasKey(o => o.OrganizationId);
+                entity.HasIndex(o => o.Name).IsUnique();
+                entity.Property(o => o.Name).IsRequired().HasMaxLength(200);
+                entity.Property(o => o.CreatedAt).HasDefaultValueSql("CURRENT_TIMESTAMP");
+            });
+
             // Users
             modelBuilder.Entity<User>()
                 .HasIndex(u => u.Username).IsUnique();

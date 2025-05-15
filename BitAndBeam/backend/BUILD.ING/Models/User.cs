@@ -16,6 +16,9 @@ namespace BUILD.ING.Models
         public DateTime? LastLogin { get; set; }
         public bool IsActive { get; set; } = true;
 
+        public int OrganizationId { get; set; }
+        public Organization Organization { get; set; }
+
         public ICollection<Document> UploadedDocuments { get; set; }
         public ICollection<DocumentPermission> DocumentPermissions { get; set; }
     }

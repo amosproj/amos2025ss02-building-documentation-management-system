@@ -13,8 +13,8 @@ using NpgsqlTypes;
 namespace Build.ING.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20250513192846_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20250514131122_AddOrganizationEntity")]
+    partial class AddOrganizationEntity
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -58,6 +58,9 @@ namespace Build.ING.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<int?>("OrganizationId")
+                        .HasColumnType("integer");
+
                     b.Property<decimal?>("TotalArea")
                         .HasColumnType("numeric");
 
@@ -65,6 +68,8 @@ namespace Build.ING.Migrations
                         .HasColumnType("timestamp with time zone");
 
                     b.HasKey("BuildingId");
+
+                    b.HasIndex("OrganizationId");
 
                     b.ToTable("Buildings", (string)null);
                 });
@@ -247,6 +252,38 @@ namespace Build.ING.Migrations
                     b.ToTable("DocumentTagRelations");
                 });
 
+            modelBuilder.Entity("BUILD.ING.Models.Organization", b =>
+                {
+                    b.Property<int>("OrganizationId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("OrganizationId"));
+
+                    b.Property<DateTime>("CreatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("timestamp with time zone")
+                        .HasDefaultValueSql("CURRENT_TIMESTAMP");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("text");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)");
+
+                    b.HasKey("OrganizationId");
+
+                    b.HasIndex("Name")
+                        .IsUnique();
+
+                    b.ToTable("Organizations");
+                });
+
             modelBuilder.Entity("BUILD.ING.Models.User", b =>
                 {
                     b.Property<int>("UserId")
@@ -276,6 +313,9 @@ namespace Build.ING.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<int?>("OrganizationId")
+                        .HasColumnType("integer");
+
                     b.Property<string>("PasswordHash")
                         .IsRequired()
                         .HasColumnType("text");
@@ -293,10 +333,19 @@ namespace Build.ING.Migrations
                     b.HasIndex("Email")
                         .IsUnique();
 
+                    b.HasIndex("OrganizationId");
+
                     b.HasIndex("Username")
                         .IsUnique();
 
                     b.ToTable("Users");
+                });
+
+            modelBuilder.Entity("BUILD.ING.Models.Building", b =>
+                {
+                    b.HasOne("BUILD.ING.Models.Organization", null)
+                        .WithMany("Buildings")
+                        .HasForeignKey("OrganizationId");
                 });
 
             modelBuilder.Entity("BUILD.ING.Models.BuildingDocumentRelation", b =>
@@ -396,6 +445,13 @@ namespace Build.ING.Migrations
                     b.Navigation("Tag");
                 });
 
+            modelBuilder.Entity("BUILD.ING.Models.User", b =>
+                {
+                    b.HasOne("BUILD.ING.Models.Organization", null)
+                        .WithMany("Users")
+                        .HasForeignKey("OrganizationId");
+                });
+
             modelBuilder.Entity("BUILD.ING.Models.Building", b =>
                 {
                     b.Navigation("BuildingDocumentRelations");
@@ -422,6 +478,13 @@ namespace Build.ING.Migrations
             modelBuilder.Entity("BUILD.ING.Models.DocumentTag", b =>
                 {
                     b.Navigation("DocumentTagRelations");
+                });
+
+            modelBuilder.Entity("BUILD.ING.Models.Organization", b =>
+                {
+                    b.Navigation("Buildings");
+
+                    b.Navigation("Users");
                 });
 
             modelBuilder.Entity("BUILD.ING.Models.User", b =>
