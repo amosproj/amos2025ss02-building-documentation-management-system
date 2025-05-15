@@ -47,9 +47,17 @@ namespace BUILD.ING.Controllers
                 Title = Path.GetFileNameWithoutExtension(file.FileName),
                 FileName = file.FileName,
                 FilePath = filePath,
-                FileType = Path.GetExtension(file.FileName)?.TrimStart('.').ToLower(),
+                FileType = Path.GetExtension(file.FileName)?.TrimStart('.').ToLower() ?? "unknown",
+                FileSize = (int)file.Length,
+                UploadDate = DateTime.UtcNow,
+                LastModified = DateTime.UtcNow,
+                Version = "1.0",
+                Status = "draft",
+                IsPublic = false,
+                Description = "No description provided",
+                Metadata = "{}", // or "{}" for JSON structure if you plan to support that later
                 UploadedAt = DateTime.UtcNow,
-                UploadedBy = null, // for now hardcoded
+                UploadedBy = 1, // temp ID
                 GroupId = GetCurrentUserGroupId()
             };
 
