@@ -13,7 +13,7 @@ namespace BUILD.ING.Migrations
 {
     [DbContext(typeof(AppDbContext))]
     [Migration("20250513184846_AddFileNameToDocument")]
-    partial class AddFileNameToDocument
+    partial class AddFileNameToDocument : Migration
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
