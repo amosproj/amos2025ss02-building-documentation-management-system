@@ -48,14 +48,14 @@ namespace BUILD.ING.Controllers
                 FileName = file.FileName,
                 FilePath = filePath,
                 UploadedAt = DateTime.UtcNow,
-                UploadedBy = "someUser@example.com", // for now hardcoded
+                UploadedBy = null, // for now hardcoded
                 GroupId = GetCurrentUserGroupId()
             };
 
             _context.Documents.Add(document);
             await _context.SaveChangesAsync();
 
-            return Ok(new { document.Id });
+            return Ok(new { document.DocumentId });
         }
         /// <summary>
         /// Update a document (for example: title)
@@ -71,7 +71,7 @@ namespace BUILD.ING.Controllers
         public IActionResult GetDocumentById(int id)
         {
             var groupId = GetCurrentUserGroupId();
-            var document = _context.Documents.FirstOrDefault(d => d.Id == id && d.GroupId == groupId);
+            var document = _context.Documents.FirstOrDefault(d => d.DocumentId == id && d.GroupId == groupId);
             if (document == null)
                 return NotFound();
 
@@ -80,7 +80,7 @@ namespace BUILD.ING.Controllers
         [HttpPut("{id}")]
         public IActionResult UpdateDocumentTitle(int id, [FromBody] DocumentUpdateRequest request)
         {
-            var document = _context.Documents.FirstOrDefault(d => d.Id == id && d.GroupId == GetCurrentUserGroupId());
+            var document = _context.Documents.FirstOrDefault(d => d.DocumentId == id && d.GroupId == GetCurrentUserGroupId());
             if (document == null)
                 return NotFound();
 
@@ -92,7 +92,7 @@ namespace BUILD.ING.Controllers
         [HttpDelete("{id}")]
         public IActionResult DeleteDocument(int id)
         {
-            var document = _context.Documents.FirstOrDefault(d => d.Id == id && d.GroupId == GetCurrentUserGroupId());
+            var document = _context.Documents.FirstOrDefault(d => d.DocumentId == id && d.GroupId == GetCurrentUserGroupId());
             if (document == null)
                 return NotFound();
 
