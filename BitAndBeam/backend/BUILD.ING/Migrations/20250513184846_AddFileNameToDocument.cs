@@ -2,7 +2,7 @@
 
 #nullable disable
 
-namespace BUILD.ING.Migrations
+namespace Build.ING.Migrations
 {
     /// <inheritdoc />
     public partial class AddFileNameToDocument : Migration
