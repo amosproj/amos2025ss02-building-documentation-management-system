@@ -1,9 +1,9 @@
 using Microsoft.AspNetCore.Mvc;
-using Build.ING.Data;
-using Build.ING.Models;
+using BUILD.ING.Data;
+using BUILD.ING.Models;
 
 
-namespace Build.ING.Controllers
+namespace BUILD.ING.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]

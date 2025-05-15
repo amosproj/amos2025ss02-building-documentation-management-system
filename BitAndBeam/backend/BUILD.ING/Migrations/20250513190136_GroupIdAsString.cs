@@ -2,7 +2,7 @@
 
 #nullable disable
 
-namespace Build.ING.Migrations
+namespace BUILD.ING.Migrations
 {
     /// <inheritdoc />
     public partial class GroupIdAsString : Migration

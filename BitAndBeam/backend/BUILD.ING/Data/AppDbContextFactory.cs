@@ -1,8 +1,8 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
-using Build.ING.Data;
+using BUILD.ING.Data;
 
-namespace Build.ING.Data;
+namespace BUILD.ING.Data;
 
 public class AppDbContextFactory : IDesignTimeDbContextFactory<AppDbContext>
 {

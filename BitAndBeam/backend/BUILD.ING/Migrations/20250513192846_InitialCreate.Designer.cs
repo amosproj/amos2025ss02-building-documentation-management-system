@@ -10,7 +10,7 @@ using NpgsqlTypes;
 
 #nullable disable
 
-namespace Build.ING.Migrations
+namespace BUILD.ING.Migrations
 {
     [DbContext(typeof(AppDbContext))]
     [Migration("20250513192846_InitialCreate")]

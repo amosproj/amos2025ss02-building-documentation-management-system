@@ -1,4 +1,4 @@
-namespace Build.ING.Models
+namespace BUILD.ING.Models
 {
     /// <summary>
     /// Request model for updating document metadata
