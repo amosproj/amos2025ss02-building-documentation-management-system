@@ -9,7 +9,7 @@ using NpgsqlTypes;
 
 #nullable disable
 
-namespace BUILD.ING.Migrations
+namespace Build.ING.Migrations
 {
     [DbContext(typeof(AppDbContext))]
     partial class AppDbContextModelSnapshot : ModelSnapshot
@@ -19,7 +19,6 @@ namespace BUILD.ING.Migrations
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("ProductVersion", "8.0.11")
-                .HasAnnotation("ProductVersion", "9.0.4")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
@@ -104,7 +103,18 @@ namespace BUILD.ING.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<string>("FileName")
+                        .IsRequired()
+                        .HasColumnType("text");
+
                     b.Property<string>("FilePath")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<int>("FileSize")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("FileType")
                         .IsRequired()
                         .HasColumnType("text");
 
@@ -112,9 +122,32 @@ namespace BUILD.ING.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<bool>("IsPublic")
+                        .HasColumnType("boolean");
+
+                    b.Property<DateTime>("LastModified")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Metadata")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasColumnType("text");
+
                     b.Property<string>("Title")
                         .IsRequired()
                         .HasColumnType("text");
+
+                    b.Property<DateTime>("UploadDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime>("UploadedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<int?>("UploadedBy")
+                        .HasColumnType("integer");
 
                     b.Property<string>("Version")
                         .IsRequired()
@@ -405,6 +438,7 @@ namespace BUILD.ING.Migrations
 
                     b.Navigation("UploadedDocuments");
                 });
+#pragma warning restore 612, 618
         }
     }
 }

@@ -10,10 +10,10 @@ using NpgsqlTypes;
 
 #nullable disable
 
-namespace BUILD.ING.Migrations
+namespace Build.ING.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20250513192846_InitialCreate")]
+    [Migration("20250515091358_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -21,7 +21,7 @@ namespace BUILD.ING.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "9.0.4")
+                .HasAnnotation("ProductVersion", "8.0.11")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
@@ -106,6 +106,10 @@ namespace BUILD.ING.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<string>("FileName")
+                        .IsRequired()
+                        .HasColumnType("text");
+
                     b.Property<string>("FilePath")
                         .IsRequired()
                         .HasColumnType("text");
@@ -114,6 +118,10 @@ namespace BUILD.ING.Migrations
                         .HasColumnType("integer");
 
                     b.Property<string>("FileType")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("GroupId")
                         .IsRequired()
                         .HasColumnType("text");
 
@@ -136,6 +144,9 @@ namespace BUILD.ING.Migrations
                         .HasColumnType("text");
 
                     b.Property<DateTime>("UploadDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime>("UploadedAt")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<int?>("UploadedBy")

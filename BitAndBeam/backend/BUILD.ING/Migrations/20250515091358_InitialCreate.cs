@@ -1,11 +1,11 @@
-using System;
+﻿using System;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using NpgsqlTypes;
 
 #nullable disable
 
-namespace BUILD.ING.Migrations
+namespace Build.ING.Migrations
 {
     /// <inheritdoc />
     public partial class InitialCreate : Migration
@@ -109,7 +109,10 @@ namespace BUILD.ING.Migrations
                     Status = table.Column<string>(type: "text", nullable: false),
                     Description = table.Column<string>(type: "text", nullable: false),
                     IsPublic = table.Column<bool>(type: "boolean", nullable: false),
-                    Metadata = table.Column<string>(type: "text", nullable: false)
+                    Metadata = table.Column<string>(type: "text", nullable: false),
+                    FileName = table.Column<string>(type: "text", nullable: false),
+                    UploadedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    GroupId = table.Column<string>(type: "text", nullable: false)
                 },
                 constraints: table =>
                 {
