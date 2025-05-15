@@ -20,6 +20,19 @@ services:
     ports:
       - "8080:80"  # Optional: expose only if needed externally
 
+  ollama:
+    image: ghcr.io/amosproj/bitandbeam_ollama:latest
+    container_name: ollama
+    restart: always
+    ports:
+      - "11434:11434"
+      - "8000:8000"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/docs"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
   postgres:
     image: postgres:17
     container_name: bitandbeam_postgres

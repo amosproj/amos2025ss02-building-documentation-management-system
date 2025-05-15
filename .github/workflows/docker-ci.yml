@@ -14,7 +14,6 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-
       - name: Checkout code
         uses: actions/checkout@v3
 
@@ -24,6 +23,49 @@ jobs:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
+
+      # - name: Set up Docker Buildx
+      #   uses: docker/setup-buildx-action@v3
+
+      # - name: Build and push frontend image
+      #   uses: docker/build-push-action@v5
+      #   with:
+      #     context: ./BitAndBeam/frontend
+      #     push: true
+      #     tags: |
+      #       ghcr.io/amosproj/bitandbeam-frontend:latest
+      #     cache-from: type=gha
+      #     cache-to: type=gha,mode=max
+
+      # - name: Build and push backend image
+      #   uses: docker/build-push-action@v5
+      #   with:
+      #     context: ./BitAndBeam/backend
+      #     push: true
+      #     tags: |
+      #       ghcr.io/amosproj/bitandbeam-backend:latest
+      #     cache-from: type=gha
+      #     cache-to: type=gha,mode=max
+
+      # - name: Build and push ollama image
+      #   uses: docker/build-push-action@v5
+      #   with:
+      #     context: ./BitAndBeam/ollama
+      #     push: true
+      #     tags: |
+      #       ghcr.io/amosproj/bitandbeam_ollama:latest
+      #     cache-from: type=gha
+      #     cache-to: type=gha,mode=max
+
+      # - name: Build and push web image
+      #   uses: docker/build-push-action@v5
+      #   with:
+      #     context: ./BitAndBeam/web
+      #     push: true
+      #     tags: |
+      #       ghcr.io/amosproj/bitandbeam-web:latest
+      #     cache-from: type=gha
+      #     cache-to: type=gha,mode=max
 
       - name: Upload project to server
         uses: appleboy/scp-action@v0.1.4
@@ -45,6 +87,20 @@ jobs:
 
             echo ${{ secrets.GITHUB_TOKEN }} | docker login ghcr.io -u ${{ github.actor }} --password-stdin
 
-            docker compose -f docker-compose-prod.yml pull
+            # Remove old containers
             docker compose -f docker-compose-prod.yml down
+
+            # Remove only specific old images to force update
+            # docker rmi ghcr.io/amosproj/bitandbeam-frontend:latest || true
+            # docker rmi ghcr.io/amosproj/bitandbeam-backend:latest || true
+            # docker rmi ghcr.io/amosproj/bitandbeam_ollama:latest || true
+            # docker rmi ghcr.io/amosproj/bitandbeam-web:latest || true
+
+            # Re-pull latest versions
+            docker compose -f docker-compose-prod.yml pull
+
+            # Start fresh with latest images
             docker compose -f docker-compose-prod.yml up -d
+
+            # Optional: clean up unused resources
+            # docker image prune -af --filter "until=24h"

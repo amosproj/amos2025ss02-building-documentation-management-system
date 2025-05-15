@@ -80,17 +80,6 @@ CREATE TABLE "document_permissions" (
     PRIMARY KEY ("document_id", "user_id")
 );
 
--- Document Version History
-CREATE TABLE "document_versions" (
-    "version_id" SERIAL PRIMARY KEY,
-    "document_id" INTEGER REFERENCES "documents" ("document_id") ON DELETE CASCADE,
-    "version_number" VARCHAR(20) NOT NULL,
-    "file_path" VARCHAR(255) NOT NULL,
-    "file_size" INTEGER NOT NULL,
-    "created_at" TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
-    "created_by" INTEGER REFERENCES "users" ("user_id") ON DELETE SET NULL,
-    "change_summary" TEXT
-);
 
 -- Building-Document Relationship (Many-to-Many for documents related to multiple buildings)
 CREATE TABLE "building_document_relations" (
@@ -104,7 +93,6 @@ CREATE TABLE "building_document_relations" (
 CREATE INDEX idx_documents_building_id ON documents(building_id);
 CREATE INDEX idx_documents_category_id ON documents(category_id);
 CREATE INDEX idx_documents_uploaded_by ON documents(uploaded_by);
-CREATE INDEX idx_document_versions_document_id ON document_versions(document_id);
 CREATE INDEX idx_document_tags_name ON document_tags(name);
 
 -- Add trigger to update last_modified timestamp
