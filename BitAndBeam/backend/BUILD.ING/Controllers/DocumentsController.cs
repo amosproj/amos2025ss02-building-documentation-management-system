@@ -47,6 +47,7 @@ namespace BUILD.ING.Controllers
                 Title = Path.GetFileNameWithoutExtension(file.FileName),
                 FileName = file.FileName,
                 FilePath = filePath,
+                FileType = Path.GetExtension(file.FileName)?.TrimStart('.').ToLower(),
                 UploadedAt = DateTime.UtcNow,
                 UploadedBy = null, // for now hardcoded
                 GroupId = GetCurrentUserGroupId()
