@@ -31,6 +31,21 @@ services:
       - "11434:11434"   # Ollama internal API
       - "8000:8000"    # FastAPI external endpoint
 
+  openapi-client:
+    image: openapitools/openapi-generator-cli
+    container_name: openapi_generator
+    depends_on:
+      - backend
+    entrypoint: /bin/sh -c "
+      apk add curl && \
+      until curl -s http://backend:5000/swagger/v1/swagger.json > /tmp/swagger.json; do echo 'Waiting for backend...'; sleep 3; done && \
+      openapi-generator-cli generate \
+        -i /tmp/swagger.json \
+        -g typescript-axios \
+        -o /local/generated-sdk"
+    volumes:
+      - ./frontend/src/api:/local/generated-sdk
+
   postgres:
     image: postgres:17
     container_name: bitandbeam_postgres
