@@ -3,6 +3,7 @@ using System;
 using BUILD.ING.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using NpgsqlTypes;
@@ -12,13 +13,15 @@ using NpgsqlTypes;
 namespace Build.ING.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250514131122_AddOrganizationEntity")]
+    partial class AddOrganizationEntity
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "8.0.11")
+                .HasAnnotation("ProductVersion", "9.0.4")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
@@ -55,7 +58,7 @@ namespace Build.ING.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<int>("OrganizationId")
+                    b.Property<int?>("OrganizationId")
                         .HasColumnType("integer");
 
                     b.Property<decimal?>("TotalArea")
@@ -108,10 +111,6 @@ namespace Build.ING.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<string>("FileName")
-                        .IsRequired()
-                        .HasColumnType("text");
-
                     b.Property<string>("FilePath")
                         .IsRequired()
                         .HasColumnType("text");
@@ -120,10 +119,6 @@ namespace Build.ING.Migrations
                         .HasColumnType("integer");
 
                     b.Property<string>("FileType")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("GroupId")
                         .IsRequired()
                         .HasColumnType("text");
 
@@ -146,9 +141,6 @@ namespace Build.ING.Migrations
                         .HasColumnType("text");
 
                     b.Property<DateTime>("UploadDate")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<DateTime>("UploadedAt")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<int?>("UploadedBy")
@@ -321,7 +313,7 @@ namespace Build.ING.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<int>("OrganizationId")
+                    b.Property<int?>("OrganizationId")
                         .HasColumnType("integer");
 
                     b.Property<string>("PasswordHash")
@@ -351,13 +343,9 @@ namespace Build.ING.Migrations
 
             modelBuilder.Entity("BUILD.ING.Models.Building", b =>
                 {
-                    b.HasOne("BUILD.ING.Models.Organization", "Organization")
+                    b.HasOne("BUILD.ING.Models.Organization", null)
                         .WithMany("Buildings")
-                        .HasForeignKey("OrganizationId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Organization");
+                        .HasForeignKey("OrganizationId");
                 });
 
             modelBuilder.Entity("BUILD.ING.Models.BuildingDocumentRelation", b =>
@@ -459,13 +447,9 @@ namespace Build.ING.Migrations
 
             modelBuilder.Entity("BUILD.ING.Models.User", b =>
                 {
-                    b.HasOne("BUILD.ING.Models.Organization", "Organization")
+                    b.HasOne("BUILD.ING.Models.Organization", null)
                         .WithMany("Users")
-                        .HasForeignKey("OrganizationId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Organization");
+                        .HasForeignKey("OrganizationId");
                 });
 
             modelBuilder.Entity("BUILD.ING.Models.Building", b =>
