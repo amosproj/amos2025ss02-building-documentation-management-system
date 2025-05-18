@@ -24,48 +24,48 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
+      # - name: Set up Docker Buildx
+      #   uses: docker/setup-buildx-action@v3
 
-      - name: Build and push frontend image
-        uses: docker/build-push-action@v5
-        with:
-          context: ./BitAndBeam/frontend
-          push: true
-          tags: |
-            ghcr.io/amosproj/bitandbeam-frontend:latest
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
+      # - name: Build and push frontend image
+      #   uses: docker/build-push-action@v5
+      #   with:
+      #     context: ./BitAndBeam/frontend
+      #     push: true
+      #     tags: |
+      #       ghcr.io/amosproj/bitandbeam-frontend:latest
+      #     cache-from: type=gha
+      #     cache-to: type=gha,mode=max
 
-      - name: Build and push backend image
-        uses: docker/build-push-action@v5
-        with:
-          context: ./BitAndBeam/backend
-          push: true
-          tags: |
-            ghcr.io/amosproj/bitandbeam-backend:latest
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
+      # - name: Build and push backend image
+      #   uses: docker/build-push-action@v5
+      #   with:
+      #     context: ./BitAndBeam/backend
+      #     push: true
+      #     tags: |
+      #       ghcr.io/amosproj/bitandbeam-backend:latest
+      #     cache-from: type=gha
+      #     cache-to: type=gha,mode=max
 
-      - name: Build and push ollama image
-        uses: docker/build-push-action@v5
-        with:
-          context: ./BitAndBeam/ollama
-          push: true
-          tags: |
-            ghcr.io/amosproj/bitandbeam-ollama:latest
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
+      # - name: Build and push ollama image
+      #   uses: docker/build-push-action@v5
+      #   with:
+      #     context: ./BitAndBeam/ollama
+      #     push: true
+      #     tags: |
+      #       ghcr.io/amosproj/bitandbeam-ollama:latest
+      #     cache-from: type=gha
+      #     cache-to: type=gha,mode=max
 
-      - name: Build and push web image
-        uses: docker/build-push-action@v5
-        with:
-          context: ./BitAndBeam/web
-          push: true
-          tags: |
-            ghcr.io/amosproj/bitandbeam-web:latest
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
+      # - name: Build and push web image
+      #   uses: docker/build-push-action@v5
+      #   with:
+      #     context: ./BitAndBeam/web
+      #     push: true
+      #     tags: |
+      #       ghcr.io/amosproj/bitandbeam-web:latest
+      #     cache-from: type=gha
+      #     cache-to: type=gha,mode=max
 
       - name: Upload project to server
         uses: appleboy/scp-action@v0.1.4
