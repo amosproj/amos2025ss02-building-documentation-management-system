@@ -21,6 +21,7 @@ builder.Services.AddSwaggerGen(options =>
 
 // Add health check service
 builder.Services.AddHealthChecks();
+builder.Services.AddHttpClient();
 
 var app = builder.Build();
 
