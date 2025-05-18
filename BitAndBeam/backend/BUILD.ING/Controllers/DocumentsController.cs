@@ -1,6 +1,6 @@
-using Microsoft.AspNetCore.Mvc;
 using BUILD.ING.Data;
 using BUILD.ING.Models;
+using Microsoft.AspNetCore.Mvc;
 
 
 namespace BUILD.ING.Controllers
@@ -40,7 +40,7 @@ namespace BUILD.ING.Controllers
             var filePath = Path.Combine(uploadsPath, file.FileName);
 
             using var stream = new FileStream(filePath, FileMode.Create);
-            await file.CopyToAsync(stream);
+            await file.CopyToAsync(stream).ConfigureAwait(false);
 
             var document = new Document
             {
@@ -48,7 +48,7 @@ namespace BUILD.ING.Controllers
                 FileName = file.FileName,
                 FilePath = filePath,
                 FileType = Path.GetExtension(file.FileName)?.TrimStart('.').ToLower() ?? "unknown",
-                FileSize = (int)file.Length,
+                FileSize = (int) file.Length,
                 UploadDate = DateTime.UtcNow,
                 LastModified = DateTime.UtcNow,
                 Version = "1.0",
@@ -62,7 +62,7 @@ namespace BUILD.ING.Controllers
             };
 
             _context.Documents.Add(document);
-            await _context.SaveChangesAsync();
+            await _context.SaveChangesAsync().ConfigureAwait(false);
 
             return Ok(new { document.DocumentId });
         }
