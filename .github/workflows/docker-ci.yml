@@ -93,7 +93,7 @@ jobs:
             # Remove only specific old images to force update
             docker rmi ghcr.io/amosproj/bitandbeam-frontend:latest || true
             docker rmi ghcr.io/amosproj/bitandbeam-backend:latest || true
-            docker rmi ghcr.io/amosproj/bitandbeam_ollama:latest || true
+            docker rmi ghcr.io/amosproj/bitandbeam-ollama:latest || true
             docker rmi ghcr.io/amosproj/bitandbeam-web:latest || true
 
             # Re-pull latest versions
