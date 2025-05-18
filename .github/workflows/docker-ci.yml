@@ -96,8 +96,6 @@ jobs:
 
       - name: Deploy to Remote Server
         uses: appleboy/ssh-action@v1.0.0
-        env:
-          BB_CHANGED: ${{ steps.changed.outputs.changed }}
         with:
           host: ${{ secrets.PROJECT_SERVER_IP }}
           username: ${{ secrets.SSH_USER }}
@@ -111,7 +109,7 @@ jobs:
             docker compose -f docker-compose-prod.yml down
 
             # --- remove old images ONLY when BitAndBeam folder changed ---
-            if [ "${BB_CHANGED}" = "true" ]; then
+            if [ "${{ steps.changed.outputs.changed }}" = "true" ]; then
               echo "BitAndBeam changed – removing old images."
               docker rmi ghcr.io/amosproj/bitandbeam-frontend:latest || true
               docker rmi ghcr.io/amosproj/bitandbeam-backend:latest || true

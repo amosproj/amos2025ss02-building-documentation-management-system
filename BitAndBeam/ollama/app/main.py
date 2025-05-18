@@ -17,4 +17,5 @@ def ask_llm(req: PromptRequest):
             "stream": False
         }
     )
+    
     return {"response": response.json()["response"]}
