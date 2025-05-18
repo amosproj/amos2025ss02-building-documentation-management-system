@@ -25,11 +25,6 @@ jobs:
         run: |
           BEFORE_SHA="${{ github.event.before }}"
 
-          if [ "$BEFORE_SHA" = "" ] || [ "$BEFORE_SHA" = "0000000000000000000000000000000000000000" ]; then
-            # Fallback: the parent of the current HEAD on the fetched branch
-            BEFORE_SHA=$(git rev-parse HEAD^ || echo "")
-          fi
-
           echo "Comparing $BEFORE_SHA … ${{ github.sha }}"
 
           if [ "$BEFORE_SHA" != "" ] && git diff --name-only "$BEFORE_SHA" "${{ github.sha }}" | grep -q '^BitAndBeam/'; then
