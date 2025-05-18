@@ -70,7 +70,7 @@
 
 2. Entire project builds and deploys to production.
 
-3. functionalities not visible in UI, like database transactions, are verified by atleast one SD and/or RM.
+3. Functionalities not visible in UI, like database transactions, are verified by atleast one SD and/or RM.
 
 4. Release manager writes release notes.
 
