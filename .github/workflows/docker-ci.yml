@@ -21,8 +21,17 @@ jobs:
       - name: Check if BitAndBeam folder changed
         id: changed
         run: |
-          if git diff --name-only ${{ github.sha }} ${{ github.event.before }} | grep -q '^BitAndBeam/'; then
-            echo "changed=true" >> "$GITHUB_OUTPUT"
+          BEFORE_SHA="${{ github.event.before }}"
+
+          if [ "$BEFORE_SHA" = "" ] || [ "$BEFORE_SHA" = "0000000000000000000000000000000000000000" ]; then
+            # Fallback: the parent of the current HEAD on the fetched branch
+            BEFORE_SHA=$(git rev-parse HEAD^ || echo "")
+          fi
+
+          echo "Comparing $BEFORE_SHA … ${{ github.sha }}"
+
+          if [ "$BEFORE_SHA" != "" ] && git diff --name-only "$BEFORE_SHA" "${{ github.sha }}" | grep -q '^BitAndBeam/'; then
+            echo "changed=true"  >> "$GITHUB_OUTPUT"
           else
             echo "changed=false" >> "$GITHUB_OUTPUT"
           fi
@@ -103,7 +112,7 @@ jobs:
             docker compose -f docker-compose-prod.yml down
 
             # --- remove old images ONLY when BitAndBeam folder changed ---
-            if [ "${GITHUB_OUTPUT}" = "true" ]; then
+            if [ "${BB_CHANGED}" = "true" ]; then
               echo "BitAndBeam changed – removing old images."
               docker rmi ghcr.io/amosproj/bitandbeam-frontend:latest || true
               docker rmi ghcr.io/amosproj/bitandbeam-backend:latest || true
