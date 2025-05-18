@@ -1,6 +1,6 @@
+using BUILD.ING.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
-using BUILD.ING.Data;
 
 namespace BUILD.ING.Data;
 
