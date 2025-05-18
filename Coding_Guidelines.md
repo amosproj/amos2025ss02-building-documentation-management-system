@@ -51,3 +51,34 @@
 3. If you are pair programming, please make sure you add “Co-authored-by:” to commit message using the correct email address
 
 4. Follow AMOS B01: Slides 38-45
+
+# Definition of Done
+
+## Feature DoD:
+
+1. Documentation is updated to describe the functionality implemented and how to test it.
+
+2. Atleast one SD other than the one who implemented the functionality should be able to review the feature, only based on updated documentation.
+
+3. One or more reviewers can collaborate and check the acceptance criteria in code, if it is not apparent from end-user interface.
+
+4. Can be merged to main without merge conflicts.
+
+## Sprint DoD:
+
+1. Atleast one error-free functionality (which has passed feature DoD), more than previous release.
+
+2. Entire project builds and deploys to production.
+
+3. functionalities not visible in UI, like database transactions, are verified by atleast one SD and/or RM.
+
+4. Release manager writes release notes.
+
+## Project DoD:
+
+1. Industry partner satisfied with demo.
+
+2. Industry partner can use all functionalities solely using user documentation.
+
+3. Industry partner understands design documentation.
+ 
