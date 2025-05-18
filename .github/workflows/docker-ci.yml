@@ -28,8 +28,10 @@ jobs:
           echo "Comparing $BEFORE_SHA … ${{ github.sha }}"
 
           if [ "$BEFORE_SHA" != "" ] && git diff --name-only "$BEFORE_SHA" "${{ github.sha }}" | grep -q '^BitAndBeam/'; then
+            echo "BitAndBeam folder changed."
             echo "changed=true"  >> "$GITHUB_OUTPUT"
           else
+            echo "BitAndBeam folder unchanged."
             echo "changed=false" >> "$GITHUB_OUTPUT"
           fi
 
