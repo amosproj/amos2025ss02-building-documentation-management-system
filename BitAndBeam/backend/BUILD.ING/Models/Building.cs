@@ -17,6 +17,9 @@ namespace BUILD.ING.Models
         public DateTime CreatedAt { get; set; }
         public DateTime UpdatedAt { get; set; }
 
+        public int OrganizationId { get; set; }
+        public Organization Organization { get; set; }
+
         public ICollection<Document> Documents { get; set; }
         public ICollection<BuildingDocumentRelation> BuildingDocumentRelations { get; set; }
     }
