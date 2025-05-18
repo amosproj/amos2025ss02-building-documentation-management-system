@@ -1,6 +1,6 @@
+using BUILD.ING.Models;
 using Microsoft.EntityFrameworkCore;
 using NpgsqlTypes;
-using BUILD.ING.Models;
 
 namespace BUILD.ING.Data
 {
@@ -36,7 +36,7 @@ namespace BUILD.ING.Data
                 .HasIndex(u => u.Email).IsUnique();
 
             // DocumentCategory self-reference
-            modelBuilder.Entity<DocumentCategory>(entity => 
+            modelBuilder.Entity<DocumentCategory>(entity =>
             {
                 entity.HasKey(dc => dc.CategoryId);
 

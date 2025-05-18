@@ -10,6 +10,8 @@
 </div>
 
 ![Start web service](https://github.com/amosproj/amos2025ss02-building-documentation-management-system/actions/workflows/docker-ci.yml/badge.svg?branch=main&nocache=1)
+![Frontend Linting](https://github.com/amosproj/amos2025ss02-building-documentation-management-system/actions/workflows/frontend-lint.yml/badge.svg?nocache=1)
+![Backend Linting](https://github.com/amosproj/amos2025ss02-building-documentation-management-system/actions/workflows/backend-lint.yml/badge.svg?nocache=1)
 
 Web service available at: [amos.b-iq.net](http://amos.b-iq.net/)
 
@@ -81,7 +83,7 @@ Bit&Beam is an intelligent document management system designed specifically for 
 3. Use `docker compose up` inside BitAndBeam, to start all services in development mode
 4. Use `docker compose -f docker-compose-prod.yml up` inside BitAndBeam, to start all services in production mode
 5. Setup GitHub Secrets for PROJECT_SERVER_IP, SSH_USER, SSH_PRIVATE_KEY to trigger web service start by GitHub Actions on push to main
-6. Access web service at [amos.b-iq.net](http://amos.b-iq.net/) after successful Github Actions workflow. Use port 5000 for backend, 8080 for frontend. Postgres is not a web service, hence not accessible.
+6. Access web service at [amos.b-iq.net](http://amos.b-iq.net/) after successful Github Actions workflow. Use port 5000 for backend, 8080 for frontend, 8000/docs for ollama. Postgres is not a web service, hence not accessible.
 
 ## Contributing
 - Please see `CONTRIBUTING.md` (to be added)

@@ -19,3 +19,6 @@
   <h3>Selected File:</h3>
   <p>{{ uploadedFile.name }}</p>
 </div>
+<div *ngIf="authService.isAuthenticated()" class="user-info">
+  Logged in as <strong>{{ authService.getUsername() }}</strong>
+</div>

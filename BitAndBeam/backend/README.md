@@ -14,7 +14,7 @@ This project provides a starter template for an ASP.NET Core Web API with built-
 
 Before you begin, ensure you have the following installed:
 
--> At least .NET 6 SDK
+-> At least .NET 8 SDK
 
 -> Any modern IDE (Visual Studio 2022, VS Code)
 
