@@ -2,6 +2,8 @@ using BUILD.ING.Data;
 using BUILD.ING.Models;
 using Microsoft.EntityFrameworkCore;
 
+
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -23,6 +25,12 @@ builder.Services.AddSwaggerGen(options =>
 builder.Services.AddHealthChecks();
 
 var app = builder.Build();
+
+using (var scope = app.Services.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    db.Database.Migrate(); //führt Migration beim Start automatisch aus
+}
 
 // Configure the HTTP request pipeline.
 app.UseSwagger();
