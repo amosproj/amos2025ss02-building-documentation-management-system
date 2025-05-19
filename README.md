@@ -1,8 +1,9 @@
 <div align="center">
   <img src="team-logo.png" alt="Bit&Beam Logo" width="250">
 
-  # Bit&Beam
-  ### Intelligent Document Management System for Building Data
+# Bit&Beam
+
+### Intelligent Document Management System for Building Data
 
   <p align="center">
     A modern solution for organizing, analyzing, and retrieving building-related documents with AI-powered features
@@ -15,28 +16,35 @@
 
 Web service available at: [amos.b-iq.net](http://amos.b-iq.net/)
 
+## Project Mission
+
+We aim to build a secure, multi-tenant backend that stores uploaded permits, certificates, and maintenance reports; applies AI-driven OCR and metadata extraction to classify and validate each document; and provides a web UI where users can query and filter their building records using plain language. By implementing and demonstrating a full workflow — from document upload to automatic processing and natural-language search on sample data — we will create the technical foundation for a production-ready system that significantly reduces the time and effort required to manage building documents.
+
 ## Overview
 
 Bit&Beam is an intelligent document management system designed specifically for building-related data. The system streamlines document workflows by providing automated classification, metadata extraction, and smart search capabilities, making it easier for construction professionals and building administrators to manage critical documentation.
 
 ## Features
-- Store, organize, and manage building-related documents
-- Maintain a structured database of various document types (permits, certificates, reports)
-- Multi-tenancy: Groups only access their assigned data
-- Automated document data extraction (metadata and text fields)
-- Automated document categorization
-- UI for classification & validation 
-- Natural language querying and intelligent search
+
+-   Store, organize, and manage building-related documents
+-   Maintain a structured database of various document types (permits, certificates, reports)
+-   Multi-tenancy: Groups only access their assigned data
+-   Automated document data extraction (metadata and text fields)
+-   Automated document categorization
+-   UI for classification & validation
+-   Natural language querying and intelligent search
 
 ## Tech Stack
-- **Frontend:** Angular (TypeScript)
-- **Backend:** C# + ASP.NET Core
-- **Database:** PostgreSQL (with pgai)
-- **Search:** Opensearch
-- **AI/Extraction:** Ollama, Apache Tika
-- **Containerization:** Docker
+
+-   **Frontend:** Angular (TypeScript)
+-   **Backend:** C# + ASP.NET Core
+-   **Database:** PostgreSQL (with pgai)
+-   **Search:** Opensearch
+-   **AI/Extraction:** Ollama, Apache Tika
+-   **Containerization:** Docker
 
 ## Project Structure
+
 ```
 /BitAndBeam
 │
@@ -76,8 +84,8 @@ Bit&Beam is an intelligent document management system designed specifically for 
 ├── README.md               # Project root readme
 ```
 
-
 ## Getting Started
+
 1. Clone the repository
 2. Follow setup instructions in each service directory
 3. Use `docker compose up` inside BitAndBeam, to start all services in development mode
@@ -86,9 +94,11 @@ Bit&Beam is an intelligent document management system designed specifically for 
 6. Access web service at [amos.b-iq.net](http://amos.b-iq.net/) after successful Github Actions workflow. Use port 5000 for backend, 8080 for frontend, 8000/docs for ollama. Postgres is not a web service, hence not accessible.
 
 ## Contributing
-- Please see `CONTRIBUTING.md` (to be added)
+
+-   Please see `CONTRIBUTING.md` (to be added)
 
 ---
 
 ## License
+
 MIT License
