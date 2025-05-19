@@ -13,6 +13,12 @@ import { RouterModule } from '@angular/router';
   styleUrls: ['./upload-file.component.css'],
 })
 export class UploadFileComponent implements OnInit {
+  buildings = [
+    {
+      name: 'Building A',
+      documents: ['Document1.pdf', 'Document2.pdf']
+    }
+  ];
   constructor(
     private config: ConfigService,
     public authService: AuthService,
@@ -46,3 +52,6 @@ export class UploadFileComponent implements OnInit {
     event.preventDefault();
   }
 }
+
+
+

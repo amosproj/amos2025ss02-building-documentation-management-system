@@ -1,24 +1,75 @@
-<div
-  class="upload-dropzone"
-  (drop)="onDrop($event)"
-  (dragover)="onDragOver($event)"
-  style="border: 2px dashed #ccc; padding: 20px; text-align: center"
->
-  <label for="fileInput">📂 Upload Your Document</label>
-  <br />
-  <input
-    id="fileInput"
-    type="file"
-    accept=".pdf"
-    (change)="onFileSelected($event)"
-  />
-</div>
+<div class="container">
+  <aside class="sidebar">
+    <!-- Top: Logo -->
+    <div class="sidebar-top">
+      <div class="logo-section">
+        <img src="assets/team-logo.png" alt="Bit & Beam Logo" class="logo-img" />
+        <span class="logo-text">BIT & BEAM</span>
+      </div>
+    </div>
 
-<!-- Separate area to display the selected file -->
-<div *ngIf="uploadedFile">
-  <h3>Selected File:</h3>
-  <p>{{ uploadedFile.name }}</p>
-</div>
-<div *ngIf="authService.isAuthenticated()" class="user-info">
-  Logged in as <strong>{{ authService.getUsername() }}</strong>
+    <!-- Middle: Navigation -->
+    <div class="sidebar-middle">
+      <button class="add-btn">+ Add Building</button>
+      <div class="buildings">
+        <div *ngFor="let building of buildings">
+          <div class="building-name">📁 {{ building.name }}</div>
+          <div *ngFor="let doc of building.documents" class="document">📄 {{ doc }}</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bottom: User Info & Logout -->
+    <div class="sidebar-bottom">
+      <div *ngIf="authService.isAuthenticated()" class="user-welcome">
+        <div class="avatar">👤</div>
+        <div class="welcome-text">
+          <div class="greeting">Welcome,</div>
+          <div class="username">{{ authService.getUsername() }}</div>
+        </div>
+      </div>
+      <button class="logout-btn" (click)="authService.logout()">Logout</button>
+    </div>
+
+  </aside>
+
+  <!-- Main Content -->
+  <main class="main-content">
+    <!-- Drag & Drop Upload Box -->
+    <div
+      class="upload-dropzone"
+      (drop)="onDrop($event)"
+      (dragover)="onDragOver($event)"
+    >
+      <label for="fileInput">📤 Upload Your Document</label><br />
+      <input
+        id="fileInput"
+        type="file"
+        accept=".pdf,.docx,.txt"
+        (change)="onFileSelected($event)"
+        hidden
+        #fileInput
+      />
+      <button class="choose-file" (click)="fileInput.click()">Choose File</button>
+
+      <div *ngIf="uploadedFile" class="file-preview">
+        📎 {{ uploadedFile.name }}
+      </div>
+    </div>
+
+    <!-- AI Assistant Section -->
+    <div class="ai-assistant">
+      <h3>AI Assistant</h3>
+      <p>Ask questions or extract data from your documents</p>
+
+      <div class="chat-box">
+        <div class="chat-header">🤖 How can I help you today?
+        </div>
+        <div class="chat-input">
+          <input type="text" placeholder="Type a message..." />
+          <button>➤</button>
+        </div>
+      </div>
+    </div>
+  </main>
 </div>

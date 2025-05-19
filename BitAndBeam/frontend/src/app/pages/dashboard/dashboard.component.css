@@ -1,0 +1,123 @@
+* {
+  box-sizing: border-box;
+  font-family: 'Segoe UI', sans-serif;
+}
+
+.container {
+  display: flex;
+  height: 100vh;
+}
+
+.sidebar {
+  width: 240px;
+  background-color: #1b3c58;
+  color: white;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.logo {
+  font-size: 1.2rem;
+  font-weight: bold;
+  margin-bottom: 1rem;
+}
+
+.add-btn {
+  background-color: #45c3b8;
+  color: white;
+  border: none;
+  padding: 0.6rem 1rem;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.buildings {
+  margin-top: 2rem;
+}
+
+.building-name {
+  margin-top: 1rem;
+  font-weight: bold;
+}
+
+.document {
+  margin-left: 1rem;
+  font-size: 0.95rem;
+  margin-top: 0.3rem;
+}
+
+.logout {
+  margin-top: auto;
+  cursor: pointer;
+}
+
+.main-content {
+  flex-grow: 1;
+  padding: 2rem;
+  background-color: #fefcf8;
+}
+
+.upload-box {
+  border: 2px dashed #ddd;
+  padding: 3rem;
+  text-align: center;
+  margin-bottom: 2rem;
+  border-radius: 12px;
+}
+
+.upload-text {
+  font-size: 1.5rem;
+  font-weight: bold;
+}
+
+.file-types {
+  color: #888;
+  margin: 0.5rem 0 1.5rem;
+}
+
+.choose-file {
+  background-color: #f3e6d8;
+  border: none;
+  padding: 0.6rem 1.2rem;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.ai-assistant h3 {
+  font-size: 1.3rem;
+}
+
+.chat-box {
+  background-color: #fef1e7;
+  padding: 1rem;
+  border-radius: 12px;
+  margin-top: 1rem;
+}
+
+.chat-header {
+  font-weight: bold;
+  margin-bottom: 0.8rem;
+}
+
+.chat-input {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.chat-input input {
+  flex-grow: 1;
+  padding: 0.5rem;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+}
+
+.chat-input button {
+  background-color: #45c3b8;
+  color: white;
+  border: none;
+  padding: 0 1rem;
+  border-radius: 6px;
+  cursor: pointer;
+}
