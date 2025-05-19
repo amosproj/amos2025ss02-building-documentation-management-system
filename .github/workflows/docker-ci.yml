@@ -16,14 +16,22 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
+        with:
+          fetch-depth: 0      # ← fetch all history so “before” commit exists locally
 
       # ---------------- detect BitAndBeam changes ----------------
       - name: Check if BitAndBeam folder changed
         id: changed
         run: |
-          if git diff --name-only ${{ github.sha }} ${{ github.event.before }} | grep -q '^BitAndBeam/'; then
-            echo "changed=true" >> "$GITHUB_OUTPUT"
+          BEFORE_SHA="${{ github.event.before }}"
+
+          echo "Comparing $BEFORE_SHA … ${{ github.sha }}"
+
+          if [ "$BEFORE_SHA" != "" ] && git diff --name-only "$BEFORE_SHA" "${{ github.sha }}" | grep -q '^BitAndBeam/'; then
+            echo "BitAndBeam folder changed."
+            echo "changed=true"  >> "$GITHUB_OUTPUT"
           else
+            echo "BitAndBeam folder unchanged."
             echo "changed=false" >> "$GITHUB_OUTPUT"
           fi
 
@@ -88,8 +96,6 @@ jobs:
 
       - name: Deploy to Remote Server
         uses: appleboy/ssh-action@v1.0.0
-        env:
-          BB_CHANGED: ${{ steps.changed.outputs.changed }}
         with:
           host: ${{ secrets.PROJECT_SERVER_IP }}
           username: ${{ secrets.SSH_USER }}
@@ -103,7 +109,7 @@ jobs:
             docker compose -f docker-compose-prod.yml down
 
             # --- remove old images ONLY when BitAndBeam folder changed ---
-            if [ "${BB_CHANGED}" = "true" ]; then
+            if [ "${{ steps.changed.outputs.changed }}" = "true" ]; then
               echo "BitAndBeam changed – removing old images."
               docker rmi ghcr.io/amosproj/bitandbeam-frontend:latest || true
               docker rmi ghcr.io/amosproj/bitandbeam-backend:latest || true

@@ -20,9 +20,6 @@ namespace BUILD.ING.Models
         public string Description { get; set; }
         public bool IsPublic { get; set; } = false;
         public string Metadata { get; set; }
-        public string FileName { get; set; }
-        public DateTime UploadedAt { get; set; }
-        public string GroupId { get; set; }
 
         public Building Building { get; set; }
         public User Uploader { get; set; }
