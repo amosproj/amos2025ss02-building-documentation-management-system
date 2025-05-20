@@ -53,6 +53,8 @@ services:
 
   tika:
     image: apache/tika
+    container_name: bitandbeam_tika
+    restart: always
     ports:
       - "9998:9998"
     healthcheck:
