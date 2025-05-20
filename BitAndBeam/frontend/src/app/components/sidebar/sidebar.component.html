@@ -1,0 +1,47 @@
+<aside class="sidebar" [class.collapsed]="isExplorerCollapsed">
+  <!-- Explorer Panel -->
+  <!-- Button always visible -->
+  <aside>
+    <button class="collapse-btn" (click)="toggleExplorer()">☰</button>
+  </aside>
+  <!-- Only the file list collapses -->
+  <div class="file-explorer" [class.collapsed]="isExplorerCollapsed">
+  </div>
+  <!-- Top: Logo -->
+  <div class="sidebar-top">
+    <div class="logo-section">
+      <img src="assets/team-logo.png" alt="Bit & Beam Logo" class="logo-img" />
+      <span class="logo-text">BIT & BEAM</span>
+    </div>
+  </div>
+
+  <!-- Middle: Navigation -->
+  <div class="sidebar-middle">
+    <button class="add-btn" (click)="addBuilding()">+ Add Building</button>
+    <div class="buildings">
+      <div *ngFor="let building of buildings; let i = index">
+        <div class="building-name">📁 {{ building.name }}
+          <button (click)="deleteBuilding(i)" class="delete-building">🗑️</button>
+        </div>
+        <div class="document" *ngFor="let doc of building.documents">
+          📄 {{ doc }}</div>
+        <button (click)="goToFileView()" class="view-file-btn">View File</button>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- Bottom: User Info & Logout -->
+  <div class="sidebar-bottom">
+    <div *ngIf="authService.isAuthenticated()" class="user-welcome">
+      <div class="avatar">👤</div>
+      <div class="welcome-text">
+        <div class="greeting">Welcome,</div>
+        <div class="username">{{ authService.getUsername() }}</div>
+      </div>
+    </div>
+    <button class="logout-btn" (click)="authService.logout()">Logout</button>
+  </div>
+
+</aside>
+

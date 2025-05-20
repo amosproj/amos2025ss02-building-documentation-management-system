@@ -1,40 +1,6 @@
 <div class="container">
-  <aside class="sidebar">
-    <!-- Top: Logo -->
-    <div class="sidebar-top">
-      <div class="logo-section">
-        <img src="assets/team-logo.png" alt="Bit & Beam Logo" class="logo-img" />
-        <span class="logo-text">BIT & BEAM</span>
-      </div>
-    </div>
-
-    <!-- Middle: Navigation -->
-    <div class="sidebar-middle">
-      <button class="add-btn">+ Add Building</button>
-      <div class="buildings">
-        <div *ngFor="let building of buildings">
-          <div class="building-name">📁 {{ building.name }}</div>
-          <div *ngFor="let doc of building.documents" class="document">📄 {{ doc }}</div>
-          <button (click)="goToFileView()" class="view-file-btn">View File</button>
-
-        </div>
-      </div>
-    </div>
-
-    <!-- Bottom: User Info & Logout -->
-    <div class="sidebar-bottom">
-      <div *ngIf="authService.isAuthenticated()" class="user-welcome">
-        <div class="avatar">👤</div>
-        <div class="welcome-text">
-          <div class="greeting">Welcome,</div>
-          <div class="username">{{ authService.getUsername() }}</div>
-        </div>
-      </div>
-      <button class="logout-btn" (click)="authService.logout()">Logout</button>
-    </div>
-
-  </aside>
-
+  <!-- ✅ Inject the sidebar -->
+  <app-sidebar> </app-sidebar>
   <!-- Main Content -->
   <main class="main-content">
     <!-- Drag & Drop Upload Box -->
@@ -47,15 +13,30 @@
       <input
         id="fileInput"
         type="file"
-        accept=".pdf,.docx,.txt"
+        accept=".pdf,.docx,.txt, .png"
         (change)="onFileSelected($event)"
         hidden
         #fileInput
       />
+      <div *ngIf="uploading" class="upload-status">⏳ Uploading...</div>
+      <div *ngIf="uploadSuccess" class="upload-status success">✅ Upload successful!</div>
+      <div *ngIf="uploadError" class="upload-status error">{{ uploadError }}</div>
+
       <button class="choose-file" (click)="fileInput.click()">Choose File</button>
 
       <div *ngIf="uploadedFile" class="file-preview">
         📎 {{ uploadedFile.name }}
+      </div>
+      <!-- Folder assignment dialog -->
+      <div *ngIf="uploadedFile" class="folder-assign">
+        <p>📄 <strong>{{ uploadedFile.name }}</strong> uploaded. Choose a folder:</p>
+        <select [(ngModel)]="selectedBuildingIndex">
+          <option *ngFor="let b of buildings; let i = index" [value]="i">
+            {{ b.name }}
+          </option>
+        </select>
+        <button (click)="assignFileToFolder()">Assign</button>
+        <button (click)="createAndAssignFolder()">New Folder + Assign</button>
       </div>
     </div>
 

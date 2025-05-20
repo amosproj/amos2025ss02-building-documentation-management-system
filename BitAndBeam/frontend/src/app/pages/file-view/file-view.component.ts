@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { PdfViewerModule } from 'ng2-pdf-viewer';
+import { SidebarComponent} from '../../components/sidebar/sidebar.component';
 
 
 @Component({
@@ -9,10 +10,9 @@ import { PdfViewerModule } from 'ng2-pdf-viewer';
   selector: 'app-file-view',
   templateUrl: './file-view.component.html',
   styleUrls: ['./file-view.component.css'],
-  imports: [CommonModule, PdfViewerModule]
+  imports: [CommonModule, PdfViewerModule, SidebarComponent]
 })
 export class FileViewComponent {
-  isExplorerCollapsed = false;
 
   fileList = [
     {
@@ -29,12 +29,6 @@ export class FileViewComponent {
   selectedFile = this.fileList[0];
 
   constructor(private router: Router) {}
-
-
-  toggleExplorer() {
-    this.isExplorerCollapsed = !this.isExplorerCollapsed;
-    console.log('Explorer collapsed:', this.isExplorerCollapsed);
-  }
 
 
   selectFile(file: any) {
