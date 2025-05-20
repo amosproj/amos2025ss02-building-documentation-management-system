@@ -16,6 +16,24 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
+        with:
+          fetch-depth: 0      # ← fetch all history so “before” commit exists locally
+
+      # ---------------- detect BitAndBeam changes ----------------
+      - name: Check if BitAndBeam folder changed
+        id: changed
+        run: |
+          BEFORE_SHA="${{ github.event.before }}"
+
+          echo "Comparing $BEFORE_SHA … ${{ github.sha }}"
+
+          if [ "$BEFORE_SHA" != "" ] && git diff --name-only "$BEFORE_SHA" "${{ github.sha }}" | grep -q '^BitAndBeam/'; then
+            echo "BitAndBeam folder changed."
+            echo "changed=true"  >> "$GITHUB_OUTPUT"
+          else
+            echo "BitAndBeam folder unchanged."
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+          fi
 
       - name: Log in to GitHub Container Registry
         uses: docker/login-action@v2
@@ -53,7 +71,7 @@ jobs:
       #     context: ./BitAndBeam/ollama
       #     push: true
       #     tags: |
-      #       ghcr.io/amosproj/bitandbeam_ollama:latest
+      #       ghcr.io/amosproj/bitandbeam-ollama:latest
       #     cache-from: type=gha
       #     cache-to: type=gha,mode=max
 
@@ -87,20 +105,25 @@ jobs:
 
             echo ${{ secrets.GITHUB_TOKEN }} | docker login ghcr.io -u ${{ github.actor }} --password-stdin
 
-            # Remove old containers
+            # Stop running stack
             docker compose -f docker-compose-prod.yml down
 
-            # Remove only specific old images to force update
-            # docker rmi ghcr.io/amosproj/bitandbeam-frontend:latest || true
-            # docker rmi ghcr.io/amosproj/bitandbeam-backend:latest || true
-            # docker rmi ghcr.io/amosproj/bitandbeam_ollama:latest || true
-            # docker rmi ghcr.io/amosproj/bitandbeam-web:latest || true
+            # --- remove old images ONLY when BitAndBeam folder changed ---
+            if [ "${{ steps.changed.outputs.changed }}" = "true" ]; then
+              echo "BitAndBeam changed – removing old images."
+              docker rmi ghcr.io/amosproj/bitandbeam-frontend:latest || true
+              docker rmi ghcr.io/amosproj/bitandbeam-backend:latest || true
+              docker rmi ghcr.io/amosproj/bitandbeam-ollama:latest || true
+              docker rmi ghcr.io/amosproj/bitandbeam-web:latest || true
+            else
+              echo "BitAndBeam unchanged – keeping existing images."
+            fi
 
-            # Re-pull latest versions
+            # Always pull (gets newer tags even if source didn’t change)
             docker compose -f docker-compose-prod.yml pull
 
-            # Start fresh with latest images
+            # Relaunch stack
             docker compose -f docker-compose-prod.yml up -d
 
-            # Optional: clean up unused resources
+            # Optional cleanup
             # docker image prune -af --filter "until=24h"
