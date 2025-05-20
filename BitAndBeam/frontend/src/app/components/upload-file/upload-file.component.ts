@@ -68,21 +68,21 @@ export class UploadFileComponent implements OnInit {
 
   assignFileToFolder() {
     if (this.uploadedFile && this.buildingService.getBuildings()[this.selectedBuildingIndex]) {
-      this.buildingService.addDocumentToBuilding(this.selectedBuildingIndex, this.uploadedFile.name);
+      this.buildingService.addDocumentToBuilding(this.selectedBuildingIndex, this.uploadedFile);
       this.uploadedFile = null;
     }
   }
 
   createAndAssignFolder() {
     const name = prompt('New building name:');
-    if (name?.trim()) {
+    if (name?.trim() && this.uploadedFile) {
       this.buildingService.addBuilding(name);
       const newIndex = this.buildingService.getBuildings().length - 1;
-      this.buildingService.addDocumentToBuilding(newIndex, this.uploadedFile?.name || '');
+      this.buildingService.addDocumentToBuilding(newIndex, this.uploadedFile);
       this.selectedBuildingIndex = newIndex;
       this.uploadedFile = null;
     }
-  }
+}
 
 }
 

@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { PdfViewerModule } from 'ng2-pdf-viewer';
 import { SidebarComponent} from '../../components/sidebar/sidebar.component';
+import { BuildingService } from '../../services/building.service';
 
 
 @Component({
@@ -14,38 +15,40 @@ import { SidebarComponent} from '../../components/sidebar/sidebar.component';
 })
 export class FileViewComponent {
 
-  fileList = [
-    {
-      name: '0_Introduction_deeplearning.pdf',
-      url: '/assets/0_Introduction_deeplearning.pdf',  // ✅ Add leading slash
-      metadata: [
-        { label: 'Title', value: 'Intro to Deep Learning' },
-        { label: 'Author', value: 'FAU Pattern Recognition Lab' },
-        { label: 'Date', value: '2025-04-25' }
-      ]
-    }
-  ];
+  selectedFile: {
+    name: string;
+    url: string;
+    metadata?: { label: string; value: string }[];
+  } | null = null;
 
-  selectedFile = this.fileList[0];
+  constructor(private router: Router, private buildingService: BuildingService) {}
+  ngOnInit() {
+    this.buildingService.selectedFile$.subscribe(file => {
+      this.selectedFile = file;
+    });
+  }
 
-  constructor(private router: Router) {}
-
-
-  selectFile(file: any) {
+  selectFileToView(file: { name: string; url: string }) {
     this.selectedFile = file;
   }
 
-  downloadFile(file: any) {
-    const a = document.createElement('a');
-    a.href = file.url;
-    a.download = file.name;
-    a.click();
-  }
-
-  deleteFile(file: any) {
-    this.fileList = this.fileList.filter(f => f !== file);
-    if (this.selectedFile === file) {
-      this.selectedFile = this.fileList[0] || null;
+  downloadFile(file: { name: string; url: string }) {
+    try {
+      const a = document.createElement('a');
+      a.href = file.url;
+      a.download = file.name;
+      a.style.display = 'none';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+    } catch (error) {
+      console.error('Download failed:', error);
     }
   }
+
+
+  clearViewer() {
+    this.selectedFile = null;
+  }
+
 }

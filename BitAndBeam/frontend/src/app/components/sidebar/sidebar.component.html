@@ -20,14 +20,20 @@
     <button class="add-btn" (click)="addBuilding()">+ Add Building</button>
     <div class="buildings">
       <div *ngFor="let building of buildingService.getBuildings(); let i = index">
-      <div class="building-name">📁 {{ building.name }}
+        <div class="building-name">
+          📁 {{ building.name }}
           <button (click)="deleteBuilding(i)" class="delete-building">🗑️</button>
         </div>
-        <div class="document" *ngFor="let doc of building.documents">
-          📄 {{ doc }}</div>
-        <button (click)="goToFileView()" class="view-file-btn">View File</button>
 
-      </div>
+        <div
+          class="document"
+          *ngFor="let doc of building.documents"
+          (click)="viewDocument(doc)">
+          📄 {{ doc.name }}
+        </div>
+
+
+  </div>
     </div>
   </div>
 

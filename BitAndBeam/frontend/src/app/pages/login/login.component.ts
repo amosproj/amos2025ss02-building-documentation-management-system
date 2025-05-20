@@ -26,10 +26,16 @@ export class LoginComponent {
   login() {
     if (this.authService.login(this.username, this.password)) {
       const returnUrl =
-        this.route.snapshot.queryParamMap.get('returnUrl') || '/upload';
-      this.router.navigate([returnUrl]);
-    } else {
-      this.error = true;
+        this.route.snapshot.queryParamMap.get('returnUrl');
+
+// If no returnUrl or it's file-view from previous session, override it
+      if (!returnUrl || returnUrl === '/file-view') {
+        this.router.navigate(['/upload']);
+      } else {
+        this.router.navigate([returnUrl]);
+      }
     }
   }
 }
+
+

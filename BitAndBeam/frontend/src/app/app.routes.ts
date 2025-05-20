@@ -6,8 +6,9 @@ import { FileViewComponent } from './pages/file-view/file-view.component';
 import { authGuard } from './guards/auth.guard';
 
 export const routes: Routes = [
-  { path: '', component: HomeComponent },
+  { path: '', redirectTo: 'upload', pathMatch: 'full' }, // default route
   { path: 'login', component: LoginComponent },
   { path: 'upload', component: UploadFileComponent, canActivate: [authGuard] },
-  { path: 'file-view', component: FileViewComponent, canActivate: [authGuard] }
+  { path: 'file-view', component: FileViewComponent, canActivate: [authGuard] },
+  { path: '**', redirectTo: 'upload' }
 ];

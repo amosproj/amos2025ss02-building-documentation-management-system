@@ -1,9 +1,10 @@
-import { Component } from '@angular/core';
+import { Component, EventEmitter,Output  } from '@angular/core';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { AuthService } from '../../services/auth.service';
 import { FormsModule } from '@angular/forms';
 import { BuildingService } from '../../services/building.service';
+import { DocumentItem } from '../../services/building.service';
 
 @Component({
   standalone: true,
@@ -14,7 +15,7 @@ import { BuildingService } from '../../services/building.service';
 })
 export class SidebarComponent {
   isExplorerCollapsed = false;
-
+  @Output() viewFileEvent = new EventEmitter<DocumentItem>();
 
   constructor(
     public authService: AuthService,
@@ -28,9 +29,6 @@ export class SidebarComponent {
     console.log('Explorer collapsed:', this.isExplorerCollapsed);
   }
 
-  goToFileView() {
-    this.router.navigate(['/file-view']);
-  }
   addBuilding() {
     const name = prompt('Enter building name:');
     if (name) {
@@ -41,6 +39,23 @@ export class SidebarComponent {
   deleteBuilding(index: number) {
     this.buildingService.deleteBuilding(index);
   }
+
+  viewDocument(doc: DocumentItem) {
+    this.buildingService.setSelectedFile({
+      ...doc,
+      metadata: [
+        {
+          label: 'Date',
+          value: new Date().toLocaleDateString()
+        }
+      ]
+    });
+    this.router.navigate(['/file-view']);
+  }
+
+
+
+
 
 
 }

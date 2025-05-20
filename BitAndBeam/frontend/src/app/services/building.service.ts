@@ -1,32 +1,65 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 
+export interface DocumentItem {
+  name: string;
+  file: File;
+  url: string;
+  metadata?: { label: string; value: string }[];
+}
+
+export interface Building {
+  name: string;
+  documents: DocumentItem[];
+}
+
 @Injectable({ providedIn: 'root' })
 export class BuildingService {
-  private buildingsSource = new BehaviorSubject<{ name: string; documents: string[] }[]>([]);
-  buildings$ = this.buildingsSource.asObservable();
+  private buildingsSubject = new BehaviorSubject<Building[]>([]);
+  buildings$ = this.buildingsSubject.asObservable();
 
-  getBuildings() {
-    return this.buildingsSource.getValue();
+  getBuildings(): Building[] {
+    return this.buildingsSubject.getValue();
   }
 
-  updateBuildings(buildings: { name: string; documents: string[] }[]) {
-    this.buildingsSource.next(buildings);
+  updateBuildings(buildings: Building[]): void {
+    this.buildingsSubject.next(buildings);
   }
 
-  addBuilding(name: string) {
-    const current = this.getBuildings();
-    this.updateBuildings([...current, { name, documents: [] }]);
+  addBuilding(name: string): void {
+    const updated = [...this.getBuildings(), { name, documents: [] }];
+    this.updateBuildings(updated);
   }
 
-  addDocumentToBuilding(index: number, doc: string) {
+  addDocumentToBuilding(index: number, file: File): void {
+    const url = URL.createObjectURL(file);
+    const newDoc: DocumentItem = {
+      name: file.name,
+      file,
+      url,
+      metadata: [
+        { label: 'Uploaded', value: new Date().toISOString() }
+      ]
+    };
+
     const buildings = this.getBuildings();
-    buildings[index].documents.push(doc);
+    buildings[index].documents.push(newDoc);
     this.updateBuildings([...buildings]);
   }
 
-  deleteBuilding(index: number) {
+  deleteBuilding(index: number): void {
     const updated = this.getBuildings().filter((_, i) => i !== index);
     this.updateBuildings(updated);
+  }
+
+  private selectedFileSubject = new BehaviorSubject<DocumentItem | null>(null);
+  selectedFile$ = this.selectedFileSubject.asObservable();
+
+  setSelectedFile(file: DocumentItem): void {
+    this.selectedFileSubject.next(file);
+  }
+
+  getSelectedFile(): DocumentItem | null {
+    return this.selectedFileSubject.getValue();
   }
 }
