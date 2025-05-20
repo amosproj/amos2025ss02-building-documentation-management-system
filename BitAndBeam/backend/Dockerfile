@@ -28,6 +28,9 @@ COPY wait-for-it.sh wait-for-it.sh
 # Stelle sicher, dass sie ausführbar ist (innerhalb des Linux-Containers!)
 RUN chmod +x wait-for-it.sh
 
+# Starte das Backend erst, wenn PostgreSQL bereit ist
+ENTRYPOINT ["./wait-for-it.sh", "postgres:5432", "--", "dotnet", "Build.ING.dll"]
+
 
 
 
@@ -37,5 +40,5 @@ COPY --from=build /app/BUILD.ING/out ./
 # Expose port
 EXPOSE 5000
 
-# Starte das Backend erst, wenn PostgreSQL bereit ist
-ENTRYPOINT ["./wait-for-it.sh", "postgres:5432", "--", "dotnet", "Build.ING.dll"]
+# Run the application
+ENTRYPOINT ["dotnet", "Build.ING.dll"]
