@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { ConfigService } from '../../config.service';
 import { SidebarComponent } from '../sidebar/sidebar.component';
 import { FormsModule } from '@angular/forms';
+import { BuildingService } from '../../services/building.service'
 
 import { RouterModule , Router } from '@angular/router';
 
@@ -18,11 +19,12 @@ export class UploadFileComponent implements OnInit {
   uploadSuccess = false;
   uploadError = '';
   selectedBuildingIndex: number = 0;
-  buildings: { name: string; documents: string[] }[] = [];
 
   constructor(
     private config: ConfigService,
-    private router: Router
+    private router: Router,
+    public buildingService: BuildingService
+
 
 ) {}
   ngOnInit() {
@@ -65,8 +67,8 @@ export class UploadFileComponent implements OnInit {
   }
 
   assignFileToFolder() {
-    if (this.uploadedFile && this.buildings[this.selectedBuildingIndex]) {
-      this.buildings[this.selectedBuildingIndex].documents.push(this.uploadedFile.name);
+    if (this.uploadedFile && this.buildingService.getBuildings()[this.selectedBuildingIndex]) {
+      this.buildingService.addDocumentToBuilding(this.selectedBuildingIndex, this.uploadedFile.name);
       this.uploadedFile = null;
     }
   }
@@ -74,11 +76,14 @@ export class UploadFileComponent implements OnInit {
   createAndAssignFolder() {
     const name = prompt('New building name:');
     if (name?.trim()) {
-      this.buildings.push({ name, documents: [this.uploadedFile?.name || ''] });
-      this.selectedBuildingIndex = this.buildings.length - 1;
+      this.buildingService.addBuilding(name);
+      const newIndex = this.buildingService.getBuildings().length - 1;
+      this.buildingService.addDocumentToBuilding(newIndex, this.uploadedFile?.name || '');
+      this.selectedBuildingIndex = newIndex;
       this.uploadedFile = null;
     }
   }
+
 }
 
 

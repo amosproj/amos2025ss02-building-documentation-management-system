@@ -1,6 +1,6 @@
 <div class="container">
   <!-- ✅ Inject the sidebar -->
-  <app-sidebar> </app-sidebar>
+  <app-sidebar></app-sidebar>
   <!-- Main Content -->
   <main class="main-content">
     <!-- Drag & Drop Upload Box -->
@@ -31,8 +31,8 @@
       <div *ngIf="uploadedFile" class="folder-assign">
         <p>📄 <strong>{{ uploadedFile.name }}</strong> uploaded. Choose a folder:</p>
         <select [(ngModel)]="selectedBuildingIndex">
-          <option *ngFor="let b of buildings; let i = index" [value]="i">
-            {{ b.name }}
+          <option *ngFor="let building of buildingService.getBuildings(); let i = index" [value]="i">
+            {{ building.name }}
           </option>
         </select>
         <button (click)="assignFileToFolder()">Assign</button>

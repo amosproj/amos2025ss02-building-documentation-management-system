@@ -19,8 +19,8 @@
   <div class="sidebar-middle">
     <button class="add-btn" (click)="addBuilding()">+ Add Building</button>
     <div class="buildings">
-      <div *ngFor="let building of buildings; let i = index">
-        <div class="building-name">📁 {{ building.name }}
+      <div *ngFor="let building of buildingService.getBuildings(); let i = index">
+      <div class="building-name">📁 {{ building.name }}
           <button (click)="deleteBuilding(i)" class="delete-building">🗑️</button>
         </div>
         <div class="document" *ngFor="let doc of building.documents">

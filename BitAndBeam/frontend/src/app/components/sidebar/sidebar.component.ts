@@ -3,7 +3,7 @@ import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { AuthService } from '../../services/auth.service';
 import { FormsModule } from '@angular/forms';
-
+import { BuildingService } from '../../services/building.service';
 
 @Component({
   standalone: true,
@@ -16,11 +16,10 @@ export class SidebarComponent {
   isExplorerCollapsed = false;
 
 
-  buildings: { name: string; documents: string[] }[] = [];
-
   constructor(
     public authService: AuthService,
-    private router: Router
+    private router: Router,
+    public buildingService: BuildingService
 
   ) {}
 
@@ -35,11 +34,13 @@ export class SidebarComponent {
   addBuilding() {
     const name = prompt('Enter building name:');
     if (name) {
-      this.buildings.push({ name, documents: [] });
+      this.buildingService.addBuilding(name);
     }
   }
+
   deleteBuilding(index: number) {
-    this.buildings.splice(index, 1);
+    this.buildingService.deleteBuilding(index);
   }
+
 
 }
