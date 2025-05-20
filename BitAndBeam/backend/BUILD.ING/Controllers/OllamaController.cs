@@ -56,11 +56,11 @@ namespace BUILD.ING.Controllers
 
             try
             {
-                var response = await _httpClient.PostAsync("http://localhost:8000/ask", httpContent);
+                var response = await _httpClient.PostAsync("http://ollama:8000/ask", httpContent);
 
                 if (!response.IsSuccessStatusCode)
                 {
-                    return StatusCode((int)response.StatusCode, new { error = "Ollama service error" });
+                    return StatusCode((int) response.StatusCode, new { error = "Ollama service error" });
                 }
 
                 var responseContent = await response.Content.ReadAsStringAsync();
