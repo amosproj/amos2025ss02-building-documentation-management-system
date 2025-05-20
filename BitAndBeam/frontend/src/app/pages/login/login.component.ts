@@ -1,18 +1,17 @@
-import { Component } from '@angular/core';
-import { Router, RouterModule } from '@angular/router';
+import { Component, OnInit } from '@angular/core';
+import { Router, ActivatedRoute } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { ActivatedRoute } from '@angular/router';
 
 @Component({
-  standalone: true,
   selector: 'app-login',
+  standalone: true,
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css'],
-  imports: [CommonModule, FormsModule, RouterModule],
+  imports: [CommonModule, FormsModule]
 })
-export class LoginComponent {
+export class LoginComponent implements OnInit {
   username = '';
   password = '';
   error = false;
@@ -20,22 +19,22 @@ export class LoginComponent {
   constructor(
     private authService: AuthService,
     private router: Router,
-    private route: ActivatedRoute,
+    private route: ActivatedRoute
   ) {}
 
-  login() {
-    if (this.authService.login(this.username, this.password)) {
-      const returnUrl =
-        this.route.snapshot.queryParamMap.get('returnUrl');
+  ngOnInit(): void {
+    // Redirect logged-in user away from login page
+    if (this.authService.isAuthenticated()) {
+      this.router.navigate(['/upload'], { replaceUrl: true });
+    }
+  }
 
-// If no returnUrl or it's file-view from previous session, override it
-      if (!returnUrl || returnUrl === '/file-view') {
-        this.router.navigate(['/upload']);
-      } else {
-        this.router.navigate([returnUrl]);
-      }
+  login(): void {
+    if (this.authService.login(this.username, this.password)) {
+      const returnUrl = this.route.snapshot.queryParamMap.get('returnUrl') || '/upload';
+      this.router.navigate([returnUrl], { replaceUrl: true }); // Prevent back nav to login
+    } else {
+      this.error = true;
     }
   }
 }
-
-
