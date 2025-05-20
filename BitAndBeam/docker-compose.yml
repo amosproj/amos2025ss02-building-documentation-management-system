@@ -1,4 +1,18 @@
 services:
+  ollama:
+    build:
+      context: ./ollama
+      dockerfile: Dockerfile
+    container_name: ollama
+    ports:
+      - "11434:11434"   # Ollama internal API
+      - "8000:8000"    # FastAPI external endpoint
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]  # or some endpoint that signals Ollama is ready
+      interval: 10s
+      timeout: 5s
+      retries: 5
+  
   backend:
     build:
       context: ./backend
@@ -7,6 +21,7 @@ services:
       - "5001:5000"
     depends_on:
       - postgres
+      - ollama
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - ConnectionStrings__DefaultConnection=Host=postgres;Port=5432;Database=bitandbeam;Username=postgres;Password=postgres
@@ -21,15 +36,6 @@ services:
       - backend
     environment:
       - API_URL=http://localhost:5000
-
-  ollama:
-    build:
-      context: ./ollama
-      dockerfile: Dockerfile
-    container_name: ollama
-    ports:
-      - "11434:11434"   # Ollama internal API
-      - "8000:8000"    # FastAPI external endpoint
 
   postgres:
     image: postgres:17
