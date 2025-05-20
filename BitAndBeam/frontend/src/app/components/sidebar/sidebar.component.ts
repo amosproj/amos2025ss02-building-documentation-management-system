@@ -52,7 +52,10 @@ export class SidebarComponent {
     });
     this.router.navigate(['/file-view']);
   }
-
+  logout() {
+    this.authService.logout();
+    this.router.navigate(['/']); // redirect to home/landing
+  }
 
 
 

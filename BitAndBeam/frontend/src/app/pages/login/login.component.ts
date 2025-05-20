@@ -20,19 +20,23 @@ export class LoginComponent implements OnInit {
     private authService: AuthService,
     private router: Router,
     private route: ActivatedRoute
-  ) {}
+  ) {
+  }
 
   ngOnInit(): void {
     // Redirect logged-in user away from login page
     if (this.authService.isAuthenticated()) {
-      this.router.navigate(['/upload'], { replaceUrl: true });
+      this.router.navigate(['/upload'], {replaceUrl: true});
     }
   }
 
   login(): void {
     if (this.authService.login(this.username, this.password)) {
-      const returnUrl = this.route.snapshot.queryParamMap.get('returnUrl') || '/upload';
-      this.router.navigate([returnUrl], { replaceUrl: true }); // Prevent back nav to login
+      const returnUrl =
+        this.route.snapshot.queryParamMap.get('returnUrl') || '/upload';
+
+      // ✅ Replace current history entry
+      this.router.navigate([returnUrl], {replaceUrl: true});
     } else {
       this.error = true;
     }
