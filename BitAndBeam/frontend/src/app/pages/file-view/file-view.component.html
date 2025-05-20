@@ -1,0 +1,70 @@
+<!-- file-view.component.html -->
+<div class="layout">
+  <aside class="sidebar" [class.collapsed]="isExplorerCollapsed">
+    <!-- Explorer Panel -->
+    <!-- Button always visible -->
+    <aside>
+    <button class="collapse-btn" (click)="toggleExplorer()">☰</button>
+    </aside>
+    <!-- Only the file list collapses -->
+    <div class="file-explorer" [class.collapsed]="isExplorerCollapsed">
+    </div>
+
+    <div class="logo-section">
+      <img src="assets/team-logo.png" alt="Bit & Beam Logo" class="logo-img" />
+      <div class="logo-text">BIT & BEAM</div>
+    </div>
+
+    <button class="add-btn">+ Add Building</button>
+
+    <div class="buildings">
+      <div class="building-name">📁 Building A</div>
+      <div class="document">📄 Document1.pdf</div>
+      <div class="document">📄 Document2.pdf</div>
+    </div>
+
+    <div class="sidebar-bottom">
+      <div class="user-welcome">
+        <div class="avatar">👤</div>
+        <div class="welcome-text">
+          <div class="greeting">Welcome,</div>
+          <div class="username">user1</div>
+        </div>
+      </div>
+      <button class="logout-btn">Logout</button>
+    </div>
+  </aside>
+
+  <div class="main-area">
+    <div class="file-view-container">
+      <!-- Main File Content -->
+      <div class="file-main-content">
+
+        <!-- PDF Viewer -->
+        <section class="pdf-viewer">
+          <pdf-viewer *ngIf="selectedFile"
+                      [src]="selectedFile.url"
+                      [render-text]="true"
+                      [show-all]="true"
+                      style="display: block; height: 100%; width: 100%;">
+          </pdf-viewer>
+        </section>
+
+        <!-- Metadata Panel -->
+        <aside class="metadata-panel" *ngIf="selectedFile">
+          <h3>Metadata</h3>
+          <div class="metadata-item" *ngFor="let meta of selectedFile.metadata">
+            <strong>{{ meta.label }}</strong>: {{ meta.value }}
+          </div>
+
+          <div class="meta-actions">
+            <button class="edit-btn">Edit</button>
+            <button class="download-btn" (click)="downloadFile(selectedFile)">Download</button>
+            <button class="delete-btn" (click)="deleteFile(selectedFile)">Delete</button>
+          </div>
+        </aside>
+
+      </div>
+    </div>
+  </div>
+</div>
