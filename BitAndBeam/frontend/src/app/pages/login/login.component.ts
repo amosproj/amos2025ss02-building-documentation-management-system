@@ -1,33 +1,44 @@
-import { Component } from '@angular/core';
-import { Router, RouterModule } from '@angular/router';
+import { Component, OnInit } from '@angular/core';
+import { Router, ActivatedRoute } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { ActivatedRoute } from '@angular/router';
-
 
 @Component({
-  standalone: true,
   selector: 'app-login',
+  standalone: true,
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css'],
-  imports: [CommonModule, FormsModule, RouterModule]
+  imports: [CommonModule, FormsModule]
 })
-export class LoginComponent {
+export class LoginComponent implements OnInit {
   username = '';
   password = '';
   error = false;
 
-  constructor(private authService: AuthService, private router: Router, private route: ActivatedRoute) {}
+  constructor(
+    private authService: AuthService,
+    private router: Router,
+    private route: ActivatedRoute
+  ) {
+  }
 
+  ngOnInit(): void {
+    // Redirect logged-in user away from login page
+    if (this.authService.isAuthenticated()) {
+      this.router.navigate(['/upload'], {replaceUrl: true});
+    }
+  }
 
-  login() {
+  login(): void {
     if (this.authService.login(this.username, this.password)) {
-      const returnUrl = this.route.snapshot.queryParamMap.get('returnUrl') || '/upload';
-      this.router.navigate([returnUrl]);
+      const returnUrl =
+        this.route.snapshot.queryParamMap.get('returnUrl') || '/upload';
+
+      // ✅ Replace current history entry
+      this.router.navigate([returnUrl], {replaceUrl: true});
     } else {
       this.error = true;
     }
   }
-
 }

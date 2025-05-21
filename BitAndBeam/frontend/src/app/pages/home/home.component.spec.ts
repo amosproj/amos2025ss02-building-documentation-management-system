@@ -16,7 +16,7 @@ describe('HomeComponent', () => {
         CommonModule,
         RouterTestingModule,
         HomeComponent,
-        UploadFileComponent // ✅ Make sure this is a standalone component
+        UploadFileComponent, // ✅ Make sure this is a standalone component
       ],
       providers: [
         {
@@ -24,12 +24,12 @@ describe('HomeComponent', () => {
           useValue: {
             snapshot: {
               queryParamMap: {
-                get: () => null
-              }
-            }
-          }
-        }
-      ]
+                get: () => null,
+              },
+            },
+          },
+        },
+      ],
     }).compileComponents();
 
     fixture = TestBed.createComponent(HomeComponent);
@@ -40,5 +40,4 @@ describe('HomeComponent', () => {
   it('should create HomeComponent', () => {
     expect(component).toBeTruthy();
   });
-  
 });

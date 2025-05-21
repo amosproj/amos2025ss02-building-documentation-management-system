@@ -1,18 +1,32 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ConfigService } from '../../config.service';
-import { AuthService } from '../../services/auth.service';
-import { RouterModule } from '@angular/router';
+import { SidebarComponent } from '../sidebar/sidebar.component';
+import { FormsModule } from '@angular/forms';
+import { BuildingService } from '../../services/building.service'
+
+import { RouterModule , Router } from '@angular/router';
 
 @Component({
   selector: 'app-upload-file',
   standalone: true,
-  imports: [CommonModule, RouterModule],
+  imports: [CommonModule, RouterModule, SidebarComponent,FormsModule],
   templateUrl: './upload-file.component.html',
   styleUrls: ['./upload-file.component.css'],
 })
 export class UploadFileComponent implements OnInit {
-  constructor(private config: ConfigService , public authService: AuthService) {}
+  uploading = false;
+  uploadSuccess = false;
+  uploadError = '';
+  selectedBuildingIndex: number = 0;
+
+  constructor(
+    private config: ConfigService,
+    private router: Router,
+    public buildingService: BuildingService
+
+
+) {}
   ngOnInit() {
     console.log('API URL from config service:', this.config.apiUrl);
   }
@@ -20,11 +34,21 @@ export class UploadFileComponent implements OnInit {
 
   // Handle file selection
   onFileSelected(event: any) {
-    const file = event.target.files[0]; // Only get the first file
-    if (file) {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    this.uploading = true;
+    this.uploadSuccess = false;
+    this.uploadError = '';
+
+    // Simulate upload with delay (replace this with actual HTTP upload later)
+    setTimeout(() => {
+      this.uploading = false;
+      this.uploadSuccess = true;
       this.uploadedFile = file;
-    }
+    }, 2000);
   }
+
 
   // Handle drag-and-drop file selection
   onDrop(event: DragEvent) {
@@ -41,4 +65,26 @@ export class UploadFileComponent implements OnInit {
   onDragOver(event: Event) {
     event.preventDefault();
   }
+
+  assignFileToFolder() {
+    if (this.uploadedFile && this.buildingService.getBuildings()[this.selectedBuildingIndex]) {
+      this.buildingService.addDocumentToBuilding(this.selectedBuildingIndex, this.uploadedFile);
+      this.uploadedFile = null;
+    }
+  }
+
+  createAndAssignFolder() {
+    const name = prompt('New building name:');
+    if (name?.trim() && this.uploadedFile) {
+      this.buildingService.addBuilding(name);
+      const newIndex = this.buildingService.getBuildings().length - 1;
+      this.buildingService.addDocumentToBuilding(newIndex, this.uploadedFile);
+      this.selectedBuildingIndex = newIndex;
+      this.uploadedFile = null;
+    }
 }
+
+}
+
+
+

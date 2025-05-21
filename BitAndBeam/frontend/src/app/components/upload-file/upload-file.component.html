@@ -1,24 +1,58 @@
-<div
-  class="upload-dropzone"
-  (drop)="onDrop($event)"
-  (dragover)="onDragOver($event)"
-  style="border: 2px dashed #ccc; padding: 20px; text-align: center"
->
-  <label for="fileInput">📂 Upload Your Document</label>
-  <br />
-  <input
-    id="fileInput"
-    type="file"
-    accept=".pdf"
-    (change)="onFileSelected($event)"
-  />
-</div>
+<div class="container">
+  <!-- ✅ Inject the sidebar -->
+  <app-sidebar></app-sidebar>
+  <!-- Main Content -->
+  <main class="main-content">
+    <!-- Drag & Drop Upload Box -->
+    <div
+      class="upload-dropzone"
+      (drop)="onDrop($event)"
+      (dragover)="onDragOver($event)"
+    >
+      <label for="fileInput">📤 Upload Your Document</label><br />
+      <input
+        id="fileInput"
+        type="file"
+        accept=".pdf,.docx,.txt, .png"
+        (change)="onFileSelected($event)"
+        hidden
+        #fileInput
+      />
+      <div *ngIf="uploading" class="upload-status">⏳ Uploading...</div>
+      <div *ngIf="uploadSuccess" class="upload-status success">✅ Upload successful!</div>
+      <div *ngIf="uploadError" class="upload-status error">{{ uploadError }}</div>
 
-<!-- Separate area to display the selected file -->
-<div *ngIf="uploadedFile">
-  <h3>Selected File:</h3>
-  <p>{{ uploadedFile.name }}</p>
-</div>
-<div *ngIf="authService.isAuthenticated()" class="user-info">
-  Logged in as <strong>{{ authService.getUsername() }}</strong>
+      <button class="choose-file" (click)="fileInput.click()">Choose File</button>
+
+      <div *ngIf="uploadedFile" class="file-preview">
+        📎 {{ uploadedFile.name }}
+      </div>
+      <!-- Folder assignment dialog -->
+      <div *ngIf="uploadedFile" class="folder-assign">
+        <p>📄 <strong>{{ uploadedFile.name }}</strong> uploaded. Choose a folder:</p>
+        <select [(ngModel)]="selectedBuildingIndex">
+          <option *ngFor="let building of buildingService.getBuildings(); let i = index" [value]="i">
+            {{ building.name }}
+          </option>
+        </select>
+        <button (click)="assignFileToFolder()">Assign</button>
+        <button (click)="createAndAssignFolder()">New Folder + Assign</button>
+      </div>
+    </div>
+
+    <!-- AI Assistant Section -->
+    <div class="ai-assistant">
+      <h3>AI Assistant</h3>
+      <p>Ask questions or extract data from your documents</p>
+
+      <div class="chat-box">
+        <div class="chat-header">🤖 How can I help you today?
+        </div>
+        <div class="chat-input">
+          <input type="text" placeholder="Type a message..." />
+          <button>➤</button>
+        </div>
+      </div>
+    </div>
+  </main>
 </div>

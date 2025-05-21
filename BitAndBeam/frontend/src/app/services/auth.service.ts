@@ -12,7 +12,9 @@ export class AuthService {
   private loggedInUser: string | null = null;
 
   login(username: string, password: string): boolean {
-    const match = this.users.find(u => u.username === username && u.password === password);
+    const match = this.users.find(
+      (u) => u.username === username && u.password === password,
+    );
     if (match) {
       this.loggedInUser = username;
       return true;

@@ -1,17 +1,12 @@
-<div class="home-container">
-  <header class="header">
-    <div class="logo">Bit and Beam</div>
-    <nav class="nav-links">
-      <a routerLink="/">Home</a>
-      <a routerLink="/login">Login</a>
-    <!--  <button class="action-button">Button</button> -->
-    </nav>
-  </header>
-
-  <main class="main-content">
-    <img src="assets/team-logo.png" alt="Bit & Beam Logo" class="logo-img" />
+<!-- home.component.html (landing page) -->
+<div class="layout landing-page">
+  <div class="landing-container">
+    <div class="logo-section">
+      <img src="assets/team-logo.png" alt="Bit & Beam Logo" class="logo-img" />
+      <span class="logo-text">BIT & BEAM</span>
+    </div>
     <h1>Welcome to Bit & Beam</h1>
-    <p>Your building documentation exploration area</p>
-    <button class="login-btn" routerLink="/login">Login</button>
-  </main>
+    <p>Your collaborative platform for managing building documentation.</p>
+    <button routerLink="/login" class="primary-btn">Login</button>
+  </div>
 </div>
