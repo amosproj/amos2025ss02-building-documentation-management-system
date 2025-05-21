@@ -6,8 +6,7 @@ services:
       - ASPNETCORE_ENVIRONMENT=Production
       - ConnectionStrings__DefaultConnection=Host=postgres;Port=5432;Database=bitandbeam;Username=postgres;Password=postgres
     depends_on:
-      postgres:
-        condition: service_healthy
+      - postgres
     ports:
       - "5000:5000" 
 
@@ -38,8 +37,6 @@ services:
     image: postgres:17
     container_name: bitandbeam_postgres
     restart: always
-    ports:
-      - "5432:5432"
     volumes:
       - pgdata:/var/lib/postgresql/data
       - ./postgres/init.sql:/docker-entrypoint-initdb.d/init.sql
@@ -47,11 +44,6 @@ services:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
       POSTGRES_DB: bitandbeam
-    healthcheck:
-      test: ["CMD", "pg_isready", "-U", "postgres"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
 
   web:
     image: ghcr.io/amosproj/bitandbeam-web:latest
