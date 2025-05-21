@@ -55,15 +55,15 @@ jobs:
       #     cache-from: type=gha
       #     cache-to: type=gha,mode=max
 
-      # - name: Build and push backend image
-      #   uses: docker/build-push-action@v5
-      #   with:
-      #     context: ./BitAndBeam/backend
-      #     push: true
-      #     tags: |
-      #       ghcr.io/amosproj/bitandbeam-backend:latest
-      #     cache-from: type=gha
-      #     cache-to: type=gha,mode=max
+      - name: Build and push backend image
+        uses: docker/build-push-action@v5
+        with:
+          context: ./BitAndBeam/backend
+          push: true
+          tags: |
+            ghcr.io/amosproj/bitandbeam-backend:latest
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
 
       # - name: Build and push ollama image
       #   uses: docker/build-push-action@v5
