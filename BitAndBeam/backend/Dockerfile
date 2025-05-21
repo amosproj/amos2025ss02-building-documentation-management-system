@@ -24,8 +24,6 @@ ENV ASPNETCORE_URLS=http://+:5000
 
 
 
-
-
 # Copy build artifacts from previous stage
 COPY --from=build /app/BUILD.ING/out ./
 
