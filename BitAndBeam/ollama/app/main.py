@@ -18,7 +18,3 @@ def ask_llm(req: PromptRequest):
         }
     )
     return {"response": response.json()["response"]}
-
-@app.get("/health")
-async def health():
-    return {"status": "ok"}
