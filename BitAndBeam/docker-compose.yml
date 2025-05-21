@@ -37,6 +37,16 @@ services:
     environment:
       - API_URL=http://localhost:5000
 
+  openapi-client:
+    build:
+      context: ./openapi-client
+      dockerfile: Dockerfile
+    container_name: openapi_generator
+    depends_on:
+      - backend
+    volumes:
+      - ./frontend/src/api:/local/generated-sdk
+
   postgres:
     image: postgres:17
     container_name: bitandbeam_postgres
