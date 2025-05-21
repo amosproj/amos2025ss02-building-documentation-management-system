@@ -1,69 +1,100 @@
-.center-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;  /* Center horizontally */
-    padding-top: 50px;    /* Push down from the top */
-    text-align: center;
-    min-height: 100vh;    /* Still take full height, but no vertical centering */
-  }
-.home-container {
+/* Common Layout */
+.layout {
   display: flex;
-  flex-direction: column;
-  min-height: 100vh;
-  padding: 1rem;
-  font-family: Arial, sans-serif;
-}
-
-.header {
-  display: flex;
-  justify-content: space-between;
+  justify-content: center;
   align-items: center;
-  padding: 0.5rem 1rem;
+  height: 100vh;
+  background-color: #fefcf8;
+  font-family: 'Segoe UI', sans-serif;
 }
 
-.logo {
-  font-size: 1.5rem;
-  font-weight: bold;
-}
-
-.nav-links {
+/* Logo styling */
+.logo-section {
   display: flex;
-  gap: 1.5rem;
   align-items: center;
-}
-
-.nav-links a {
-  text-decoration: none;
-  color: black;
-  font-weight: 500;
-}
-
-.action-button {
-  padding: 0.4rem 0.8rem;
-  border: none;
-  border-radius: 6px;
-  background: black;
-  color: white;
-  cursor: pointer;
-}
-
-.main-content {
-  text-align: center;
-  margin-top: 4rem;
+  gap: 0.8rem;
+  margin-bottom: 1rem;
 }
 
 .logo-img {
-  height: 100px;
-  margin-bottom: 2rem;
+  width: 48px;
+  height: 48px;
+  object-fit: contain;
+  background-color: white;
+  border-radius: 8px;
+  padding: 4px;
+}
+
+.logo-text {
+  font-size: 1.4rem;
+  font-weight: bold;
+  color: #1b3c58;
+}
+
+/* Login Page */
+.login-container {
+  width: 100%;
+  max-width: 400px;
+  padding: 2rem;
+  background: white;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  border-radius: 12px;
+}
+
+.login-box h2 {
+  margin-bottom: 1.5rem;
+  color: #1b3c58;
+}
+
+.login-box input {
+  width: 100%;
+  padding: 0.75rem;
+  margin-bottom: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 1rem;
 }
 
 .login-btn {
-  margin-top: 1.5rem;
-  padding: 0.5rem 1.2rem;
-  background-color: #388e3c;
+  width: 100%;
+}
+
+.error-msg {
+  color: #c94444;
+  margin-top: 1rem;
+  font-size: 0.9rem;
+}
+
+/* Home Page */
+.landing-container {
+  text-align: center;
+  padding: 2rem;
+}
+
+.landing-container h1 {
+  font-size: 2rem;
+  color: #1b3c58;
+  margin-top: 1rem;
+}
+
+.landing-container p {
+  color: #333;
+  font-size: 1rem;
+  margin-bottom: 2rem;
+}
+
+/* Buttons */
+.primary-btn {
+  background-color: #45c3b8;
   color: white;
+  padding: 0.75rem 1.5rem;
   border: none;
   border-radius: 6px;
-  font-size: 1rem;
   cursor: pointer;
+  font-size: 1rem;
+  transition: background-color 0.2s ease;
+}
+
+.primary-btn:hover {
+  background-color: #3ab2a7;
 }
