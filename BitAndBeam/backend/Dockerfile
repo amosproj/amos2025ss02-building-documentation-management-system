@@ -32,6 +32,8 @@ RUN chmod +x wait-for-it.sh
 ENTRYPOINT ["./wait-for-it.sh", "postgres:5432", "--", "dotnet", "Build.ING.dll"]
 
 
+
+
 # Copy build artifacts from previous stage
 COPY --from=build /app/BUILD.ING/out ./
 
