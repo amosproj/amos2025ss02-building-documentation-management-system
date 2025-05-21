@@ -42,8 +42,6 @@ You should regenerate the SDK whenever:
 
 > ✅ You should see TypeScript files appear in `frontend/src/api`.
 
-> 💡 For Linux users: Replace `host.docker.internal` with `172.17.0.1` if needed, or pass the OpenAPI spec as a file.
-
 ---
 
 ### 🧑‍💻 How to Use the SDK in the Frontend
