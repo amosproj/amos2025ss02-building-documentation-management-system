@@ -19,3 +19,4 @@ EXPOSE 5000
 
 # Wait for PostgreSQL before starting the app
 ENTRYPOINT ["./wait-for-it.sh", "postgres:5432", "--", "dotnet", "Build.ING.dll"]
+
