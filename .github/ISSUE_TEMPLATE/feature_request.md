@@ -18,9 +18,10 @@ assignees: ''
 * ...
 
 ## Definition of done (DoD)
-* Added only after week 5
-* The same for all features
-* Here goes the project specific part
+* Documentation is updated to include the new feature
+* Another SD, not the implementer, has reviewed the feature using the documentation.
+* GitHub actions workflows for linting pass
+* Feature branch has been merged and deleted
 
 ## DoD general criteria
 * Feature has been fully implemented

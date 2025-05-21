@@ -39,7 +39,7 @@ services:
     restart: always
     volumes:
       - pgdata:/var/lib/postgresql/data
-      - ./postgres/init.sql:/docker-entrypoint-initdb.d/init.sql
+      - ./database/schema.sql:/docker-entrypoint-initdb.d/init.sql
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
@@ -50,6 +50,18 @@ services:
     restart: always
     ports:
       - "80:80"
+
+  tika:
+    image: apache/tika
+    container_name: bitandbeam_tika
+    restart: always
+    ports:
+      - "9998:9998"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9998/version"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
 volumes:
   pgdata:

@@ -66,9 +66,18 @@ namespace BUILD.ING.Controllers
             if (id != updatedBuilding.BuildingId)
                 return BadRequest("Mismatched Building ID");
 
-            var existingBuilding = await _context.Buildings.FindAsync(id).ConfigureAwait(false);
+            //var existingBuilding = await _context.Buildings.FindAsync(id).ConfigureAwait(false);
+            var existingBuilding = await _context.Buildings
+                .Include(b => b.Documents)
+                .Include(b => b.BuildingDocumentRelations)
+                .FirstOrDefaultAsync(b => b.BuildingId == id).ConfigureAwait(false);
+
+
             if (existingBuilding == null)
                 return NotFound();
+
+            _context.Entry(existingBuilding).CurrentValues.SetValues(updatedBuilding);
+
 
             // Update only editable fields
             existingBuilding.Name = updatedBuilding.Name;
@@ -80,9 +89,50 @@ namespace BUILD.ING.Controllers
             existingBuilding.Coordinates = updatedBuilding.Coordinates;
             existingBuilding.UpdatedAt = DateTime.UtcNow;
 
-            await _context.SaveChangesAsync().ConfigureAwait(false);
+            _context.Entry(existingBuilding).Property(b => b.UpdatedAt).IsModified = true;
+            _context.Entry(existingBuilding).Property(b => b.Coordinates).IsModified = true;
+
+            try
+            {
+                await _context.SaveChangesAsync().ConfigureAwait(false);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("‼️ ERROR during SaveChanges: " + ex.Message);
+                return StatusCode(500, ex.Message);
+            }
+
+
+            //await _context.SaveChangesAsync();
             return NoContent();
         }
+
+        [HttpGet("debug-db")]
+        public IActionResult GetDbInfo()
+        {
+            var conn = _context.Database.GetDbConnection();
+            return Ok(new
+            {
+                conn.Database,
+                conn.DataSource,
+                conn.ConnectionString
+            });
+        }
+
+        [HttpGet("debug-full")]
+        public IActionResult GetDebugFull()
+        {
+            var conn = _context.Database.GetDbConnection();
+            return Ok(new
+            {
+                Provider = _context.Database.ProviderName,
+                Connection = conn.ConnectionString,
+                Source = conn.DataSource,
+                Db = conn.Database
+            });
+        }
+
+
 
         // DELETE: api/Buildings/{id}
         // Deletes a building and its related documents
