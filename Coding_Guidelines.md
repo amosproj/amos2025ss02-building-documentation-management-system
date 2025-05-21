@@ -56,13 +56,13 @@
 
 ## Feature DoD:
 
-1. Documentation is updated to describe the functionality implemented and how to test it.
+1. Documentation is updated to include the new feature
 
-2. Atleast one SD other than the one who implemented the functionality should be able to review the feature, only based on updated documentation.
+2. Another SD, not the implementer, has reviewed the feature using the documentation.
 
-3. One or more reviewers can collaborate and check the acceptance criteria in code, if it is not apparent from end-user interface.
+3. GitHub actions workflows for linting pass
 
-4. Can be merged to main without merge conflicts.
+4. Feature branch has been merged and deleted
 
 ## Sprint DoD:
 
@@ -70,15 +70,19 @@
 
 2. Entire project builds and deploys to production.
 
-3. Functionalities not visible in UI, like database transactions, are verified by atleast one SD and/or RM.
+3. Non-UI logic (e.g., DB transactions) verified by an SD or RM.
 
-4. Release manager writes release notes.
+4. Release manager writes release notes (& Change log)
+
+5. All GitHub actions workflows pass
+
+6. Bill of Materials is up to date
 
 ## Project DoD:
 
-1. Industry partner satisfied with demo.
+1. Stakeholders have reviewed and signed off the release
 
-2. Industry partner can use all functionalities solely using user documentation.
+2. Documentation (user + technical) is complete and comprehensive
 
-3. Industry partner understands design documentation.
+3. No critical open issues remain in backlog
  
