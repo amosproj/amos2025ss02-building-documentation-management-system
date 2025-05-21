@@ -93,3 +93,5 @@ dotnet format
 
 -> To customize health checks, modify the services in Program.cs
 
+-> Set LF end-of-line sequence for Dockerfile and .sh files, especially in backend directory
+
