@@ -125,6 +125,7 @@ jobs:
             # Relaunch stack
             docker compose -f docker-compose-prod.yml up -d
             docker compose -f docker-compose-prod.yml logs backend --tail=50
+            docker compose -f docker-compose-prod.yml exec backend printenv
 
             # Optional cleanup
             # docker image prune -af --filter "until=24h"
