@@ -109,8 +109,8 @@ jobs:
             docker compose -f docker-compose-prod.yml down
 
             # --- uncomment to reset DB volume ---
-            echo "Dropping Postgres volume to force schema reinitialization..."
-            docker volume rm bitandbeam_pgdata || true
+            # echo "Dropping Postgres volume to force schema reinitialization..."
+            # docker volume rm bitandbeam_pgdata || true
 
             # --- remove old images ONLY when BitAndBeam folder changed ---
             if [ "${{ steps.changed.outputs.changed }}" = "true" ]; then
