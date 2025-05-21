@@ -106,6 +106,10 @@ namespace Build.ING.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<string>("FileName")
+                        .IsRequired()
+                        .HasColumnType("text");
+
                     b.Property<string>("FilePath")
                         .IsRequired()
                         .HasColumnType("text");
@@ -114,6 +118,10 @@ namespace Build.ING.Migrations
                         .HasColumnType("integer");
 
                     b.Property<string>("FileType")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("GroupId")
                         .IsRequired()
                         .HasColumnType("text");
 
@@ -136,6 +144,9 @@ namespace Build.ING.Migrations
                         .HasColumnType("text");
 
                     b.Property<DateTime>("UploadDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime>("UploadedAt")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<int?>("UploadedBy")
