@@ -1,0 +1,36 @@
+<!-- file-view.component.html -->
+<div class="layout">
+  <app-sidebar (viewFileEvent)="selectFileToView($event)"></app-sidebar>
+  <div class="main-area">
+    <div class="file-view-container">
+      <!-- Main File Content -->
+      <div class="file-main-content">
+
+        <!-- PDF Viewer -->
+        <section class="pdf-viewer">
+          <pdf-viewer *ngIf="selectedFile"
+                      [src]="selectedFile.url"
+                      [show-all]="true"
+                      style="display: block; height: 100%; width: 100%;">
+          </pdf-viewer>
+
+        </section>
+
+        <!-- Metadata Panel-->
+        <aside class="metadata-panel" *ngIf="selectedFile">
+          <h3>Metadata</h3>
+          <div class="metadata-item" *ngFor="let meta of selectedFile.metadata || []">
+            <strong>{{ meta.label }}</strong>: {{ meta.value }}
+          </div>
+
+          <div class="meta-actions">
+            <button class="edit-btn">Edit</button>
+             <button class="download-btn" (click)="downloadFile(selectedFile)">Download</button>
+              <button class="delete-btn" (click)="clearViewer()">Delete</button>
+            </div>
+          </aside>
+
+        </div>
+      </div>
+    </div>
+  </div>
