@@ -7,7 +7,7 @@ This folder contains the deliverables for Sprint 5.
 -   [ ] Snapshot of the feature board (.tsv & .jpg)
 -   [ ] Planning documents (.pdf & .xlsx)
 -   [ ] Snapshot of the imp-squared backlog (.tsv & .jpg)
--   [ ] Build Process Video (build-process-video.mkv)
+-   [x] Build Process Video (build-process-video.mkv)
 
 ---
 
