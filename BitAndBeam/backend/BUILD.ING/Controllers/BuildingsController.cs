@@ -70,13 +70,13 @@ namespace BUILD.ING.Controllers
             var existingBuilding = await _context.Buildings
                 .Include(b => b.Documents)
                 .Include(b => b.BuildingDocumentRelations)
-                .FirstOrDefaultAsync(b => b.BuildingId == id);
+                .FirstOrDefaultAsync(b => b.BuildingId == id).ConfigureAwait(false);
 
 
             if (existingBuilding == null)
                 return NotFound();
 
-           _context.Entry(existingBuilding).CurrentValues.SetValues(updatedBuilding);
+            _context.Entry(existingBuilding).CurrentValues.SetValues(updatedBuilding);
 
 
             // Update only editable fields
@@ -90,11 +90,11 @@ namespace BUILD.ING.Controllers
             existingBuilding.UpdatedAt = DateTime.UtcNow;
 
             _context.Entry(existingBuilding).Property(b => b.UpdatedAt).IsModified = true;
-            _context.Entry(existingBuilding).Property(b => b.Coordinates).IsModified = true;    
+            _context.Entry(existingBuilding).Property(b => b.Coordinates).IsModified = true;
 
             try
             {
-                await _context.SaveChangesAsync();
+                await _context.SaveChangesAsync().ConfigureAwait(false);
             }
             catch (Exception ex)
             {
@@ -130,7 +130,7 @@ namespace BUILD.ING.Controllers
                 Source = conn.DataSource,
                 Db = conn.Database
             });
-        } 
+        }
 
 
 
