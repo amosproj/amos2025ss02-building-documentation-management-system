@@ -6,7 +6,7 @@
 
     c. The dev branch is where all developers will merge into after review.
 
-2.  a. Developers should have their branches named as 'dev_<developer_name>'. Developers will have work rights only on their respective branch. When they are ready with a feature, they create pull request to merge into dev.
+2.  a. Developers should have their feature branches named as 'dev_<developer_name>_<feature>'. Developers will have work rights only on their respective branch. When they are ready with a feature, they create pull request to merge into dev and delete feature branch.
 
     b. At least two other eyes review the pull request, both developers. In addition, product owners or scrum master can also review if one of them case they can understand the tech stack.
 
