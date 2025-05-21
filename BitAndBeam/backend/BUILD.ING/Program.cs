@@ -6,6 +6,7 @@ var builder = WebApplication.CreateBuilder(args);
 var conn = builder.Configuration.GetConnectionString("DefaultConnection");
 Console.WriteLine($"⛳ Connection String: {conn ?? "null"}");
 
+builder.Services.AddControllers();
 // Add services to the container.
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
