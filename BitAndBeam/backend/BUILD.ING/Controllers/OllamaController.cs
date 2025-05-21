@@ -1,9 +1,9 @@
-using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 using System.Net.Http;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
 
 namespace BUILD.ING.Controllers
 {
@@ -56,14 +56,14 @@ namespace BUILD.ING.Controllers
 
             try
             {
-                var response = await _httpClient.PostAsync("http://ollama:8000/ask", httpContent);
+                var response = await _httpClient.PostAsync("http://ollama:8000/ask", httpContent).ConfigureAwait(false);
 
                 if (!response.IsSuccessStatusCode)
                 {
                     return StatusCode((int) response.StatusCode, new { error = "Ollama service error" });
                 }
 
-                var responseContent = await response.Content.ReadAsStringAsync();
+                var responseContent = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
 
                 stopwatch.Stop();
 
