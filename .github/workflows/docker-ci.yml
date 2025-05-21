@@ -124,9 +124,7 @@ jobs:
 
             # Relaunch stack
             docker compose -f docker-compose-prod.yml up -d
+            docker compose -f docker-compose-prod.yml logs backend --tail=50
 
             # Optional cleanup
             # docker image prune -af --filter "until=24h"
-
-      - name: Debug backend logs after deploy
-        run: docker compose -f docker-compose-prod.yml logs backend --tail=50
