@@ -9,6 +9,8 @@ using Microsoft.OpenApi.Models;
 
 
 var builder = WebApplication.CreateBuilder(args);
+var conn = builder.Configuration.GetConnectionString("DefaultConnection");
+Console.WriteLine($"⛳ Connection String: {conn ?? "null"}");
 
 // Add services to the container.
 builder.Services.AddDbContext<AppDbContext>(options =>
