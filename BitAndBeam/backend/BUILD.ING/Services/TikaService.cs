@@ -3,7 +3,7 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 
-namespace BitAndBeam.Tika
+namespace BUILD.ING.Services
 {
     public class TikaService
     {
@@ -29,7 +29,7 @@ namespace BitAndBeam.Tika
                 using var content = new ByteArrayContent(fileBytes);
                 content.Headers.Add("Content-Disposition", $"attachment; filename={fileName}");
 
-                var response = await _client.PutAsync("http://tika:9998/tika", content);
+                var response = await _client.PutAsync("tika", content);
 
                 if (response.IsSuccessStatusCode)
                 {

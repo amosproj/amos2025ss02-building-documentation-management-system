@@ -1,6 +1,8 @@
 using BUILD.ING.Data;
 using BUILD.ING.Models;
+using BUILD.ING.Services;
 using Microsoft.EntityFrameworkCore;
+using System;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -10,7 +12,38 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(c =>
+{
+    c.SwaggerDoc("v1", new Microsoft.OpenApi.Models.OpenApiInfo
+    {
+        Title = "BUILD.ING API",
+        Version = "v1",
+        Description = "API for the BUILD.ING Document Management System including Tika integration"
+    });
+    
+    // Enable XML comments
+    var xmlFile = $"{System.Reflection.Assembly.GetExecutingAssembly().GetName().Name}.xml";
+    var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+    if (File.Exists(xmlPath))
+    {
+        c.IncludeXmlComments(xmlPath);
+    }
+    
+    // Configure Swagger to properly handle file uploads
+    c.OperationFilter<FileUploadOperationFilter>();
+});
+
+// File Upload Operation Filter for Swagger
+builder.Services.AddSingleton<FileUploadOperationFilter>();
+
+// Register the TikaService with HttpClient
+builder.Services.AddHttpClient<TikaService>(client => {
+    client.BaseAddress = new Uri("http://tika:9998/");
+    client.Timeout = TimeSpan.FromMinutes(2); // Documents can be large
+});
+
+// Add Controllers
+builder.Services.AddControllers();
 
 // Add health check service
 builder.Services.AddHealthChecks();
@@ -25,6 +58,9 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+// Map controllers
+app.MapControllers();
 
 var summaries = new[]
 {

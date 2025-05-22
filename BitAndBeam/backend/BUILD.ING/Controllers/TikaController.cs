@@ -1,9 +1,12 @@
 using System;
 using System.Threading.Tasks;
+using System.IO;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Microsoft.AspNetCore.Http;
+using BUILD.ING.Services;
 
-namespace BitAndBeam.Tika
+namespace BUILD.ING.Controllers
 {
     [ApiController]
     [Route("api/tika")]
@@ -18,9 +21,13 @@ namespace BitAndBeam.Tika
             _logger = logger;
         }
 
-        // POST: api/tika/extract
+        /// <summary>
+        /// Extracts text content from a document file using Apache Tika
+        /// </summary>
+        /// <param name="file">The document file to extract text from</param>
+        /// <returns>Extracted text content or error information</returns>
         [HttpPost("extract")]
-        public async Task<IActionResult> Extract([FromForm] Microsoft.AspNetCore.Http.IFormFile file)
+        public async Task<IActionResult> Extract(IFormFile file)
         {
             if (file == null || file.Length == 0)
             {
@@ -35,7 +42,7 @@ namespace BitAndBeam.Tika
             try
             {
                 byte[] fileBytes;
-                using (var ms = new System.IO.MemoryStream())
+                using (var ms = new MemoryStream())
                 {
                     await file.CopyToAsync(ms);
                     fileBytes = ms.ToArray();
