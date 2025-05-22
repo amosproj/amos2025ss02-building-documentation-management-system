@@ -2,7 +2,12 @@ using BUILD.ING.Data;
 using BUILD.ING.Models;
 using BUILD.ING.Services;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.OpenApi.Models;
+using Microsoft.AspNetCore.Http;
 using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -14,7 +19,7 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
 {
-    c.SwaggerDoc("v1", new Microsoft.OpenApi.Models.OpenApiInfo
+    c.SwaggerDoc("v1", new OpenApiInfo
     {
         Title = "BUILD.ING API",
         Version = "v1",
@@ -28,41 +33,6 @@ builder.Services.AddSwaggerGen(c =>
     {
         c.IncludeXmlComments(xmlPath);
     }
-    
-    // Configure Swagger to properly handle file uploads using inline operation filter
-    c.OperationFilter<Swashbuckle.AspNetCore.SwaggerGen.OperationFilter<Microsoft.OpenApi.Models.OpenApiOperation>>(
-        (operation, context) => {
-            var fileParameters = context.ApiDescription.ParameterDescriptions
-                .Where(p => p.ModelMetadata?.ModelType == typeof(IFormFile) || 
-                           p.ModelMetadata?.ModelType == typeof(List<IFormFile>))
-                .ToList();
-
-            if (fileParameters.Any())
-            {
-                operation.RequestBody = new OpenApiRequestBody
-                {
-                    Content = new Dictionary<string, OpenApiMediaType>
-                    {
-                        ["multipart/form-data"] = new OpenApiMediaType
-                        {
-                            Schema = new OpenApiSchema
-                            {
-                                Type = "object",
-                                Properties = fileParameters.ToDictionary(
-                                    p => p.Name,
-                                    _ => new OpenApiSchema
-                                    {
-                                        Type = "string",
-                                        Format = "binary"
-                                    }
-                                ),
-                                Required = new HashSet<string>(fileParameters.Select(p => p.Name))
-                            }
-                        }
-                    }
-                };
-            }
-        });
 });
 
 // Register the TikaService with HttpClient
