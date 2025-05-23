@@ -7,10 +7,13 @@ import { BuildingService } from '../../services/building.service'
 
 import { RouterModule , Router } from '@angular/router';
 
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { HttpClientModule } from '@angular/common/http';
+
 @Component({
   selector: 'app-upload-file',
   standalone: true,
-  imports: [CommonModule, RouterModule, SidebarComponent,FormsModule],
+  imports: [CommonModule, RouterModule, SidebarComponent,FormsModule, HttpClientModule],
   templateUrl: './upload-file.component.html',
   styleUrls: ['./upload-file.component.css'],
 })
@@ -23,8 +26,8 @@ export class UploadFileComponent implements OnInit {
   constructor(
     private config: ConfigService,
     private router: Router,
-    public buildingService: BuildingService
-
+    public buildingService: BuildingService,
+    private http: HttpClient
 
 ) {}
   ngOnInit() {
@@ -37,9 +40,28 @@ export class UploadFileComponent implements OnInit {
     const file = event.target.files[0];
     if (!file) return;
 
+    this.uploadedFile = file;
     this.uploading = true;
     this.uploadSuccess = false;
     this.uploadError = '';
+
+    const formData = new FormData();
+
+    if(this.uploadedFile){
+      formData.append('file', this.uploadedFile);
+    }
+    
+
+    this.http.post(`${this.config.apiUrl}/api/documents`, formData).subscribe({
+    next: () => {
+      this.uploading = false;
+      this.uploadSuccess = true;
+    },
+    error: (error: HttpErrorResponse) => {
+      this.uploading = false;
+      this.uploadError = 'Upload failed: ' + error.message;
+    }
+  });
 
     // Simulate upload with delay (replace this with actual HTTP upload later)
     setTimeout(() => {

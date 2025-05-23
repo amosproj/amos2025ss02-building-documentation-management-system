@@ -8,6 +8,6 @@ declare const window: any;
 })
 export class ConfigService {
   get apiUrl(): string {
-    return window.__env?.API_URL || 'http://localhost:3000';
+    return window.__env?.API_URL || 'http://localhost:5001';
   }
 }
