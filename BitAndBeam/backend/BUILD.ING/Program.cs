@@ -3,10 +3,7 @@ using BUILD.ING.Models;
 using BUILD.ING.Swagger;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
-
-
-
-
+using Microsoft.Extensions.FileProviders;
 
 var builder = WebApplication.CreateBuilder(args);
 var conn = builder.Configuration.GetConnectionString("DefaultConnection");
@@ -80,6 +77,13 @@ app.MapHealthChecks("/healthz");
 
 //Just to set a route at /
 app.MapGet("/", () => "🚀 API is running! Visit /swagger , /weatherforecast or /healthz.");
+
+// Ensure the documents folder exists
+app.UseStaticFiles(new StaticFileOptions
+{
+    FileProvider = new PhysicalFileProvider("/app/documents"),
+    RequestPath = "/documents"
+});
 
 
 app.Run();
