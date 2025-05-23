@@ -8,6 +8,7 @@ namespace BUILD.ING.Models
         public int DocumentId { get; set; }
         public string Title { get; set; }
         public string FilePath { get; set; }
+        public string FileUrl { get; set; }
         public string FileType { get; set; }
         public int FileSize { get; set; }
         public int? CategoryId { get; set; }
@@ -23,7 +24,6 @@ namespace BUILD.ING.Models
         public string FileName { get; set; }
         public DateTime UploadedAt { get; set; }
         public string GroupId { get; set; }
-
         public Building Building { get; set; }
         public User Uploader { get; set; }
         public DocumentCategory Category { get; set; }
