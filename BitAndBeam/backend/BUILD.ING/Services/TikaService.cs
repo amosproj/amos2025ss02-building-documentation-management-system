@@ -31,7 +31,7 @@ namespace BUILD.ING.Services
                 _logger.LogInformation("Sending document to Tika: {FileName}, size: {Size} bytes", fileName, fileBytes.Length);
                 
                 using var content = new ByteArrayContent(fileBytes);
-                content.Headers.Add("Content-Disposition", $"attachment; filename={fileName}");
+                //content.Headers.Add("Content-Disposition", $"attachment; filename={fileName}");
                 
                 // Ensure BaseAddress is set correctly
                 string endpoint = "tika";
