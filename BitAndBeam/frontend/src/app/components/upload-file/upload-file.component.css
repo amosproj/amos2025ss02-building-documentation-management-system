@@ -221,45 +221,101 @@ hhtml, body {
 }
 
 /* AI Assistant */
-.ai-assistant h3 {
-  font-size: 1.3rem;
-  margin-bottom: 0.2rem;
-}
-
-.ai-assistant p {
-  margin-top: 0;
-  color: #666;
-}
-
 .chat-box {
-  background-color: #fef1e7;
-  padding: 1rem;
-  border-radius: 12px;
-  margin-top: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  padding: 12px;
+  max-height: 400px;
+  display: flex;
+  flex-direction: column;
 }
 
-.chat-header {
-  font-weight: bold;
-  margin-bottom: 0.8rem;
+.chat-history {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 10px;
+}
+
+.user-message {
+  align-self: flex-end;  /* Right align */
+  background-color: #daf8cb;
+  padding: 8px 12px;
+  border-radius: 15px 15px 0 15px;
+  max-width: 70%;
+  word-wrap: break-word;
+  text-align: right;
+}
+
+.ai-message {
+  align-self: flex-start; /* Left align */
+  background-color: #f1f0f0;
+  padding: 8px 12px;
+  border-radius: 15px 15px 15px 0;
+  max-width: 70%;
+  word-wrap: break-word;
+  text-align: left;
 }
 
 .chat-input {
   display: flex;
-  gap: 0.5rem;
+  gap: 8px;
 }
 
 .chat-input input {
-  flex-grow: 1;
-  padding: 0.5rem;
-  border-radius: 6px;
+  flex: 1;
+  padding: 10px 14px;
+  border-radius: 20px 0 0 20px; /* Left side rounded more */
   border: 1px solid #ccc;
+  outline: none;
+  font-size: 1rem;
+  box-shadow: inset 0 1px 3px rgba(0,0,0,0.1);
+  transition: border-color 0.3s ease;
 }
 
-.chat-input button {
+.chat-input input:focus {
+  border-color: #45c3b8;
+  box-shadow: 0 0 5px rgba(69,195,184,0.6);
+}
+
+
+.error-message {
+  color: red;
+  font-size: 0.9em;
+  margin-bottom: 6px;
+}
+
+.send-btn {
   background-color: #45c3b8;
+  border: 1px solid #45c3b8;
   color: white;
-  border: none;
-  padding: 0 1rem;
-  border-radius: 6px;
+  padding: 0 20px;
+  border-radius: 0 20px 20px 0; /* Right side rounded more */
   cursor: pointer;
+  font-weight: 700;
+  font-size: 1.2rem;
+  transition: background-color 0.3s ease, border-color 0.3s ease;
+  box-shadow: 0 2px 6px rgba(69,195,184,0.4);
+}
+
+.send-btn:hover {
+  background-color: #369995;
+  border-color: #369995;
+  box-shadow: 0 4px 12px rgba(54,153,149,0.7);
+}
+
+.toggle-history-btn {
+  background-color: #45c3b8;
+  border: none;
+  padding: 0.5rem 1rem;
+  margin-bottom: 1rem;
+  border-radius: 6px;
+  color: white;
+  cursor: pointer;
+  font-weight: 600;
+  transition: background-color 0.3s ease;
+}
+
+.toggle-history-btn:hover {
+  background-color: #369995;
 }
