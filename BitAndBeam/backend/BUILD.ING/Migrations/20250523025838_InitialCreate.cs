@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using NpgsqlTypes;
@@ -13,27 +13,6 @@ namespace Build.ING.Migrations
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.CreateTable(
-                name: "Buildings",
-                columns: table => new
-                {
-                    BuildingId = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    Name = table.Column<string>(type: "text", nullable: false),
-                    Address = table.Column<string>(type: "text", nullable: false),
-                    ConstructionYear = table.Column<int>(type: "integer", nullable: true),
-                    TotalArea = table.Column<decimal>(type: "numeric", nullable: true),
-                    Floors = table.Column<int>(type: "integer", nullable: true),
-                    Description = table.Column<string>(type: "text", nullable: false),
-                    Coordinates = table.Column<NpgsqlPoint>(type: "point", nullable: true),
-                    CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    UpdatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Buildings", x => x.BuildingId);
-                });
-
             migrationBuilder.CreateTable(
                 name: "DocumentCategories",
                 columns: table => new
@@ -70,6 +49,50 @@ namespace Build.ING.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Organizations",
+                columns: table => new
+                {
+                    OrganizationId = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Name = table.Column<string>(type: "character varying(200)", maxLength: 200, nullable: false),
+                    Description = table.Column<string>(type: "text", nullable: true),
+                    CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false, defaultValueSql: "CURRENT_TIMESTAMP"),
+                    IsActive = table.Column<bool>(type: "boolean", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Organizations", x => x.OrganizationId);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Buildings",
+                columns: table => new
+                {
+                    BuildingId = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Name = table.Column<string>(type: "text", nullable: false),
+                    Address = table.Column<string>(type: "text", nullable: false),
+                    ConstructionYear = table.Column<int>(type: "integer", nullable: true),
+                    TotalArea = table.Column<decimal>(type: "numeric", nullable: true),
+                    Floors = table.Column<int>(type: "integer", nullable: true),
+                    Description = table.Column<string>(type: "text", nullable: false),
+                    Coordinates = table.Column<NpgsqlPoint>(type: "point", nullable: true),
+                    CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    OrganizationId = table.Column<int>(type: "integer", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Buildings", x => x.BuildingId);
+                    table.ForeignKey(
+                        name: "FK_Buildings_Organizations_OrganizationId",
+                        column: x => x.OrganizationId,
+                        principalTable: "Organizations",
+                        principalColumn: "OrganizationId",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Users",
                 columns: table => new
                 {
@@ -83,11 +106,18 @@ namespace Build.ING.Migrations
                     Role = table.Column<string>(type: "text", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     LastLogin = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
-                    IsActive = table.Column<bool>(type: "boolean", nullable: false)
+                    IsActive = table.Column<bool>(type: "boolean", nullable: false),
+                    OrganizationId = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Users", x => x.UserId);
+                    table.ForeignKey(
+                        name: "FK_Users_Organizations_OrganizationId",
+                        column: x => x.OrganizationId,
+                        principalTable: "Organizations",
+                        principalColumn: "OrganizationId",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -98,6 +128,7 @@ namespace Build.ING.Migrations
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     Title = table.Column<string>(type: "text", nullable: false),
                     FilePath = table.Column<string>(type: "text", nullable: false),
+                    FileUrl = table.Column<string>(type: "text", nullable: false),
                     FileType = table.Column<string>(type: "text", nullable: false),
                     FileSize = table.Column<int>(type: "integer", nullable: false),
                     CategoryId = table.Column<int>(type: "integer", nullable: true),
@@ -225,6 +256,11 @@ namespace Build.ING.Migrations
                 column: "DocumentId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Buildings_OrganizationId",
+                table: "Buildings",
+                column: "OrganizationId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_DocumentCategories_ParentCategoryId",
                 table: "DocumentCategories",
                 column: "ParentCategoryId");
@@ -260,10 +296,21 @@ namespace Build.ING.Migrations
                 column: "UploadedBy");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Organizations_Name",
+                table: "Organizations",
+                column: "Name",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Users_Email",
                 table: "Users",
                 column: "Email",
                 unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Users_OrganizationId",
+                table: "Users",
+                column: "OrganizationId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Users_Username",
@@ -298,6 +345,9 @@ namespace Build.ING.Migrations
 
             migrationBuilder.DropTable(
                 name: "Users");
+
+            migrationBuilder.DropTable(
+                name: "Organizations");
         }
     }
 }

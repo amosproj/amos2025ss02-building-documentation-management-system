@@ -42,6 +42,7 @@ CREATE TABLE "documents" (
     "document_id" SERIAL PRIMARY KEY,
     "title" VARCHAR(255) NOT NULL,
     "file_path" VARCHAR(255) NOT NULL,
+    "file_url" TEXT,
     "file_type" VARCHAR(20) NOT NULL,
     "file_size" INTEGER NOT NULL, -- Size in bytes
     "category_id" INTEGER REFERENCES "document_categories" ("category_id") ON DELETE SET NULL,

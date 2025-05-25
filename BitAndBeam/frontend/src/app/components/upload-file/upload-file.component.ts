@@ -3,14 +3,15 @@ import { CommonModule } from '@angular/common';
 import { ConfigService } from '../../config.service';
 import { SidebarComponent } from '../sidebar/sidebar.component';
 import { FormsModule } from '@angular/forms';
-import { BuildingService } from '../../services/building.service'
-
-import { RouterModule , Router } from '@angular/router';
+import { BuildingService } from '../../services/building.service';
+import { RouterModule, Router } from '@angular/router';
+import { HttpClient, HttpClientModule } from '@angular/common/http';
+import { MarkdownBoldPipe } from '../../pipes/markdown-bold.pipe';  // Adjust relative path accordingly
 
 @Component({
   selector: 'app-upload-file',
   standalone: true,
-  imports: [CommonModule, RouterModule, SidebarComponent,FormsModule],
+  imports: [CommonModule, RouterModule, SidebarComponent, FormsModule, HttpClientModule, MarkdownBoldPipe],
   templateUrl: './upload-file.component.html',
   styleUrls: ['./upload-file.component.css'],
 })
@@ -19,20 +20,26 @@ export class UploadFileComponent implements OnInit {
   uploadSuccess = false;
   uploadError = '';
   selectedBuildingIndex: number = 0;
+  uploadedFile: File | null = null;
+  showHistory: boolean = true; 
+
+  // AI Chat Properties
+  userInput: string = '';
+  messages: { sender: 'user' | 'ai', text: string }[] = [];
+  errorMessage: string = '';
 
   constructor(
     private config: ConfigService,
     private router: Router,
-    public buildingService: BuildingService
+    public buildingService: BuildingService,
+    private http: HttpClient
+  ) {}
 
-
-) {}
   ngOnInit() {
     console.log('API URL from config service:', this.config.apiUrl);
   }
-  uploadedFile: File | null = null; // Change to single file
 
-  // Handle file selection
+  // File Upload Handlers
   onFileSelected(event: any) {
     const file = event.target.files[0];
     if (!file) return;
@@ -49,19 +56,16 @@ export class UploadFileComponent implements OnInit {
     }, 2000);
   }
 
-
-  // Handle drag-and-drop file selection
   onDrop(event: DragEvent) {
     event.preventDefault();
     if (event.dataTransfer?.files) {
-      const file = event.dataTransfer.files[0]; // Only get the first file
+      const file = event.dataTransfer.files[0];
       if (file) {
         this.uploadedFile = file;
       }
     }
   }
 
-  // Handle drag over event (required for drop event to trigger)
   onDragOver(event: Event) {
     event.preventDefault();
   }
@@ -82,9 +86,39 @@ export class UploadFileComponent implements OnInit {
       this.selectedBuildingIndex = newIndex;
       this.uploadedFile = null;
     }
+  }
+
+  // ✅ AI Chat Message Sender
+  sendMessage() {
+  const prompt = this.userInput.trim();
+  if (!prompt) return;
+
+  // Add user's message to history
+  this.messages.push({ sender: 'user', text: prompt });
+  this.userInput = '';
+  this.errorMessage = '';
+
+  // Full conversation context after current push
+  const context = this.messages
+    .map(msg => (msg.sender === 'user' ? 'User: ' : 'AI: ') + msg.text)
+    .join('\n');
+
+  this.http.post<any>('http://localhost:5001/api/Ollama/ask', {
+    prompt: prompt,
+    context: context
+  }).subscribe({
+    next: (response) => {
+      this.messages.push({ sender: 'ai', text: response?.response || 'No response received.' });
+    },
+    error: (err) => {
+      console.error('Error from AI API:', err);
+      this.errorMessage = '⚠️ AI Assistant is not responding. Please try again later.';
+    }
+  });
 }
 
+  toggleHistory() {
+      this.showHistory = !this.showHistory;
+  }
+
 }
-
-
-

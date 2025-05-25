@@ -28,9 +28,6 @@ COPY wait-for-it.sh wait-for-it.sh
 # Stelle sicher, dass sie ausführbar ist (innerhalb des Linux-Containers!)
 RUN chmod +x wait-for-it.sh
 
-
-
-
 # Copy build artifacts from previous stage
 COPY --from=build /app/BUILD.ING/out ./
 

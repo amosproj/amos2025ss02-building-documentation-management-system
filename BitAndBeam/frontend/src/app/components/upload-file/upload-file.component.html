@@ -41,18 +41,31 @@
     </div>
 
     <!-- AI Assistant Section -->
-    <div class="ai-assistant">
+    <div class="chat-box">
       <h3>AI Assistant</h3>
-      <p>Ask questions or extract data from your documents</p>
 
-      <div class="chat-box">
-        <div class="chat-header">🤖 How can I help you today?
-        </div>
-        <div class="chat-input">
-          <input type="text" placeholder="Type a message..." />
-          <button>➤</button>
+      <button class="toggle-history-btn" (click)="toggleHistory()">
+        {{ showHistory ? 'Hide History' : 'Show History' }}
+      </button>
+
+      <div class="chat-history" *ngIf="showHistory">
+        <div *ngFor="let msg of messages" [ngClass]="msg.sender === 'user' ? 'user-message' : 'ai-message'">
+          <strong *ngIf="msg.sender !== 'user'">AI</strong>{{ msg.sender !== 'user' ? ':' : '' }}
+          <span [innerHTML]="msg.text | markdownBold"></span>
         </div>
       </div>
+
+      <!-- Error message -->
+      <div *ngIf="errorMessage" class="error-message">
+        {{ errorMessage }}
+      </div>
+
+      <!-- Input box -->
+      <div class="chat-input">
+        <input [(ngModel)]="userInput" type="text" placeholder="Type a message..." (keyup.enter)="sendMessage()" />
+        <button class="send-btn" (click)="sendMessage()">➤</button>
+      </div>
     </div>
+
   </main>
 </div>
