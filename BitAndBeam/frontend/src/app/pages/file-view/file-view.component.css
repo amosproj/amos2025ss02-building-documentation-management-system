@@ -1,0 +1,88 @@
+/* file-view.component.css */
+
+.layout {
+  display: flex;
+  height: 100vh;
+}
+
+
+.main-area {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.file-view-container {
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+}
+.file-main-content {
+  display: flex;
+  flex: 1;
+}
+
+.pdf-viewer {
+  flex: 2;
+  padding: 1.5rem;
+  overflow-y: auto;
+  background-color: #ffffff;
+}
+
+.simple-pdf-viewer {
+  width: 100%;
+  height: 100%;
+  border: none;
+}
+
+.metadata-panel {
+  flex: 1;
+  background-color: #fffefb;
+  padding: 1.5rem;
+  border-left: 1px solid #ddd;
+  overflow-y: auto;
+}
+
+.metadata-panel h3 {
+  margin-top: 0;
+  margin-bottom: 1rem;
+}
+
+.metadata-item {
+  margin-bottom: 0.8rem;
+  color: #333;
+}
+
+.meta-actions button {
+  margin-top: 0.75rem;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  font-size: 0.95rem;
+}
+
+.edit-btn {
+  background-color: #45c3b8;
+  color: white;
+  margin-bottom: 0.5rem;
+}
+
+.download-btn {
+  background-color: #f3e6d8;
+  color: #333;
+  margin-bottom: 0.5rem;
+}
+
+.delete-btn {
+  background-color: #c94444;
+  color: white;
+}
+
+.logo-img {
+  width: 48px;
+  height: 48px;
+  object-fit: contain;
+  border-radius: 8px;
+}

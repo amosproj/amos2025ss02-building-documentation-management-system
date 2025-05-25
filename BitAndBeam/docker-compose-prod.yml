@@ -21,7 +21,7 @@ services:
       - "8080:80"  # Optional: expose only if needed externally
 
   ollama:
-    image: ghcr.io/amosproj/bitandbeam_ollama:latest
+    image: ghcr.io/amosproj/bitandbeam-ollama:latest
     container_name: ollama
     restart: always
     ports:
@@ -39,7 +39,7 @@ services:
     restart: always
     volumes:
       - pgdata:/var/lib/postgresql/data
-      - ./postgres/init.sql:/docker-entrypoint-initdb.d/init.sql
+      - ./database/schema.sql:/docker-entrypoint-initdb.d/init.sql
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
@@ -53,6 +53,8 @@ services:
 
   tika:
     image: apache/tika
+    container_name: bitandbeam_tika
+    restart: always
     ports:
       - "9998:9998"
     healthcheck:

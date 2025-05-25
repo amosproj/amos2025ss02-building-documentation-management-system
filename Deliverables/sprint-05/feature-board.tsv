@@ -1,0 +1,51 @@
+Title	URL	Assignees	Status	Estimated size	Real size	Sprint	Priority
+Adopt Feature Branch Workflow and Clean Up Old Branches	https://github.com/amosproj/amos2025ss02-building-documentation-management-system/issues/108		Product Backlog				
+Replace Default Web Service with Actual Angular Frontend	https://github.com/amosproj/amos2025ss02-building-documentation-management-system/issues/94		Product Backlog				
+Upload and Store Document via Frontend	https://github.com/amosproj/amos2025ss02-building-documentation-management-system/issues/96		Product Backlog				
+Document View Page displays Actual Documents	https://github.com/amosproj/amos2025ss02-building-documentation-management-system/issues/97		Product Backlog				
+Display Stored Documents in the Document Explorer	https://github.com/amosproj/amos2025ss02-building-documentation-management-system/issues/95		Product Backlog				
+Connect Frontend Chat Component to LLM	https://github.com/amosproj/amos2025ss02-building-documentation-management-system/issues/100		Product Backlog				
+Apache Tika Integration during Document Upload	https://github.com/amosproj/amos2025ss02-building-documentation-management-system/issues/99		Product Backlog				
+Enforce HTTPS on Production Server	https://github.com/amosproj/amos2025ss02-building-documentation-management-system/issues/98		Product Backlog				
+Implement User Authentication in Backend	https://github.com/amosproj/amos2025ss02-building-documentation-management-system/issues/101		Product Backlog				
+Validate AI Service Integration with Application	https://github.com/amosproj/amos2025ss02-building-documentation-management-system/issues/62		Product Backlog				
+Implement Backend Logging	https://github.com/amosproj/amos2025ss02-building-documentation-management-system/issues/65		Product Backlog				
+Gather sample files of building documents	https://github.com/amosproj/amos2025ss02-building-documentation-management-system/issues/20		Product Backlog				
+Remove Building Documents with Real Data	https://github.com/amosproj/amos2025ss02-building-documentation-management-system/issues/38	kamsur, masum-abid	Sprint Backlog	5		Sprint 4	
+Update Bill of Materials with New Dependencies	https://github.com/amosproj/amos2025ss02-building-documentation-management-system/issues/87		Sprint Backlog	1		Sprint 5	
+Implement Angular Frontend based on Figma Mockup	https://github.com/amosproj/amos2025ss02-building-documentation-management-system/issues/61	bastydjamen	In Progress	5		Sprint 5	
+Persist Uploaded Files using Docker Volumes and Link to Stored Metadata	https://github.com/amosproj/amos2025ss02-building-documentation-management-system/issues/63	SyedAffan10	In Progress	8		Sprint 5	
+Support OpenAPI Client Generation in Both Local and CI/CD Environments	https://github.com/amosproj/amos2025ss02-building-documentation-management-system/issues/51	kamsur	In Progress	8		Sprint 5	
+Query Ollama via Backend	https://github.com/amosproj/amos2025ss02-building-documentation-management-system/issues/64	masum-abid	Awaiting Review	5		Sprint 5	
+Implement CRUD Endpoints for Document with File Upload	https://github.com/amosproj/amos2025ss02-building-documentation-management-system/issues/50	masum-abid	Awaiting Review	8	8	Sprint 4	
+Agree on project-specific Definition of Done	https://github.com/amosproj/amos2025ss02-building-documentation-management-system/issues/88	kamsur	Awaiting Review	3		Sprint 5	
+Persist Building Data via EF Core Integration	https://github.com/amosproj/amos2025ss02-building-documentation-management-system/issues/67	so77nava	Awaiting Review	5		Sprint 5	
+Implement CRUD Endpoints for Building	https://github.com/amosproj/amos2025ss02-building-documentation-management-system/issues/52	so77nava	Awaiting Review	5	8	Sprint 4	
+Set Up Dockerized Apache Tika for Metadata Extraction	https://github.com/amosproj/amos2025ss02-building-documentation-management-system/issues/60	arpita739	Awaiting Review	5		Sprint 5	
+Add DB Organization Entity to Schema and EF Core Model	https://github.com/amosproj/amos2025ss02-building-documentation-management-system/issues/68	arpita739	Awaiting Review	8		Sprint 5	
+Document Build Process in Video Format	https://github.com/amosproj/amos2025ss02-building-documentation-management-system/issues/82	kamsur	Awaiting Review	2		Sprint 5	
+Integrate Linting into CI/CD with GitHub Actions	https://github.com/amosproj/amos2025ss02-building-documentation-management-system/issues/58	kamsur	Feature Archive	5	8	Sprint 4	
+Add authentication to frontend	https://github.com/amosproj/amos2025ss02-building-documentation-management-system/issues/21	bastydjamen	Feature Archive	3	5	Sprint 4	
+Design a Web Frontend Mockup	https://github.com/amosproj/amos2025ss02-building-documentation-management-system/issues/48	bastydjamen, masum-abid	Feature Archive	5	8	Sprint 4	
+Set Up an Ollama Environment	https://github.com/amosproj/amos2025ss02-building-documentation-management-system/issues/53	SyedAffan10	Feature Archive	3	3	Sprint 4	
+Implement Initial Data Models from Existing SQL Schema using C#	https://github.com/amosproj/amos2025ss02-building-documentation-management-system/issues/49	arpita739, so77nava	Feature Archive	8	5	Sprint 4	
+Reorganize DB Scheme	https://github.com/amosproj/amos2025ss02-building-documentation-management-system/issues/59	arpita739	Feature Archive	1	1	Sprint 4	
+Research typical (German) building documents	https://github.com/amosproj/amos2025ss02-building-documentation-management-system/issues/7	masum-abid	Feature Archive	2	2	Sprint 2	
+Scaffold Basic Angular Application	https://github.com/amosproj/amos2025ss02-building-documentation-management-system/issues/6	bastydjamen, kamsur	Feature Archive	3	3	Sprint 2	
+Scaffold Basic C# ASP.NET Web API	https://github.com/amosproj/amos2025ss02-building-documentation-management-system/issues/9	so77nava	Feature Archive	3	2	Sprint 2	
+Research Local RAG‑Based LLM Solutions	https://github.com/amosproj/amos2025ss02-building-documentation-management-system/issues/10	SyedAffan10	Feature Archive	2	2	Sprint 2	
+Linting And Formatting For Backend	https://github.com/amosproj/amos2025ss02-building-documentation-management-system/issues/11	so77nava	Feature Archive	1	2	Sprint 3	
+Set Up a Pipeline with GitHub Actions	https://github.com/amosproj/amos2025ss02-building-documentation-management-system/issues/5	kamsur	Feature Archive	3	8	Sprint 3	
+Linting And Formatting For Frontend	https://github.com/amosproj/amos2025ss02-building-documentation-management-system/issues/8	bastydjamen, kamsur	Feature Archive	1	1	Sprint 3	
+Create a docker-compose file	https://github.com/amosproj/amos2025ss02-building-documentation-management-system/issues/36	kamsur	Feature Archive	2	3	Sprint 3	
+Consolidate Project Structure and Duplicate Code	https://github.com/amosproj/amos2025ss02-building-documentation-management-system/issues/37	kamsur	Feature Archive	2	2	Sprint 3	
+Create a README for the Repository	https://github.com/amosproj/amos2025ss02-building-documentation-management-system/issues/23	arpita739	Feature Archive	1	1	Sprint 3	
+Dockerize Back-end Service	https://github.com/amosproj/amos2025ss02-building-documentation-management-system/issues/19	so77nava	Feature Archive	2	2	Sprint 3	
+Create Database Scheme Diagram	https://github.com/amosproj/amos2025ss02-building-documentation-management-system/issues/22	arpita739	Feature Archive	2	2	Sprint 3	
+Dockerize Front-end Service	https://github.com/amosproj/amos2025ss02-building-documentation-management-system/issues/18	bastydjamen, kamsur	Feature Archive	2	3	Sprint 3	
+Create a software architecture description	https://github.com/amosproj/amos2025ss02-building-documentation-management-system/issues/14	kamsur	Feature Archive	3	3	Sprint 2	
+Initialize a software bill of materials with our dependencies	https://github.com/amosproj/amos2025ss02-building-documentation-management-system/issues/13	kamsur	Feature Archive	2	2	Sprint 2	
+Create a team shirt design	https://github.com/amosproj/amos2025ss02-building-documentation-management-system/issues/3	carl-egge	Feature Archive	1	1	Sprint 2	
+Create a team logo	https://github.com/amosproj/amos2025ss02-building-documentation-management-system/issues/1	carl-egge	Feature Archive	1	1	Sprint 1	
+Have a meeting with the industry partner	https://github.com/amosproj/amos2025ss02-building-documentation-management-system/issues/2	carl-egge, daku-de	Feature Archive	1	1	Sprint 1	
+Align on Development Guidelines (Code Style, Merge Flow, etc.)	https://github.com/amosproj/amos2025ss02-building-documentation-management-system/issues/4	arpita739, bastydjamen, kamsur, masum-abid, Nirmin96, so77nava, SyedAffan10	Feature Archive	1	1	Sprint 1	

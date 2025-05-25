@@ -6,7 +6,7 @@
 
     c. The dev branch is where all developers will merge into after review.
 
-2.  a. Developers should have their branches named as 'dev_<developer_name>'. Developers will have work rights only on their respective branch. When they are ready with a feature, they create pull request to merge into dev.
+2.  a. Developers should have their feature branches named as 'dev_<developer_name>_<feature>'. Developers will have work rights only on their respective branch. When they are ready with a feature, they create pull request to merge into dev and delete feature branch.
 
     b. At least two other eyes review the pull request, both developers. In addition, product owners or scrum master can also review if one of them case they can understand the tech stack.
 
@@ -51,3 +51,38 @@
 3. If you are pair programming, please make sure you add “Co-authored-by:” to commit message using the correct email address
 
 4. Follow AMOS B01: Slides 38-45
+
+# Definition of Done
+
+## Feature DoD:
+
+1. Documentation is updated to include the new feature
+
+2. Another SD, not the implementer, has reviewed the feature using the documentation.
+
+3. GitHub actions workflows for linting pass
+
+4. Feature branch has been merged and deleted
+
+## Sprint DoD:
+
+1. Atleast one error-free functionality (which has passed feature DoD), more than previous release.
+
+2. Entire project builds and deploys to production.
+
+3. Non-UI logic (e.g., DB transactions) verified by an SD or RM.
+
+4. Release manager writes release notes (& Change log)
+
+5. All GitHub actions workflows pass
+
+6. Bill of Materials is up to date
+
+## Project DoD:
+
+1. Stakeholders have reviewed and signed off the release
+
+2. Documentation (user + technical) is complete and comprehensive
+
+3. No critical open issues remain in backlog
+ 

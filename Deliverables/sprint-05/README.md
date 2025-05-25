@@ -4,10 +4,10 @@ This folder contains the deliverables for Sprint 5.
 
 ## Task Checklist
 
--   [ ] Snapshot of the feature board (.tsv & .jpg)
--   [ ] Planning documents (.pdf & .xlsx)
+-   [x] Snapshot of the feature board (.tsv & .jpg)
+-   [x] Planning documents (.pdf & .xlsx)
 -   [ ] Snapshot of the imp-squared backlog (.tsv & .jpg)
--   [ ] Build Process Video (build-process-video.mkv)
+-   [x] Build Process Video (build-process-video.mkv)
 
 ---
 

@@ -1,4 +1,18 @@
 services:
+  ollama:
+    build:
+      context: ./ollama
+      dockerfile: Dockerfile
+    container_name: ollama
+    ports:
+      - "11434:11434"   # Ollama internal API
+      - "8000:8000"    # FastAPI external endpoint
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]  # or some endpoint that signals Ollama is ready
+      interval: 10s
+      timeout: 5s
+      retries: 5
+  
   backend:
     build:
       context: ./backend
@@ -7,6 +21,7 @@ services:
       - "5001:5000"
     depends_on:
       - postgres
+      - ollama
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - ConnectionStrings__DefaultConnection=Host=postgres;Port=5432;Database=bitandbeam;Username=postgres;Password=postgres
@@ -22,14 +37,15 @@ services:
     environment:
       - API_URL=http://localhost:5000
 
-  ollama:
+  openapi-client:
     build:
-      context: ./ollama
+      context: ./openapi-client
       dockerfile: Dockerfile
-    container_name: ollama
-    ports:
-      - "11434:11434"   # Ollama internal API
-      - "8000:8000"    # FastAPI external endpoint
+    container_name: openapi_generator
+    depends_on:
+      - backend
+    volumes:
+      - ./frontend/src/api:/local/generated-sdk
 
   postgres:
     image: postgres:17
@@ -40,13 +56,15 @@ services:
     volumes:
       - .:/app
       - pgdata:/var/lib/postgresql/data
-      - ./postgres/init.sql:/docker-entrypoint-initdb.d/init.sql
+      - ./database/schema.sql:/docker-entrypoint-initdb.d/init.sql
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
       POSTGRES_DB: bitandbeam
   tika:
     image: apache/tika
+    container_name: bitandbeam_tika
+    restart: always
     ports:
       - "9998:9998"
     healthcheck:

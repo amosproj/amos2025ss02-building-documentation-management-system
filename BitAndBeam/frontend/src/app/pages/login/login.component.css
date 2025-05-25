@@ -1,89 +1,92 @@
-.login-container {
-  max-width: 400px;
-  margin: 100px auto;
-  text-align: center;
+/* login-home.component.css */
+
+.layout {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background-color: #fefcf8;
   font-family: 'Segoe UI', sans-serif;
 }
 
-h1 {
-  font-size: 2rem;
-  margin-bottom: 1rem;
+.login-container,
+.landing-container {
+  background-color: #ffffff;
+  padding: 2.5rem;
+  border-radius: 1rem;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+  width: 400px;
+  max-width: 90%;
+  text-align: center;
 }
 
-.subtitle {
-  color: #555;
-  margin-bottom: 2rem;
+.logo-section {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.8rem;
+  margin-bottom: 1.5rem;
 }
 
-.login-form {
+.logo-img {
+  width: 48px;
+  height: 48px;
+  object-fit: contain;
+}
+
+.logo-text {
+  font-size: 1.6rem;
+  font-weight: bold;
+  color: #1b3c58;
+}
+
+h1,
+h2 {
+  color: #1b3c58;
+  margin-bottom: 1.2rem;
+}
+
+p {
+  margin-bottom: 1.5rem;
+  color: #333;
+  font-size: 1rem;
+}
+
+form {
   display: flex;
   flex-direction: column;
   gap: 1rem;
 }
 
-input {
-  padding: 1rem;
+input[type="text"],
+input[type="password"] {
+  height: 48px;
+  padding: 0 1rem;
+  border-radius: 8px;
+  border: 1px solid #ccc;
   font-size: 1rem;
-  border: none;
-  background-color: #dcdcdc;
-  border-radius: 4px;
-  text-align: center;
+  background-color: #eaf2ff;
 }
 
-button {
-  padding: 0.75rem;
-  background-color: #388e3c;
+.primary-btn,
+.login-btn {
+  height: 48px;
+  background-color: #3dc5b7;
   color: white;
-  border: none;
-  border-radius: 6px;
   font-size: 1rem;
-  cursor: pointer;
-  transition: background-color 0.3s;
-}
-
-button:hover {
-  background-color: #2e7d32;
-}
-
-.error-message {
-  color: red;
-  font-size: 0.9rem;
-}
-.home-container {
-  display: flex;
-  flex-direction: column;
-  min-height: 100vh;
-  padding: 1rem;
-  font-family: Arial, sans-serif;
-}
-.header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 0.5rem 1rem;
-}
-
-.logo {
-  font-size: 1.5rem;
-  font-weight: bold;
-}
-
-.nav-links {
-  display: flex;
-  gap: 1.5rem;
-  align-items: center;
-}
-
-.nav-links a {
-  text-decoration: none;
-  color: black;
   font-weight: 500;
-}
-.action-button {
-  padding: 0.4rem 0.8rem;
   border: none;
-  border-radius: 6px;
-  background: black;
-  color: white;
+  border-radius: 8px;
   cursor: pointer;
+}
+
+.primary-btn:hover,
+.login-btn:hover {
+  background-color: #38b3a7;
+}
+
+.error-msg {
+  margin-top: 1rem;
+  color: #c94444;
+  font-size: 0.9rem;
 }

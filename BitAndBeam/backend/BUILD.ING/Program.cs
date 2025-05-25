@@ -1,6 +1,8 @@
 using BUILD.ING.Data;
 using BUILD.ING.Models;
+
 using BUILD.ING.Services;
+using BUILD.ING.Swagger;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using Microsoft.AspNetCore.Http;
@@ -10,10 +12,15 @@ using System.IO;
 using System.Linq;
 
 var builder = WebApplication.CreateBuilder(args);
+var conn = builder.Configuration.GetConnectionString("DefaultConnection");
+Console.WriteLine($"⛳ Connection String: {conn ?? "null"}");
 
+builder.Services.AddControllers();
 // Add services to the container.
 builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
+    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"))
+           .EnableSensitiveDataLogging()
+           .LogTo(Console.WriteLine, LogLevel.Information));
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
@@ -25,7 +32,7 @@ builder.Services.AddSwaggerGen(c =>
         Version = "v1",
         Description = "API for the BUILD.ING Document Management System including Tika integration"
     });
-    
+
     // Enable XML comments
     var xmlFile = $"{System.Reflection.Assembly.GetExecutingAssembly().GetName().Name}.xml";
     var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
@@ -33,6 +40,9 @@ builder.Services.AddSwaggerGen(c =>
     {
         c.IncludeXmlComments(xmlPath);
     }
+
+    // Add schema filter if needed
+    c.SchemaFilter<BuildingRequestExampleSchemaFilter>();
 });
 
 // Register the TikaService with HttpClient
@@ -46,8 +56,15 @@ builder.Services.AddControllers();
 
 // Add health check service
 builder.Services.AddHealthChecks();
+builder.Services.AddHttpClient();
 
 var app = builder.Build();
+
+using (var scope = app.Services.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    db.Database.Migrate(); //führt Migration beim Start automatisch aus
+}
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -57,6 +74,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+app.MapControllers();
 
 // Map controllers
 app.MapControllers();
