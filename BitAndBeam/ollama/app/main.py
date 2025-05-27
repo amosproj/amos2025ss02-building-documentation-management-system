@@ -1,13 +1,22 @@
-from fastapi import FastAPI, Request
+from fastapi import FastAPI
 from pydantic import BaseModel
+from fastapi.middleware.cors import CORSMiddleware
 import requests
 
 app = FastAPI()
 
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:8080"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
 class PromptRequest(BaseModel):
     prompt: str
 
-@app.post("/ask")
+@app.post("/api/Ollama/ask")  # ✅ This is the key fix!
 def ask_llm(req: PromptRequest):
     response = requests.post(
         "http://localhost:11434/api/generate",

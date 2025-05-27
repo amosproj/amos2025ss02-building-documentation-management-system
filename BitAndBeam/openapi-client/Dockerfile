@@ -1,4 +1,4 @@
-FROM openjdk:17-alpine
+FROM bellsoft/liberica-openjdk-alpine:17
 
 # Install dependencies
 RUN apk add --no-cache bash curl wget

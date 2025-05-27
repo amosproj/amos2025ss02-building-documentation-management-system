@@ -1,55 +1,94 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, Observable , from} from 'rxjs';
+import { HttpClient } from '@angular/common/http';
+import { ConfigService } from '../config.service';
+import { AxiosResponse } from 'axios';
+import { map } from 'rxjs/operators';
+import { Configuration, DocumentsApi, Document as ApiDocument, BuildingsApi,
+  Building as ApiBuilding } from '../../api';
 
 export interface DocumentItem {
+  id: number;
   name: string;
-  file: File;
   url: string;
-  metadata?: { label: string; value: string }[];
+  metadata: { label: string; value: string }[];
+}
+
+export interface DocumentResponse {
+  documentId: number; // 👈 add this
+  title: string;
+  fileName: string;
+  filePath?: string;
+  fileSize: number;
+  fileType: string;
+  uploadDate: string;
 }
 
 export interface Building {
+  id: number;
   name: string;
-  documents: DocumentItem[];
+  documents?: DocumentItem[];
 }
 
 @Injectable({ providedIn: 'root' })
 export class BuildingService {
-  private buildingsSubject = new BehaviorSubject<Building[]>([]);
+  private documentsApi: DocumentsApi;
+  private buildingsApi: BuildingsApi;
+  private buildingsSubject = new BehaviorSubject<ApiBuilding[]>([]);
   buildings$ = this.buildingsSubject.asObservable();
 
-  getBuildings(): Building[] {
-    return this.buildingsSubject.getValue();
+  constructor(private config: ConfigService) {
+    const configuration = new Configuration({ basePath: this.config.apiUrl });
+    this.documentsApi = new DocumentsApi(configuration);
+    this.buildingsApi = new BuildingsApi(configuration);
+  }
+  //Buildings
+  getBuildings(): Observable<Building[]> {
+    return from(
+        this.buildingsApi.apiBuildingsGet().then(res =>
+            res.data.map(apiB => ({
+              id: apiB.buildingId!,
+              name: apiB.name ?? '',
+              documents: [] // you can map documents if needed
+            }))
+        )
+    );
   }
 
-  updateBuildings(buildings: Building[]): void {
-    this.buildingsSubject.next(buildings);
+  addBuilding(name: string): Observable<Building> {
+    return from(
+        this.buildingsApi.apiBuildingsPost({ name }).then(() =>
+            this.buildingsApi.apiBuildingsGet().then(res => {
+              const last = res.data[res.data.length - 1];
+              return {
+                id: last.buildingId!,
+                name: last.name ?? '',
+                documents: []
+              };
+            })
+        )
+    );
   }
 
-  addBuilding(name: string): void {
-    const updated = [...this.getBuildings(), { name, documents: [] }];
-    this.updateBuildings(updated);
+
+  deleteBuilding(id: number): Observable<void> {
+    return from(this.buildingsApi.apiBuildingsIdDelete(id).then(() => {}));
   }
 
-  addDocumentToBuilding(index: number, file: File): void {
-    const url = URL.createObjectURL(file);
-    const newDoc: DocumentItem = {
-      name: file.name,
-      file,
-      url,
-      metadata: [
-        { label: 'Uploaded', value: new Date().toISOString() }
-      ]
-    };
-
-    const buildings = this.getBuildings();
-    buildings[index].documents.push(newDoc);
-    this.updateBuildings([...buildings]);
+  //Docs
+  getDocumentById(id: number): Observable<ApiDocument> {
+    return from(
+        this.documentsApi.apiDocumentsIdGet(id)
+            .then(res => (res as unknown as AxiosResponse<ApiDocument>).data)
+    );
+  }
+  deleteDocument(id: number): Observable<void> {
+    return from(this.documentsApi.apiDocumentsIdDelete(id).then(() => {}));
   }
 
-  deleteBuilding(index: number): void {
-    const updated = this.getBuildings().filter((_, i) => i !== index);
-    this.updateBuildings(updated);
+  downloadDocument(id: number): void {
+    const downloadUrl = `${this.config.apiUrl}/api/Documents/${id}/download`;
+    window.open(downloadUrl, '_blank');
   }
 
   private selectedFileSubject = new BehaviorSubject<DocumentItem | null>(null);

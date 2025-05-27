@@ -1,6 +1,7 @@
 <div class="container">
   <!-- ✅ Inject the sidebar -->
   <app-sidebar></app-sidebar>
+
   <!-- Main Content -->
   <main class="main-content">
     <!-- Drag & Drop Upload Box -->
@@ -27,27 +28,28 @@
       <div *ngIf="uploadedFile" class="file-preview">
         📎 {{ uploadedFile.name }}
       </div>
+
       <!-- Folder assignment dialog -->
       <div *ngIf="uploadedFile" class="folder-assign">
         <p>📄 <strong>{{ uploadedFile.name }}</strong> uploaded. Choose a folder:</p>
-        <select [(ngModel)]="selectedBuildingIndex">
-          <option *ngFor="let building of buildingService.getBuildings(); let i = index" [value]="i">
+        <select [(ngModel)]="selectedBuildingId">
+          <option *ngFor="let building of buildings" [value]="building.id">
             {{ building.name }}
           </option>
         </select>
-        <button (click)="assignFileToFolder()">Assign</button>
-        <button (click)="createAndAssignFolder()">New Folder + Assign</button>
+        <!--  <button (click)="uploadDocumentToBuilding()">Assign</button> -->
+          <button (click)="createBuildingAndUpload()">New Folder + Assign</button>
+        </div>
       </div>
-    </div>
 
-    <!-- AI Assistant Section -->
+
+      <!-- AI Assistant Section -->
     <div class="ai-assistant">
       <h3>AI Assistant</h3>
       <p>Ask questions or extract data from your documents</p>
 
       <div class="chat-box">
-        <div class="chat-header">🤖 How can I help you today?
-        </div>
+        <div class="chat-header">🤖 How can I help you today?</div>
         <div class="chat-input">
           <input type="text" placeholder="Type a message..." />
           <button>➤</button>

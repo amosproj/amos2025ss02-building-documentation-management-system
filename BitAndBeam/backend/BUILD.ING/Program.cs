@@ -3,6 +3,7 @@ using BUILD.ING.Models;
 using BUILD.ING.Services;
 using BUILD.ING.Swagger;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.FileProviders;
 using Microsoft.OpenApi.Models;
 using Microsoft.AspNetCore.Http;
 using System;
@@ -10,9 +11,26 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 
+
 var builder = WebApplication.CreateBuilder(args);
 var conn = builder.Configuration.GetConnectionString("DefaultConnection");
 Console.WriteLine($"⛳ Connection String: {conn ?? "null"}");
+
+var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
+
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy(name: MyAllowSpecificOrigins,
+                      policy =>
+                      {
+                          policy.WithOrigins("http://localhost:8080") // <-- Angular dev server
+                                .AllowAnyHeader()
+                                .AllowAnyMethod();
+                      });
+});
+
+
+
 
 builder.Services.AddControllers();
 // Add services to the container.
@@ -72,6 +90,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+app.UseCors(MyAllowSpecificOrigins);
+
 app.UseHttpsRedirection();
 app.MapControllers();
 
@@ -103,6 +123,13 @@ app.MapHealthChecks("/healthz");
 
 //Just to set a route at /
 app.MapGet("/", () => "🚀 API is running! Visit /swagger , /weatherforecast or /healthz.");
+
+// Ensure the documents folder exists
+app.UseStaticFiles(new StaticFileOptions
+{
+    FileProvider = new PhysicalFileProvider("/app/documents"),
+    RequestPath = "/documents"
+});
 
 
 app.Run();

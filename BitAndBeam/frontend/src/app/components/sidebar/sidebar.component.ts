@@ -3,8 +3,7 @@ import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { AuthService } from '../../services/auth.service';
 import { FormsModule } from '@angular/forms';
-import { BuildingService } from '../../services/building.service';
-import { DocumentItem } from '../../services/building.service';
+import { BuildingService , DocumentItem , Building } from '../../services/building.service';
 
 @Component({
   standalone: true,
@@ -15,7 +14,7 @@ import { DocumentItem } from '../../services/building.service';
 })
 export class SidebarComponent {
   isExplorerCollapsed = false;
-  @Output() viewFileEvent = new EventEmitter<DocumentItem>();
+  buildings: Building[] = [];
 
   constructor(
     public authService: AuthService,
@@ -23,35 +22,45 @@ export class SidebarComponent {
     public buildingService: BuildingService
 
   ) {}
+  ngOnInit(): void {
+    this.buildingService.getBuildings().subscribe({
+      next: (data) => this.buildings = data,
+      error: (err) => console.error('Failed to load buildings', err)
+    });
+  }
 
   toggleExplorer() {
     this.isExplorerCollapsed = !this.isExplorerCollapsed;
     console.log('Explorer collapsed:', this.isExplorerCollapsed);
   }
 
-  addBuilding() {
-    const name = prompt('Enter building name:');
-    if (name) {
-      this.buildingService.addBuilding(name);
+  viewDocument(doc: DocumentItem): void {
+    if (!doc.id) {
+      console.error('Document has no ID');
+      return;
     }
+    this.router.navigate(['/documents', doc.id]);
   }
 
-  deleteBuilding(index: number) {
-    this.buildingService.deleteBuilding(index);
-  }
+  addBuilding(): void {
+    const name = prompt('Enter building name:');
+    if (!name) return;
 
-  viewDocument(doc: DocumentItem) {
-    this.buildingService.setSelectedFile({
-      ...doc,
-      metadata: [
-        {
-          label: 'Date',
-          value: new Date().toLocaleDateString()
-        }
-      ]
+    this.buildingService.addBuilding(name).subscribe({
+      next: (newBuilding) => this.buildings.push(newBuilding),
+      error: (err) => console.error('Failed to add building', err)
     });
-    this.router.navigate(['/file-view']);
   }
+
+  deleteBuilding(id: number): void {
+    if (!confirm('Are you sure you want to delete this building?')) return;
+
+    this.buildingService.deleteBuilding(id).subscribe({
+      next: () => this.buildings = this.buildings.filter(b => b.id !== id),
+      error: (err) => console.error('Failed to delete building', err)
+    });
+  }
+
   logout() {
     this.authService.logout();
     this.router.navigate(['/']); // redirect to home/landing

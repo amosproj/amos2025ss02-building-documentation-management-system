@@ -3,14 +3,16 @@ import { CommonModule } from '@angular/common';
 import { ConfigService } from '../../config.service';
 import { SidebarComponent } from '../sidebar/sidebar.component';
 import { FormsModule } from '@angular/forms';
-import { BuildingService } from '../../services/building.service'
-
-import { RouterModule , Router } from '@angular/router';
+import { RouterModule, Router } from '@angular/router';
+import { HttpClientModule } from '@angular/common/http';
+import type { AxiosResponse } from 'axios';
+import { DocumentsApi, Configuration } from '../../../api';
+import { BuildingService } from '../../services/building.service';
 
 @Component({
   selector: 'app-upload-file',
   standalone: true,
-  imports: [CommonModule, RouterModule, SidebarComponent,FormsModule],
+  imports: [CommonModule, RouterModule, SidebarComponent, FormsModule, HttpClientModule],
   templateUrl: './upload-file.component.html',
   styleUrls: ['./upload-file.component.css'],
 })
@@ -18,73 +20,85 @@ export class UploadFileComponent implements OnInit {
   uploading = false;
   uploadSuccess = false;
   uploadError = '';
-  selectedBuildingIndex: number = 0;
+  uploadedFile: File | null = null;
+  selectedBuildingId: number | null = null;
+  buildings: any[] = [];
+
+  private documentsApi: DocumentsApi;
 
   constructor(
     private config: ConfigService,
     private router: Router,
     public buildingService: BuildingService
-
-
-) {}
-  ngOnInit() {
-    console.log('API URL from config service:', this.config.apiUrl);
+  ) {
+    const apiConfig = new Configuration({ basePath: this.config.apiUrl });
+    this.documentsApi = new DocumentsApi(apiConfig);
   }
-  uploadedFile: File | null = null; // Change to single file
 
-  // Handle file selection
+  ngOnInit() {
+    this.buildingService.getBuildings().subscribe({
+      next: (data) => this.buildings = data,
+      error: (err) => console.error('Failed to fetch buildings', err)
+    });
+  }
+
   onFileSelected(event: any) {
     const file = event.target.files[0];
     if (!file) return;
 
-    this.uploading = true;
-    this.uploadSuccess = false;
-    this.uploadError = '';
-
-    // Simulate upload with delay (replace this with actual HTTP upload later)
-    setTimeout(() => {
-      this.uploading = false;
-      this.uploadSuccess = true;
-      this.uploadedFile = file;
-    }, 2000);
+    this.uploadedFile = file;
+    this.uploadDocumentToServer(file);
   }
 
-
-  // Handle drag-and-drop file selection
   onDrop(event: DragEvent) {
     event.preventDefault();
-    if (event.dataTransfer?.files) {
-      const file = event.dataTransfer.files[0]; // Only get the first file
-      if (file) {
-        this.uploadedFile = file;
-      }
+    if (event.dataTransfer?.files?.length) {
+      const file = event.dataTransfer.files[0];
+      this.uploadedFile = file;
+      this.uploadDocumentToServer(file);
     }
   }
 
-  // Handle drag over event (required for drop event to trigger)
   onDragOver(event: Event) {
     event.preventDefault();
   }
 
-  assignFileToFolder() {
-    if (this.uploadedFile && this.buildingService.getBuildings()[this.selectedBuildingIndex]) {
-      this.buildingService.addDocumentToBuilding(this.selectedBuildingIndex, this.uploadedFile);
-      this.uploadedFile = null;
-    }
+  uploadDocumentToServer(file: File): void {
+    this.documentsApi.apiDocumentsPost(file)
+      .then((axiosResponse: AxiosResponse<any>) => {
+        const documentId = axiosResponse.data?.documentId;
+
+        if (!documentId) {
+          this.uploadError = 'Upload succeeded but no document ID found in response body.';
+          return;
+        }
+
+        this.uploadSuccess = true;
+        this.router.navigate(['/documents', documentId]);
+      })
+      .catch(error => {
+        this.uploading = false;
+        this.uploadError = 'Upload failed: ' + error.message;
+      });
   }
 
-  createAndAssignFolder() {
+  extractDocumentIdFromLocation(location: string | undefined): number | null {
+    if (!location) return null;
+    const match = location.match(/\/(\d+)(\/)?$/);
+    return match ? parseInt(match[1], 10) : null;
+  }
+
+  createBuildingAndUpload() {
     const name = prompt('New building name:');
-    if (name?.trim() && this.uploadedFile) {
-      this.buildingService.addBuilding(name);
-      const newIndex = this.buildingService.getBuildings().length - 1;
-      this.buildingService.addDocumentToBuilding(newIndex, this.uploadedFile);
-      this.selectedBuildingIndex = newIndex;
-      this.uploadedFile = null;
-    }
-}
+    if (!name?.trim() || !this.uploadedFile) return;
+
+    this.buildingService.addBuilding(name).subscribe({
+      next: (building) => {
+       // this.selectedBuildingId = building.id;
+        this.uploadDocumentToServer(this.uploadedFile!);
+      },
+      error: (err) => console.error('Failed to create building', err)
+    });
+  }
 
 }
-
-
-
