@@ -1,10 +1,10 @@
 using System;
-using System.Threading.Tasks;
 using System.IO;
+using System.Threading.Tasks;
+using BUILD.ING.Services;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using Microsoft.AspNetCore.Http;
-using BUILD.ING.Services;
 
 namespace BUILD.ING.Controllers
 {
@@ -31,9 +31,11 @@ namespace BUILD.ING.Controllers
         {
             if (file == null || file.Length == 0)
             {
-                return BadRequest(new {
+                return BadRequest(new
+                {
                     success = false,
-                    error = new {
+                    error = new
+                    {
                         code = "NO_FILE",
                         message = "No file was uploaded."
                     }
@@ -52,9 +54,11 @@ namespace BUILD.ING.Controllers
                 // Detect known error messages from TikaService
                 if (textResult == "Could not extract text from the document.")
                 {
-                    return StatusCode(500, new {
+                    return StatusCode(500, new
+                    {
                         success = false,
-                        error = new {
+                        error = new
+                        {
                             code = "EXTRACTION_FAILED",
                             message = "Failed to extract text from the provided document."
                         }
@@ -62,9 +66,11 @@ namespace BUILD.ING.Controllers
                 }
                 if (textResult == "Document extraction service is currently unavailable.")
                 {
-                    return StatusCode(503, new {
+                    return StatusCode(503, new
+                    {
                         success = false,
-                        error = new {
+                        error = new
+                        {
                             code = "SERVICE_UNAVAILABLE",
                             message = textResult
                         }
@@ -72,9 +78,11 @@ namespace BUILD.ING.Controllers
                 }
                 if (textResult == "Document extraction timed out. Please try again.")
                 {
-                    return StatusCode(504, new {
+                    return StatusCode(504, new
+                    {
                         success = false,
-                        error = new {
+                        error = new
+                        {
                             code = "TIMEOUT",
                             message = textResult
                         }
@@ -82,9 +90,11 @@ namespace BUILD.ING.Controllers
                 }
                 if (textResult == "An unexpected error occurred during document extraction.")
                 {
-                    return StatusCode(500, new {
+                    return StatusCode(500, new
+                    {
                         success = false,
-                        error = new {
+                        error = new
+                        {
                             code = "UNEXPECTED_ERROR",
                             message = textResult
                         }

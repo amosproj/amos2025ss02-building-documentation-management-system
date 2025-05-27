@@ -1,8 +1,8 @@
 using System;
+using System.IO;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
-using System.IO;
 
 namespace BUILD.ING.Services
 {
@@ -29,10 +29,10 @@ namespace BUILD.ING.Services
             {
                 // Log the request for debugging
                 _logger.LogInformation("Sending document to Tika: {FileName}, size: {Size} bytes", fileName, fileBytes.Length);
-                
+
                 using var content = new ByteArrayContent(fileBytes);
                 //content.Headers.Add("Content-Disposition", $"attachment; filename={fileName}");
-                
+
                 // Ensure BaseAddress is set correctly
                 string endpoint = "tika";
                 if (_client.BaseAddress == null)

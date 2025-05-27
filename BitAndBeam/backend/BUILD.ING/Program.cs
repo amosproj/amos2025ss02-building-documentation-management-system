@@ -1,15 +1,15 @@
-using BUILD.ING.Data;
-using BUILD.ING.Models;
-using BUILD.ING.Services;
-using BUILD.ING.Swagger;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.FileProviders;
-using Microsoft.OpenApi.Models;
-using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using BUILD.ING.Data;
+using BUILD.ING.Models;
+using BUILD.ING.Services;
+using BUILD.ING.Swagger;
+using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.FileProviders;
+using Microsoft.OpenApi.Models;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -63,7 +63,8 @@ builder.Services.AddSwaggerGen(c =>
 });
 
 // Register the TikaService with HttpClient
-builder.Services.AddHttpClient<TikaService>(client => {
+builder.Services.AddHttpClient<TikaService>(client => 
+{
     client.BaseAddress = new Uri("http://tika:9998/");
     client.Timeout = TimeSpan.FromMinutes(2); // Documents can be large
 });
