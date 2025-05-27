@@ -63,7 +63,7 @@ builder.Services.AddSwaggerGen(c =>
 });
 
 // Register the TikaService with HttpClient
-builder.Services.AddHttpClient<TikaService>(client => 
+builder.Services.AddHttpClient<TikaService>(client =>
 {
     client.BaseAddress = new Uri("http://tika:9998/");
     client.Timeout = TimeSpan.FromMinutes(2); // Documents can be large

@@ -101,7 +101,8 @@ namespace BUILD.ING.Controllers
                     });
                 }
                 // Success
-                return Ok(new {
+                return Ok(new
+                {
                     success = true,
                     content = textResult
                 });
@@ -109,9 +110,11 @@ namespace BUILD.ING.Controllers
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Unhandled error in TikaController.Extract");
-                return StatusCode(500, new {
+                return StatusCode(500, new
+                {
                     success = false,
-                    error = new {
+                    error = new
+                    {
                         code = "UNHANDLED_EXCEPTION",
                         message = "An unhandled error occurred during extraction.",
                         details = ex.Message
