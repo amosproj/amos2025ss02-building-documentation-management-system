@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 
 namespace BUILD.ING.Services
+namespace BUILD.ING.Services
 {
     public class TikaService
     {

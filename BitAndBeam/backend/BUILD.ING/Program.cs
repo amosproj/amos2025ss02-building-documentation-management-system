@@ -7,10 +7,12 @@ using BUILD.ING.Models;
 using BUILD.ING.Services;
 using BUILD.ING.Swagger;
 using Microsoft.AspNetCore.Http;
+using BUILD.ING.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.OpenApi.Models;
 
+using System;
 
 var builder = WebApplication.CreateBuilder(args);
 var conn = builder.Configuration.GetConnectionString("DefaultConnection");
@@ -94,6 +96,9 @@ if (app.Environment.IsDevelopment())
 app.UseCors(MyAllowSpecificOrigins);
 
 app.UseHttpsRedirection();
+app.MapControllers();
+
+// Map controllers
 app.MapControllers();
 
 // Map controllers

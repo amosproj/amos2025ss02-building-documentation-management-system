@@ -1,12 +1,9 @@
 using System;
-using System.IO;
 using System.Threading.Tasks;
-using BUILD.ING.Services;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
-namespace BUILD.ING.Controllers
+namespace BitAndBeam.Tika
 {
     [ApiController]
     [Route("api/tika")]
@@ -21,21 +18,15 @@ namespace BUILD.ING.Controllers
             _logger = logger;
         }
 
-        /// <summary>
-        /// Extracts text content from a document file using Apache Tika
-        /// </summary>
-        /// <param name="file">The document file to extract text from</param>
-        /// <returns>Extracted text content or error information</returns>
+        // POST: api/tika/extract
         [HttpPost("extract")]
-        public async Task<IActionResult> Extract(IFormFile file)
+        public async Task<IActionResult> Extract([FromForm] Microsoft.AspNetCore.Http.IFormFile file)
         {
             if (file == null || file.Length == 0)
             {
-                return BadRequest(new
-                {
+                return BadRequest(new {
                     success = false,
-                    error = new
-                    {
+                    error = new {
                         code = "NO_FILE",
                         message = "No file was uploaded."
                     }
@@ -44,7 +35,7 @@ namespace BUILD.ING.Controllers
             try
             {
                 byte[] fileBytes;
-                using (var ms = new MemoryStream())
+                using (var ms = new System.IO.MemoryStream())
                 {
                     await file.CopyToAsync(ms);
                     fileBytes = ms.ToArray();
@@ -54,11 +45,9 @@ namespace BUILD.ING.Controllers
                 // Detect known error messages from TikaService
                 if (textResult == "Could not extract text from the document.")
                 {
-                    return StatusCode(500, new
-                    {
+                    return StatusCode(500, new {
                         success = false,
-                        error = new
-                        {
+                        error = new {
                             code = "EXTRACTION_FAILED",
                             message = "Failed to extract text from the provided document."
                         }
@@ -66,11 +55,9 @@ namespace BUILD.ING.Controllers
                 }
                 if (textResult == "Document extraction service is currently unavailable.")
                 {
-                    return StatusCode(503, new
-                    {
+                    return StatusCode(503, new {
                         success = false,
-                        error = new
-                        {
+                        error = new {
                             code = "SERVICE_UNAVAILABLE",
                             message = textResult
                         }
@@ -78,11 +65,9 @@ namespace BUILD.ING.Controllers
                 }
                 if (textResult == "Document extraction timed out. Please try again.")
                 {
-                    return StatusCode(504, new
-                    {
+                    return StatusCode(504, new {
                         success = false,
-                        error = new
-                        {
+                        error = new {
                             code = "TIMEOUT",
                             message = textResult
                         }
@@ -90,19 +75,16 @@ namespace BUILD.ING.Controllers
                 }
                 if (textResult == "An unexpected error occurred during document extraction.")
                 {
-                    return StatusCode(500, new
-                    {
+                    return StatusCode(500, new {
                         success = false,
-                        error = new
-                        {
+                        error = new {
                             code = "UNEXPECTED_ERROR",
                             message = textResult
                         }
                     });
                 }
                 // Success
-                return Ok(new
-                {
+                return Ok(new {
                     success = true,
                     content = textResult
                 });
@@ -110,11 +92,9 @@ namespace BUILD.ING.Controllers
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Unhandled error in TikaController.Extract");
-                return StatusCode(500, new
-                {
+                return StatusCode(500, new {
                     success = false,
-                    error = new
-                    {
+                    error = new {
                         code = "UNHANDLED_EXCEPTION",
                         message = "An unhandled error occurred during extraction.",
                         details = ex.Message
@@ -124,3 +104,4 @@ namespace BUILD.ING.Controllers
         }
     }
 }
+Footer
