@@ -176,5 +176,98 @@ namespace BitAndBeam.Tika
                 });
             }
         }
+
+        /// <summary>
+        /// Extracts both text content and metadata from a document in a single call
+        /// </summary>
+        /// <param name="file">The document file to process</param>
+        /// <returns>JSON object containing both extracted text and structured metadata</returns>
+        // POST: api/tika/process
+        [HttpPost("process")]
+        public async Task<IActionResult> ProcessDocument([FromForm] Microsoft.AspNetCore.Http.IFormFile file)
+        {
+            if (file == null || file.Length == 0)
+            {
+                return BadRequest(new {
+                    success = false,
+                    error = new {
+                        code = "NO_FILE",
+                        message = "No file was uploaded."
+                    }
+                });
+            }
+            
+            try
+            {
+                byte[] fileBytes;
+                using (var ms = new System.IO.MemoryStream())
+                {
+                    await file.CopyToAsync(ms);
+                    fileBytes = ms.ToArray();
+                }
+                
+                // Extract text
+                var textResult = await _tikaService.ExtractTextAsync(fileBytes, file.FileName);
+                
+                // Extract metadata
+                var metadataResult = await _tikaService.ExtractMetadataAsync(fileBytes, file.FileName);
+                
+                // Check for error conditions
+                bool textSuccess = !textResult.Contains("Could not extract text") && 
+                                   !textResult.Contains("Document extraction service is currently unavailable") && 
+                                   !textResult.Contains("Document extraction timed out") && 
+                                   !textResult.Contains("An unexpected error occurred");
+                
+                bool metadataSuccess = !metadataResult.Contains("Could not extract metadata") && 
+                                      !metadataResult.Contains("Document extraction service is currently unavailable") && 
+                                      !metadataResult.Contains("Document metadata extraction timed out") && 
+                                      !metadataResult.Contains("An unexpected error occurred");
+                
+                if (!textSuccess && !metadataSuccess)
+                {
+                    return StatusCode(500, new {
+                        success = false,
+                        error = new {
+                            code = "PROCESSING_FAILED",
+                            message = "Failed to extract both text and metadata from the document."
+                        }
+                    });
+                }
+                
+                // Return combined result with appropriate success flags
+                return Ok(new {
+                    success = true,
+                    data = new {
+                        text = new {
+                            success = textSuccess,
+                            content = textSuccess ? textResult : null,
+                            error = !textSuccess ? textResult : null
+                        },
+                        metadata = new {
+                            success = metadataSuccess,
+                            content = metadataSuccess ? metadataResult : null,
+                            error = !metadataSuccess ? metadataResult : null
+                        },
+                        file_info = new {
+                            name = file.FileName,
+                            size = file.Length,
+                            content_type = file.ContentType
+                        }
+                    }
+                });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Unhandled error in TikaController.ProcessDocument");
+                return StatusCode(500, new {
+                    success = false,
+                    error = new {
+                        code = "UNHANDLED_EXCEPTION",
+                        message = "An unhandled error occurred during document processing.",
+                        details = ex.Message
+                    }
+                });
+            }
+        }
     }
 }
