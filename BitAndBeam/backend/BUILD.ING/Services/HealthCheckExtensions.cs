@@ -42,7 +42,7 @@ namespace BUILD.ING.Services
 
             return context.Response.WriteAsync(JsonSerializer.Serialize(response, options));
         }
-        
+
         /// <summary>
         /// Initiates health checks and waits for them to complete, useful during startup
         /// </summary>
@@ -53,14 +53,14 @@ namespace BUILD.ING.Services
                 as Microsoft.Extensions.Logging.ILoggerFactory;
             var logger = loggerFactory?.CreateLogger("StartupHealthCheck") 
                 ?? Microsoft.Extensions.Logging.Abstractions.NullLogger.Instance;
-            
+
             try
             {
                 logger.LogInformation("Running startup health checks...");
-                
+
                 // Only check ready tagged services
                 var report = await healthCheckService.CheckHealthAsync(check => check.Tags.Contains("ready"));
-                
+
                 if (report.Status == HealthStatus.Healthy)
                 {
                     logger.LogInformation("All startup health checks passed");
@@ -69,7 +69,7 @@ namespace BUILD.ING.Services
                 {
                     // Log but don't fail startup for degraded/unhealthy services
                     logger.LogWarning("Some startup health checks failed or are degraded");
-                    
+
                     // Log details for each failed check
                     foreach (var entry in report.Entries.Where(e => e.Value.Status != HealthStatus.Healthy))
                     {
@@ -83,7 +83,7 @@ namespace BUILD.ING.Services
             }
             catch (Exception ex)
             {
-                logger.LogError(ex, "Error running startup health checks");
+                logger.LogError(ex, "Exception during startup health checks");
             }
         }
     }

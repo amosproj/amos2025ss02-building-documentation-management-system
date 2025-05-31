@@ -7,6 +7,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Logging;
 
+
 namespace BitAndBeam.Tika
 {
     public class TikaService
@@ -20,7 +21,7 @@ namespace BitAndBeam.Tika
         {
             _logger = logger;
             _tikaServerUrl = configuration["Tika:ServerUrl"] ?? "http://tika:9998";
-            
+
             // Use the provided client or create a new one
             _httpClient = httpClient ?? new HttpClient();
             _httpClient.Timeout = TimeSpan.FromSeconds(_timeout);
@@ -93,13 +94,13 @@ namespace BitAndBeam.Tika
             try
             {
                 _logger.LogInformation($"Extracting metadata from {fileName} ({fileBytes.Length} bytes)");
-                
+
                 // Create the request content with the file bytes
                 var content = new ByteArrayContent(fileBytes);
-                
+
                 // Send the request to Tika's metadata extraction endpoint
                 var response = await _httpClient.PostAsync($"{_tikaServerUrl}/tika/rmeta", content);
-                
+
                 if (response.IsSuccessStatusCode)
                 {
                     var extractedMetadata = await response.Content.ReadAsStringAsync();
@@ -109,7 +110,7 @@ namespace BitAndBeam.Tika
                 else
                 {
                     _logger.LogError($"Tika metadata extraction failed with status code {response.StatusCode} for file {fileName}");
-                    
+
                     // Return error message based on status code
                     return response.StatusCode switch
                     {
@@ -126,6 +127,7 @@ namespace BitAndBeam.Tika
                 return "An unexpected error occurred during document metadata extraction.";
             }
         }
+
         
         /// <summary>
         /// Checks if the Tika server is available and responding

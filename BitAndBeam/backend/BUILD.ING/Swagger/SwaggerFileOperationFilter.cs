@@ -1,11 +1,9 @@
+using System.Collections.Generic;
+using System.Linq;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.SwaggerGen;
-using System.Collections.Generic;
-using System.Linq;
-
-
 
 namespace BUILD.ING.Swagger
 {
@@ -21,7 +19,7 @@ namespace BUILD.ING.Swagger
         {
             var fileParameters = context.MethodInfo.GetParameters()
                 .Where(p => p.ParameterType == typeof(IFormFile) || p.ParameterType == typeof(IFormFileCollection));
-                
+
             if (fileParameters.Any())
             {
                 // Remove any existing parameters from the Swagger document for file parameters

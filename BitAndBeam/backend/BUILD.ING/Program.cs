@@ -129,7 +129,7 @@ app.MapHealthChecks("/healthz/tika", new Microsoft.AspNetCore.Diagnostics.Health
 {
     Predicate = (check) => check.Tags.Contains("tika"),
     ResponseWriter = HealthCheckExtensions.WriteDetailedJsonResponse,
-    ResultStatusCodes = 
+    ResultStatusCodes =
     {
         [HealthStatus.Healthy] = StatusCodes.Status200OK,
         [HealthStatus.Degraded] = StatusCodes.Status200OK, // Still return 200 but with degraded status in body
