@@ -1845,7 +1845,7 @@ export const OllamaApiAxiosParamCreator = function (configuration?: Configuratio
          * @throws {RequiredError}
          */
         apiOllamaAskPost: async (ollamaRequest?: OllamaRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
-            const localVarPath = `/api/Ollama/ask`;
+            const localVarPath = '/api/Ollama/ask';
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
             let baseOptions;
@@ -1936,6 +1936,3 @@ export class OllamaApi extends BaseAPI {
         return OllamaApiFp(this.configuration).apiOllamaAskPost(ollamaRequest, options).then((request) => request(this.axios, this.basePath));
     }
 }
-
-
-
