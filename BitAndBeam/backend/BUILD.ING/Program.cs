@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using BUILD.ING.Data;
 using BUILD.ING.Models;
 using BUILD.ING.Swagger;
@@ -6,6 +7,24 @@ using Microsoft.Extensions.FileProviders;
 using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
+<<<<<<< HEAD
+=======
+
+// ---------- SERILOG CONFIGURATION ----------
+// Configure Serilog as the logging provider for the application
+Log.Logger = new LoggerConfiguration()
+    .Enrich.FromLogContext()      // Enrich logs with contextual info
+    .WriteTo.Console(new Serilog.Formatting.Json.JsonFormatter()) // Log JSON to console
+    .WriteTo.File(
+        new Serilog.Formatting.Json.JsonFormatter(),
+        "Logs/log-.json",         // Path with rolling files by date
+        rollingInterval: RollingInterval.Day)
+    .CreateLogger();
+
+// Tell ASP.NET Core to use Serilog instead of the default logger
+builder.Host.UseSerilog();
+
+>>>>>>> 84b384b (seed(startup): add default organization and test user on application startup)
 var conn = builder.Configuration.GetConnectionString("DefaultConnection");
 Console.WriteLine($"⛳ Connection String: {conn ?? "null"}");
 
@@ -49,12 +68,83 @@ builder.Services.AddSwaggerGen(options =>
 builder.Services.AddHealthChecks();
 builder.Services.AddHttpClient();
 
+// ---------- JWT AUTHENTICATION CONFIGURATION ----------
+// Configure JWT Bearer Authentication to secure the API endpoints
+var jwtSecret = builder.Configuration["JwtSecret"];
+if (string.IsNullOrEmpty(jwtSecret))
+{
+    throw new Exception("JwtSecret is not configured in appsettings.json or environment variables.");
+}
+
+var key = System.Text.Encoding.ASCII.GetBytes(jwtSecret);
+
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultAuthenticateScheme = Microsoft.AspNetCore.Authentication.JwtBearer.JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = Microsoft.AspNetCore.Authentication.JwtBearer.JwtBearerDefaults.AuthenticationScheme;
+})
+.AddJwtBearer(options =>
+{
+    options.RequireHttpsMetadata = true; // Set to false if testing without HTTPS
+    options.SaveToken = true;
+    options.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters
+    {
+        ValidateIssuerSigningKey = true,
+        IssuerSigningKey = new Microsoft.IdentityModel.Tokens.SymmetricSecurityKey(key),
+        ValidateIssuer = false, // set to true and specify valid issuer in production
+        ValidateAudience = false, // set to true and specify valid audience in production
+        ClockSkew = TimeSpan.Zero // remove default 5 min buffer for token expiration
+    };
+});
+
+
 var app = builder.Build();
 
+// ---------- ADD AUTHENTICATION MIDDLEWARE ----------
+// This middleware will authenticate the JWT token in incoming requests
+
+// ---------- DATABASE MIGRATION & SEEDING ----------
+// This runs at app startup and ensures database is migrated,
+// and seeds a default organization and test user if they don't exist.
 using (var scope = app.Services.CreateScope())
 {
     var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-    db.Database.Migrate(); //führt Migration beim Start automatisch aus
+    db.Database.Migrate(); // applies any pending migrations
+
+    // 🌱 Seed a default organization if none exists
+    if (!db.Organizations.Any())
+    {
+        var defaultOrg = new Organization
+        {
+            Name = "Default Organization",
+            CreatedAt = DateTime.UtcNow
+        };
+        db.Organizations.Add(defaultOrg);
+        db.SaveChanges();
+        Console.WriteLine("✅ Default organization created.");
+    }
+
+    // ✅ Get the first available organization ID
+    var orgId = db.Organizations.First().OrganizationId;
+
+    // 🌱 Seed a test user if none exists
+    if (!db.Users.Any())
+    {
+        var testUser = new User
+        {
+            Username = "testuser",
+            Email = "test@example.com",
+            PasswordHash = BCrypt.Net.BCrypt.HashPassword("password123"), // plain-text: password123
+            FirstName = "Test",
+            LastName = "User",
+            Role = "admin",
+            CreatedAt = DateTime.UtcNow,
+            OrganizationId = orgId
+        };
+        db.Users.Add(testUser);
+        db.SaveChanges();
+        Console.WriteLine("✅ Test user created.");
+    }
 }
 
 // Configure the HTTP request pipeline.
@@ -67,6 +157,14 @@ if (app.Environment.IsDevelopment())
 app.UseCors(MyAllowSpecificOrigins);
 
 app.UseHttpsRedirection();
+<<<<<<< HEAD
+=======
+
+app.UseAuthentication();  // must be before Authorization
+
+app.UseAuthorization();
+
+>>>>>>> 84b384b (seed(startup): add default organization and test user on application startup)
 app.MapControllers();
 
 var summaries = new[]
