@@ -30,19 +30,19 @@ namespace BUILD.ING.Services
         public async Task<HealthCheckResult> CheckHealthAsync(HealthCheckContext context, CancellationToken cancellationToken = default)
         {
             _logger.LogInformation("Performing health check for Tika service");
-            
+
             try
             {
                 // Delegate to the TikaService's health check method
                 var result = await _tikaService.CheckHealthAsync(cancellationToken);
-                
+
                 // Add additional data to the health check result
                 var data = new System.Collections.Generic.Dictionary<string, object>
                 {
                     { "LastChecked", DateTimeOffset.UtcNow },
                     { "Service", "Apache Tika" }
                 };
-                
+
                 if (result.Status == HealthStatus.Healthy)
                 {
                     return HealthCheckResult.Healthy(result.Description, data);
@@ -59,7 +59,7 @@ namespace BUILD.ING.Services
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Unhandled exception during Tika health check");
-                
+
                 return HealthCheckResult.Unhealthy(
                     "Unhandled exception during health check",
                     ex,

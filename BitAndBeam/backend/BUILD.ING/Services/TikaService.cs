@@ -38,13 +38,13 @@ namespace BitAndBeam.Tika
             try
             {
                 _logger.LogInformation($"Extracting text from {fileName} ({fileBytes.Length} bytes)");
-                
+
                 // Create the request content with the file bytes
                 var content = new ByteArrayContent(fileBytes);
-                
+
                 // Send the request to Tika's text extraction endpoint
                 var response = await _httpClient.PostAsync($"{_tikaServerUrl}/tika/text", content);
-                
+
                 if (response.IsSuccessStatusCode)
                 {
                     var extractedText = await response.Content.ReadAsStringAsync();
@@ -54,7 +54,7 @@ namespace BitAndBeam.Tika
                 else
                 {
                     _logger.LogError($"Tika extraction failed with status code {response.StatusCode} for file {fileName}");
-                    
+
                     // Map HTTP status codes to appropriate error messages
                     return response.StatusCode switch
                     {

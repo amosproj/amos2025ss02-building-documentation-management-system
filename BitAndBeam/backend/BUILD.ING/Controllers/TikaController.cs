@@ -1,11 +1,10 @@
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 using System;
 using System.IO;
 using System.Threading.Tasks;
 using BUILD.ING.Models;
-
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 
 namespace BitAndBeam.Tika
 {
@@ -40,15 +39,17 @@ namespace BitAndBeam.Tika
         {
             if (model == null || model.File == null || model.File.Length == 0)
             {
-                return BadRequest(new {
+                return BadRequest(new
+                {
                     success = false,
-                    error = new {
+                    error = new
+                    {
                         code = "NO_FILE",
                         message = "No file was uploaded."
                     }
                 });
             }
-            
+
             try
             {
                 byte[] fileBytes;
@@ -57,50 +58,57 @@ namespace BitAndBeam.Tika
                     await model.File.CopyToAsync(ms);
                     fileBytes = ms.ToArray();
                 }
-                
+
                 // Extract text
                 var textResult = await _tikaService.ExtractTextAsync(fileBytes, model.File.FileName);
-                
+
                 // Extract metadata
                 var metadataResult = await _tikaService.ExtractMetadataAsync(fileBytes, model.File.FileName);
-                
+
                 // Check for error conditions
-                bool textSuccess = !textResult.Contains("Could not extract text") && 
-                                   !textResult.Contains("Document extraction service is currently unavailable") && 
-                                   !textResult.Contains("Document extraction timed out") && 
+                bool textSuccess = !textResult.Contains("Could not extract text") &&
+                                   !textResult.Contains("Document extraction service is currently unavailable") &&
+                                   !textResult.Contains("Document extraction timed out") &&
                                    !textResult.Contains("An unexpected error occurred");
-                
-                bool metadataSuccess = !metadataResult.Contains("Could not extract metadata") && 
-                                      !metadataResult.Contains("Document extraction service is currently unavailable") && 
-                                      !metadataResult.Contains("Document metadata extraction timed out") && 
+
+                bool metadataSuccess = !metadataResult.Contains("Could not extract metadata") &&
+                                      !metadataResult.Contains("Document extraction service is currently unavailable") &&
+                                      !metadataResult.Contains("Document metadata extraction timed out") &&
                                       !metadataResult.Contains("An unexpected error occurred");
-                
+
                 if (!textSuccess && !metadataSuccess)
                 {
-                    return StatusCode(500, new {
+                    return StatusCode(500, new
+                    {
                         success = false,
-                        error = new {
+                        error = new
+                        {
                             code = "PROCESSING_FAILED",
                             message = "Failed to extract both text and metadata from the document."
                         }
                     });
                 }
-                
+
                 // Return combined result with appropriate success flags
-                return Ok(new {
+                return Ok(new
+                {
                     success = true,
-                    data = new {
-                        text = new {
+                    data = new
+                    {
+                        text = new
+                        {
                             success = textSuccess,
                             content = textSuccess ? textResult : null,
                             error = !textSuccess ? textResult : null
                         },
-                        metadata = new {
+                        metadata = new
+                        {
                             success = metadataSuccess,
                             content = metadataSuccess ? metadataResult : null,
                             error = !metadataSuccess ? metadataResult : null
                         },
-                        file_info = new {
+                        file_info = new
+                        {
                             name = model.File.FileName,
                             size = model.File.Length,
                             content_type = model.File.ContentType
@@ -111,9 +119,11 @@ namespace BitAndBeam.Tika
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Unhandled error in TikaController.ProcessDocument");
-                return StatusCode(500, new {
+                return StatusCode(500, new
+                {
                     success = false,
-                    error = new {
+                    error = new
+                    {
                         code = "UNHANDLED_EXCEPTION",
                         message = "An unhandled error occurred during document processing.",
                         details = ex.Message
@@ -133,7 +143,7 @@ namespace BitAndBeam.Tika
             try
             {
                 var result = await _tikaService.CheckHealthAsync();
-                
+
                 var response = new
                 {
                     service = "Apache Tika",
@@ -141,7 +151,7 @@ namespace BitAndBeam.Tika
                     description = result.Description,
                     timestamp = DateTimeOffset.UtcNow
                 };
-                
+
                 if (result.Status == Microsoft.Extensions.Diagnostics.HealthChecks.HealthStatus.Healthy)
                 {
                     return Ok(response);
@@ -169,4 +179,5 @@ namespace BitAndBeam.Tika
             }
         }
     }
+
 }

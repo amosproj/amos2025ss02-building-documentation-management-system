@@ -1,7 +1,6 @@
 using Microsoft.AspNetCore.Http;
 using System.ComponentModel.DataAnnotations;
 
-
 namespace BUILD.ING.Models
 {
     /// <summary>
@@ -16,3 +15,4 @@ namespace BUILD.ING.Models
         public IFormFile File { get; set; }
     }
 }
+

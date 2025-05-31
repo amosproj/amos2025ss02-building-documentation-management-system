@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 
 
+
 namespace BUILD.ING.Swagger
 {
     /// <summary>
@@ -69,3 +70,4 @@ namespace BUILD.ING.Swagger
         }
     }
 }
+

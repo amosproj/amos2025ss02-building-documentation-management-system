@@ -18,7 +18,7 @@ namespace BUILD.ING.Services
         public static Task WriteDetailedJsonResponse(HttpContext context, HealthReport report)
         {
             context.Response.ContentType = "application/json";
-            
+
             var response = new
             {
                 status = report.Status.ToString(),
@@ -34,12 +34,12 @@ namespace BUILD.ING.Services
                     data = e.Value.Data.Any() ? e.Value.Data : null
                 })
             };
-            
+
             var options = new JsonSerializerOptions
             {
                 WriteIndented = true
             };
-            
+
             return context.Response.WriteAsync(JsonSerializer.Serialize(response, options));
         }
         
