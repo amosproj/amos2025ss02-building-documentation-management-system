@@ -1,4 +1,18 @@
 services:
+  tika:
+    build:
+      context: ./tika
+      dockerfile: Dockerfile
+    container_name: tika
+    ports:
+      - "9998:9998"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9998/tika"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
   ollama:
     build:
       context: ./ollama
@@ -22,9 +36,11 @@ services:
     depends_on:
       - postgres
       - ollama
+      - tika
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - ConnectionStrings__DefaultConnection=Host=postgres;Port=5432;Database=bitandbeam;Username=postgres;Password=postgres
+      - Tika__ServerUrl=http://tika:9998
     volumes:
       - documentdata:/app/documents
 
@@ -63,18 +79,6 @@ services:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
       POSTGRES_DB: bitandbeam
-
-  tika:
-    image: apache/tika
-    container_name: bitandbeam_tika
-    restart: always
-    ports:
-      - "9998:9998"
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:9998/version"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
 
 volumes:
   documentdata:

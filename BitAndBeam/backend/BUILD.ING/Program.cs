@@ -1,6 +1,7 @@
 using BUILD.ING.Data;
 using BUILD.ING.Models;
 using BUILD.ING.Swagger;
+using BitAndBeam.Tika;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.OpenApi.Models;
@@ -48,6 +49,9 @@ builder.Services.AddSwaggerGen(options =>
 // Add health check service
 builder.Services.AddHealthChecks();
 builder.Services.AddHttpClient();
+
+// Register Tika service
+builder.Services.AddSingleton<TikaService>();
 
 var app = builder.Build();
 
