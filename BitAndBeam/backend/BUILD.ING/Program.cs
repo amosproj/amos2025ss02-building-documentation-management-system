@@ -85,8 +85,6 @@ using (var scope = app.Services.CreateScope())
 // Configure the HTTP request pipeline.
 // Enable static files for Swagger UI
 app.UseStaticFiles();
-
-// Enable Swagger UI in all environments
 app.UseSwagger();
 app.UseSwaggerUI(c => {
     c.SwaggerEndpoint("/swagger/v1/swagger.json", "BUILD.ING API v1");

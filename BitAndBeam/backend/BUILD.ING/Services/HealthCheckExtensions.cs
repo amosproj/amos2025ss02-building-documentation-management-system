@@ -50,9 +50,8 @@ namespace BUILD.ING.Services
         {
             // Create a logger to record startup health check results
             var loggerFactory = serviceProvider.GetService(typeof(Microsoft.Extensions.Logging.ILoggerFactory)) 
-                as Microsoft.Extensions.Logging.ILoggerFactory;
-            var logger = loggerFactory?.CreateLogger("StartupHealthCheck") 
-                ?? Microsoft.Extensions.Logging.Abstractions.NullLogger.Instance;
+            as Microsoft.Extensions.Logging.ILoggerFactory;
+            var logger = loggerFactory?.CreateLogger("StartupHealthCheck") ?? Microsoft.Extensions.Logging.Abstractions.NullLogger.Instance;
 
             try
             {
@@ -67,7 +66,6 @@ namespace BUILD.ING.Services
                 }
                 else
                 {
-                    // Log but don't fail startup for degraded/unhealthy services
                     logger.LogWarning("Some startup health checks failed or are degraded");
 
                     // Log details for each failed check
