@@ -1,7 +1,10 @@
 using System;
 using System.Net.Http;
+using System.Net.Http.Headers;
+using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Logging;
 
 namespace BitAndBeam.Tika
@@ -121,6 +124,56 @@ namespace BitAndBeam.Tika
             {
                 _logger.LogError(ex, $"Unexpected error during metadata extraction for file {fileName}");
                 return "An unexpected error occurred during document metadata extraction.";
+            }
+        }
+        
+        /// <summary>
+        /// Checks if the Tika server is available and responding
+        /// </summary>
+        /// <param name="cancellationToken">Cancellation token for the operation</param>
+        /// <returns>Health check result indicating the status of the Tika server</returns>
+        public async Task<HealthCheckResult> CheckHealthAsync(CancellationToken cancellationToken = default)
+        {
+            try
+            {
+                _logger.LogInformation("Performing health check on Tika server");
+                
+                // Use a shorter timeout for health checks
+                using var client = new HttpClient
+                {
+                    Timeout = TimeSpan.FromSeconds(5)
+                };
+                
+                // Check the version endpoint, which is lightweight
+                var response = await client.GetAsync($"{_tikaServerUrl}/version", cancellationToken);
+                
+                if (response.IsSuccessStatusCode)
+                {
+                    var version = await response.Content.ReadAsStringAsync(cancellationToken);
+                    _logger.LogInformation($"Tika server is healthy, running version: {version}");
+                    
+                    return HealthCheckResult.Healthy($"Tika server is running version: {version}");
+                }
+                else
+                {
+                    _logger.LogWarning($"Tika server health check failed with status code {response.StatusCode}");
+                    return HealthCheckResult.Degraded($"Tika server returned status code {response.StatusCode}");
+                }
+            }
+            catch (TaskCanceledException)
+            {
+                _logger.LogWarning("Tika server health check timed out");
+                return HealthCheckResult.Unhealthy("Tika server health check timed out");
+            }
+            catch (HttpRequestException ex)
+            {
+                _logger.LogError(ex, "Failed to connect to Tika server during health check");
+                return HealthCheckResult.Unhealthy($"Failed to connect to Tika server: {ex.Message}");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Unexpected error during Tika server health check");
+                return HealthCheckResult.Unhealthy($"Unexpected error checking Tika server health: {ex.Message}");
             }
         }
     }

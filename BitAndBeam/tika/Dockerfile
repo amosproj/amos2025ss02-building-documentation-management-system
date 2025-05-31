@@ -1,4 +1,4 @@
-FROM apache/tika:2.9.0-full
+FROM apache/tika:latest
 
 # Expose the default Tika port
 EXPOSE 9998
@@ -7,7 +7,7 @@ EXPOSE 9998
 ENV TIKA_JAVA_OPTS="-Xms512m -Xmx2g"
 
 # Add command line parameters for enhanced functionality
-CMD ["--host=0.0.0.0", "--port=9998", "--cors=*", "--includeStack=true"]
+CMD ["-h", "0.0.0.0", "-p", "9998"]
 
 # Health check to verify the server is running
 HEALTHCHECK --interval=30s --timeout=5s --start-period=15s --retries=3 \

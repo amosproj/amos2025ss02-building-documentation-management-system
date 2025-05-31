@@ -2,6 +2,9 @@ using System;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Microsoft.AspNetCore.Http;
+using BUILD.ING.Models;
+using System.IO;
 
 namespace BitAndBeam.Tika
 {
@@ -21,172 +24,21 @@ namespace BitAndBeam.Tika
             _logger = logger;
         }
 
-        /// <summary>
-        /// Extracts text content from a document
-        /// </summary>
-        /// <param name="file">The document file to extract text from</param>
-        /// <returns>Extracted text content or error information</returns>
-        // POST: api/tika/extract
-        [HttpPost("extract")]
-        public async Task<IActionResult> Extract([FromForm] Microsoft.AspNetCore.Http.IFormFile file)
-        {
-            if (file == null || file.Length == 0)
-            {
-                return BadRequest(new {
-                    success = false,
-                    error = new {
-                        code = "NO_FILE",
-                        message = "No file was uploaded."
-                    }
-                });
-            }
-            try
-            {
-                byte[] fileBytes;
-                using (var ms = new System.IO.MemoryStream())
-                {
-                    await file.CopyToAsync(ms);
-                    fileBytes = ms.ToArray();
-                }
-                var textResult = await _tikaService.ExtractTextAsync(fileBytes, file.FileName);
-
-                // Detect known error messages from TikaService
-                if (textResult == "Could not extract text from the document.")
-                {
-                    return StatusCode(500, new {
-                        success = false,
-                        error = new {
-                            code = "EXTRACTION_FAILED",
-                            message = "Failed to extract text from the provided document."
-                        }
-                    });
-                }
-                if (textResult == "Document extraction service is currently unavailable.")
-                {
-                    return StatusCode(503, new {
-                        success = false,
-                        error = new {
-                            code = "SERVICE_UNAVAILABLE",
-                            message = textResult
-                        }
-                    });
-                }
-                if (textResult == "Document extraction timed out. Please try again.")
-                {
-                    return StatusCode(504, new {
-                        success = false,
-                        error = new {
-                            code = "TIMEOUT",
-                            message = textResult
-                        }
-                    });
-                }
-                if (textResult == "An unexpected error occurred during document extraction.")
-                {
-                    return StatusCode(500, new {
-                        success = false,
-                        error = new {
-                            code = "UNEXPECTED_ERROR",
-                            message = textResult
-                        }
-                    });
-                }
-                // Success
-                return Ok(new {
-                    success = true,
-                    content = textResult
-                });
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Unhandled error in TikaController.Extract");
-                return StatusCode(500, new {
-                    success = false,
-                    error = new {
-                        code = "UNHANDLED_EXCEPTION",
-                        message = "An unhandled error occurred during extraction.",
-                        details = ex.Message
-                    }
-                });
-            }
-        }
 
         /// <summary>
-        /// Extracts metadata from a document
+        /// Receives a document file and returns both extracted text content and structured metadata in a single response.
         /// </summary>
-        /// <param name="file">The document file to extract metadata from</param>
-        /// <returns>JSON metadata or error information</returns>
-        // POST: api/tika/metadata
-        [HttpPost("metadata")]
-        public async Task<IActionResult> ExtractMetadata([FromForm] Microsoft.AspNetCore.Http.IFormFile file)
-        {
-            if (file == null || file.Length == 0)
-            {
-                return BadRequest(new {
-                    success = false,
-                    error = new {
-                        code = "NO_FILE",
-                        message = "No file was uploaded."
-                    }
-                });
-            }
-            
-            try
-            {
-                byte[] fileBytes;
-                using (var ms = new System.IO.MemoryStream())
-                {
-                    await file.CopyToAsync(ms);
-                    fileBytes = ms.ToArray();
-                }
-                
-                var metadataResult = await _tikaService.ExtractMetadataAsync(fileBytes, file.FileName);
-                
-                // Check for known error messages
-                if (metadataResult.Contains("Could not extract metadata") || 
-                    metadataResult.Contains("Document extraction service is currently unavailable") ||
-                    metadataResult.Contains("Document metadata extraction timed out") ||
-                    metadataResult.Contains("An unexpected error occurred"))
-                {
-                    return StatusCode(500, new {
-                        success = false,
-                        error = new {
-                            code = "METADATA_EXTRACTION_FAILED",
-                            message = metadataResult
-                        }
-                    });
-                }
-                
-                // Success
-                return Ok(new {
-                    success = true,
-                    metadata = metadataResult
-                });
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Unhandled error in TikaController.ExtractMetadata");
-                return StatusCode(500, new {
-                    success = false,
-                    error = new {
-                        code = "UNHANDLED_EXCEPTION",
-                        message = "An unhandled error occurred during metadata extraction.",
-                        details = ex.Message
-                    }
-                });
-            }
-        }
-
-        /// <summary>
-        /// Extracts both text content and metadata from a document in a single call
-        /// </summary>
-        /// <param name="file">The document file to process</param>
+        /// <param name="model">The model containing the document file to process</param>
         /// <returns>JSON object containing both extracted text and structured metadata</returns>
         // POST: api/tika/process
         [HttpPost("process")]
-        public async Task<IActionResult> ProcessDocument([FromForm] Microsoft.AspNetCore.Http.IFormFile file)
+        [Consumes("multipart/form-data")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> ProcessDocument([FromForm] BUILD.ING.Models.FileUploadModel model)
         {
-            if (file == null || file.Length == 0)
+            if (model == null || model.File == null || model.File.Length == 0)
             {
                 return BadRequest(new {
                     success = false,
@@ -202,15 +54,15 @@ namespace BitAndBeam.Tika
                 byte[] fileBytes;
                 using (var ms = new System.IO.MemoryStream())
                 {
-                    await file.CopyToAsync(ms);
+                    await model.File.CopyToAsync(ms);
                     fileBytes = ms.ToArray();
                 }
                 
                 // Extract text
-                var textResult = await _tikaService.ExtractTextAsync(fileBytes, file.FileName);
+                var textResult = await _tikaService.ExtractTextAsync(fileBytes, model.File.FileName);
                 
                 // Extract metadata
-                var metadataResult = await _tikaService.ExtractMetadataAsync(fileBytes, file.FileName);
+                var metadataResult = await _tikaService.ExtractMetadataAsync(fileBytes, model.File.FileName);
                 
                 // Check for error conditions
                 bool textSuccess = !textResult.Contains("Could not extract text") && 
@@ -249,9 +101,9 @@ namespace BitAndBeam.Tika
                             error = !metadataSuccess ? metadataResult : null
                         },
                         file_info = new {
-                            name = file.FileName,
-                            size = file.Length,
-                            content_type = file.ContentType
+                            name = model.File.FileName,
+                            size = model.File.Length,
+                            content_type = model.File.ContentType
                         }
                     }
                 });
@@ -266,6 +118,53 @@ namespace BitAndBeam.Tika
                         message = "An unhandled error occurred during document processing.",
                         details = ex.Message
                     }
+                });
+            }
+        }
+
+        /// <summary>
+        /// Checks if the Tika server is available and responding
+        /// </summary>
+        /// <returns>Status information about the Tika service</returns>
+        // GET: api/tika/health
+        [HttpGet("health")]
+        public async Task<IActionResult> CheckHealth()
+        {
+            try
+            {
+                var result = await _tikaService.CheckHealthAsync();
+                
+                var response = new
+                {
+                    service = "Apache Tika",
+                    status = result.Status.ToString(),
+                    description = result.Description,
+                    timestamp = DateTimeOffset.UtcNow
+                };
+                
+                if (result.Status == Microsoft.Extensions.Diagnostics.HealthChecks.HealthStatus.Healthy)
+                {
+                    return Ok(response);
+                }
+                else if (result.Status == Microsoft.Extensions.Diagnostics.HealthChecks.HealthStatus.Degraded)
+                {
+                    // Still return 200 but with a degraded status in the body
+                    return Ok(response);
+                }
+                else
+                {
+                    return StatusCode(503, response);
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error checking Tika health");
+                return StatusCode(500, new
+                {
+                    service = "Apache Tika",
+                    status = "Unhealthy",
+                    description = $"Error checking Tika health: {ex.Message}",
+                    timestamp = DateTimeOffset.UtcNow
                 });
             }
         }
