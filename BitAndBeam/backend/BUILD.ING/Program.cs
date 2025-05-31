@@ -80,10 +80,8 @@ using (var scope = app.Services.CreateScope())
     // Run health checks during startup to verify Tika connectivity
     var healthCheckService = scope.ServiceProvider.GetRequiredService<HealthCheckService>();
     await healthCheckService.CheckHealthOnStartupAsync(scope.ServiceProvider);
-}
 
 // Configure the HTTP request pipeline.
-// Enable static files for Swagger UI
 app.UseStaticFiles();
 app.UseSwagger();
 app.UseSwaggerUI(c => {
@@ -94,7 +92,6 @@ app.UseSwaggerUI(c => {
     c.DefaultModelsExpandDepth(1);
     c.DocExpansion(Swashbuckle.AspNetCore.SwaggerUI.DocExpansion.List);
 });
-
 app.UseCors(MyAllowSpecificOrigins);
 app.UseHttpsRedirection();
 app.MapControllers();
@@ -147,7 +144,6 @@ app.MapHealthChecks("/healthz/ready", new Microsoft.AspNetCore.Diagnostics.Healt
 // Liveness check endpoint
 app.MapHealthChecks("/healthz/live", new Microsoft.AspNetCore.Diagnostics.HealthChecks.HealthCheckOptions
 {
-    // Exclude external dependency checks for liveness
     Predicate = _ => false
 });
 
@@ -161,12 +157,9 @@ app.UseStaticFiles(new StaticFileOptions
     RequestPath = "/documents"
 });
 
-
 app.Run();
 
 record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
 {
     public int TemperatureF => 32 + (int) (TemperatureC / 0.5556);
 }
-
-
