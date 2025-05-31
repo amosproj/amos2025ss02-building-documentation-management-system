@@ -1,3 +1,8 @@
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
+
 using Microsoft.AspNetCore.Mvc;
 using BUILD.ING.Models;
 using BUILD.ING.Data;
@@ -11,10 +16,12 @@ namespace BUILD.ING.Controllers
     public class AuthController : ControllerBase
     {
         private readonly AppDbContext _db;
+        private readonly IConfiguration _config;
 
-        public AuthController(AppDbContext db)
+        public AuthController(AppDbContext db, IConfiguration config)
         {
             _db = db;
+            _config = config;
         }
 
         /// <summary>
@@ -33,8 +40,42 @@ namespace BUILD.ING.Controllers
                 return Unauthorized(new { message = "Invalid email or password" });
             }
 
-            // Just a temporary response for now (JWT will come later)
-            return Ok(new { message = "Login successful!" });
+            // 🔐 Generate JWT token
+            var jwtSecret = _config["JwtSecret"];
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSecret));
+            var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+
+            // Set the claims to include in the token
+            var claims = new[]
+            {
+                new Claim(JwtRegisteredClaimNames.Sub, user.UserId.ToString()),
+                new Claim(JwtRegisteredClaimNames.Email, user.Email),
+                new Claim("orgId", user.OrganizationId.ToString()),
+                new Claim(ClaimTypes.Role, user.Role)
+            };
+
+            // Build the token
+            var token = new JwtSecurityToken(
+                expires: DateTime.UtcNow.AddHours(1), // 1 hour validity
+                signingCredentials: creds,
+                claims: claims
+            );
+
+            var tokenString = new JwtSecurityTokenHandler().WriteToken(token);
+
+            // Return the token and user info to the frontend
+            return Ok(new
+            {
+                token = tokenString,
+                expiresIn = 3600, // in seconds
+                user = new
+                {
+                    id = user.UserId,
+                    email = user.Email,
+                    organizationId = user.OrganizationId,
+                    role = user.Role
+                }
+            });
         }
     }
 }
