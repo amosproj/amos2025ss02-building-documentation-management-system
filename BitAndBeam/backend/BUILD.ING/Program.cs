@@ -1,13 +1,14 @@
+using BitAndBeam.Tika;
 using BUILD.ING.Data;
 using BUILD.ING.Models;
-using BUILD.ING.Swagger;
-using BitAndBeam.Tika;
 using BUILD.ING.Services;
+using BUILD.ING.Swagger;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.Extensions.FileProviders;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.OpenApi.Models;
+
 
 var builder = WebApplication.CreateBuilder(args);
 var conn = builder.Configuration.GetConnectionString("DefaultConnection");

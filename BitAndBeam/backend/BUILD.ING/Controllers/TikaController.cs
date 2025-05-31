@@ -1,10 +1,11 @@
-using System;
-using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using Microsoft.AspNetCore.Http;
-using BUILD.ING.Models;
+using System;
 using System.IO;
+using System.Threading.Tasks;
+using BUILD.ING.Models;
+
 
 namespace BitAndBeam.Tika
 {
@@ -23,7 +24,6 @@ namespace BitAndBeam.Tika
             _tikaService = tikaService;
             _logger = logger;
         }
-
 
         /// <summary>
         /// Receives a document file and returns both extracted text content and structured metadata in a single response.
