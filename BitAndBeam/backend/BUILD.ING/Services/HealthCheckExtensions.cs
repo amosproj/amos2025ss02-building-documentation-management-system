@@ -49,8 +49,8 @@ namespace BUILD.ING.Services
         public static async Task CheckHealthOnStartupAsync(this HealthCheckService healthCheckService, IServiceProvider serviceProvider)
         {
             // Create a logger to record startup health check results
-            var loggerFactory = serviceProvider.GetService(typeof(Microsoft.Extensions.Logging.ILoggerFactory)) 
-            as Microsoft.Extensions.Logging.ILoggerFactory;
+            var loggerFactory = serviceProvider.GetService(typeof(Microsoft.Extensions.Logging.ILoggerFactory))                
+                as Microsoft.Extensions.Logging.ILoggerFactory;
             var logger = loggerFactory?.CreateLogger("StartupHealthCheck") ?? Microsoft.Extensions.Logging.Abstractions.NullLogger.Instance;
 
             try
