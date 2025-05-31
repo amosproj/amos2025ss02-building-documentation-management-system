@@ -79,5 +79,15 @@ namespace BUILD.ING.Controllers
                 }
             });
         }
+        /// <summary>
+        /// Logs out a user (JWT tokens are stateless, so this is handled on the client).
+        /// </summary>
+        [HttpPost("logout")]
+        [Authorize]
+        public IActionResult Logout()
+        {
+            // Instruct the frontend to delete the token
+            return Ok(new { message = "Logout successful. Please remove the token on the client side." });
+        }
     }
 }
