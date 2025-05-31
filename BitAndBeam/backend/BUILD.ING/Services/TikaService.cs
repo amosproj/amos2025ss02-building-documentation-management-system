@@ -139,21 +139,21 @@ namespace BitAndBeam.Tika
             try
             {
                 _logger.LogInformation("Performing health check on Tika server");
-                
+
                 // Use a shorter timeout for health checks
                 using var client = new HttpClient
                 {
                     Timeout = TimeSpan.FromSeconds(5)
                 };
-                
+
                 // Check the version endpoint, which is lightweight
                 var response = await client.GetAsync($"{_tikaServerUrl}/version", cancellationToken);
-                
+
                 if (response.IsSuccessStatusCode)
                 {
                     var version = await response.Content.ReadAsStringAsync(cancellationToken);
                     _logger.LogInformation($"Tika server is healthy, running version: {version}");
-                    
+
                     return HealthCheckResult.Healthy($"Tika server is running version: {version}");
                 }
                 else
@@ -180,3 +180,4 @@ namespace BitAndBeam.Tika
         }
     }
 }
+
