@@ -3,6 +3,7 @@ using System.Security.Claims;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using BUILD.ING.Models;
 using BUILD.ING.Data;
@@ -27,6 +28,7 @@ namespace BUILD.ING.Controllers
         /// <summary>
         /// Authenticates a user with email and password.
         /// </summary>
+        [AllowAnonymous]
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] LoginRequest request)
         {

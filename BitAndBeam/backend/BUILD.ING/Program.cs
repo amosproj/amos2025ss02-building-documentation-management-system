@@ -6,6 +6,16 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.OpenApi.Models;
 
+<<<<<<< HEAD
+=======
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc.Authorization;
+
+using Serilog;                      // Added: Serilog namespace
+using Serilog.Context;              // Added: for log context enrichment
+using System.Diagnostics;          // Added: for Activity (trace IDs)
+
+>>>>>>> 31986fc (auth(security): enforce authentication globally and allow public access to specific endpoints)
 var builder = WebApplication.CreateBuilder(args);
 <<<<<<< HEAD
 =======
@@ -43,7 +53,15 @@ builder.Services.AddCors(options =>
 
 
 
-builder.Services.AddControllers();
+// Add global authorization
+builder.Services.AddControllers(options =>
+{
+    var policy = new AuthorizationPolicyBuilder()
+        .RequireAuthenticatedUser()
+        .Build();
+
+    options.Filters.Add(new AuthorizeFilter(policy));
+});
 // Add services to the container.
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"))
@@ -188,7 +206,7 @@ app.MapGet("/weatherforecast", () =>
 .WithOpenApi();
 
 //Adds health check endpoint that returns HTTP 200
-app.MapHealthChecks("/healthz");
+app.MapHealthChecks("/healthz").AllowAnonymous();
 
 //Just to set a route at /
 app.MapGet("/", () => "🚀 API is running! Visit /swagger , /weatherforecast or /healthz.");
