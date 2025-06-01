@@ -49,26 +49,25 @@ namespace BUILD.ING.Controllers
 
             // Extract metadata using TikaService
             var fileBytes = memoryStream.ToArray();
-            string metadata;
+            string metadata = "{}";
             try
             {
-                metadata = await _tikaService.ExtractMetadataAsync(fileBytes, file.FileName);
+                var extractedMetadata = await _tikaService.ExtractMetadataAsync(fileBytes, file.FileName);
                 
                 // Validate that the metadata is valid JSON
-                if (!IsValidJson(metadata))
+                if (IsValidJson(extractedMetadata))
                 {
-                    _logger.LogWarning($"Invalid metadata JSON returned by Tika for file {file.FileName}");
-                    metadata = "{ \"error\": \"Could not extract valid metadata from document\" }";
+                    metadata = extractedMetadata;
+                    _logger.LogInformation($"Successfully extracted metadata from {file.FileName}");
                 }
                 else
                 {
-                    _logger.LogInformation($"Successfully extracted metadata from {file.FileName}");
+                    _logger.LogWarning($"Invalid metadata JSON returned by Tika for file {file.FileName}. Using empty metadata.");
                 }
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, $"Error extracting metadata from {file.FileName}");
-                metadata = $"{{ \"error\": \"Failed to extract metadata: {ex.Message}\" }}";
+                _logger.LogError(ex, $"Error extracting metadata from {file.FileName}. Using empty metadata.");
             }
             
             // Save file to disk
