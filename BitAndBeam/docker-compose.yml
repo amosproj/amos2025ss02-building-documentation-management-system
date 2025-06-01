@@ -4,7 +4,7 @@ services:
     image: traefik:v2.10
     container_name: traefik
     command:
-      - "--api.insecure=true"
+
       - "--providers.docker=true"
       - "--entrypoints.web.address=:80"
       - "--entrypoints.websecure.address=:443"
@@ -12,6 +12,7 @@ services:
       - "--certificatesresolvers.le.acme.httpchallenge.entrypoint=web"
       - "--certificatesresolvers.le.acme.email=ouabosamuel10@gmail.com" 
       - "--certificatesresolvers.le.acme.storage=/letsencrypt/acme.json"
+      - "--providers.file.filename=/etc/traefik/traefik_dynamic.yml"
     ports:
       - "80:80"
       - "443:443"
@@ -44,12 +45,14 @@ services:
     build:
       context: ./backend
       dockerfile: Dockerfile
-      labels:
+    labels:
       - "traefik.enable=true"
       - "traefik.http.routers.backend.rule=Host(`backend.bitandbeam.duckdns.org`)"  
       - "traefik.http.routers.backend.entrypoints=websecure"
       - "traefik.http.routers.backend.tls.certresolver=le"
       - "traefik.http.routers.backend.middlewares=redirect@file"
+      - "traefik.http.services.backend.loadbalancer.server.port=5000"
+
     ports:
       - "5001:5000"
     depends_on:

@@ -95,4 +95,48 @@ dotnet format
 
 -> Set LF end-of-line sequence for Dockerfile and .sh files, especially in backend directory
 
+# BitandBeam: Secure Deployment with HTTPS
+
+This document describes how to configure, deploy, and test HTTPS support for the BitandBeam system using Traefik, Let's Encrypt, Docker, and DuckDNS.
+
+---
+
+## 🔐 HTTPS Deployment Overview
+
+- ✅ Reverse proxy: **Traefik v2**
+- ✅ Free SSL/TLS: **Let's Encrypt (ACME)**
+- ✅ Domain: **DuckDNS**
+- ✅ Automatic HTTP → HTTPS redirection
+- ✅ Services: `backend`, `frontend`, `ollama`, etc.
+- ✅ Port 80/443 exposed via Docker & router
+
+---
+
+## ⚙️ Prerequisites
+
+- Docker & Docker Compose installed
+- Publicly reachable server with open **ports 80 and 443**
+- A [DuckDNS](https://www.duckdns.org/) account
+
+---
+
+## 📦 Setup Instructions
+
+### 1. Create a DuckDNS Subdomain
+
+- Go to [https://www.duckdns.org](https://www.duckdns.org)
+- Log in with GitHub/Google
+- Register your subdomain (e.g., `bitandbeam`)
+- Note your DuckDNS **token**
+
+Optional: Run a DuckDNS updater container to keep your IP synced.
+
+```yaml
+duckdns:
+  image: linuxserver/duckdns
+  environment:
+    - SUBDOMAINS=bitandbeam
+    - TOKEN=your-duckdns-token
+    - TZ=Europe/Berlin
+  restart: always
 
