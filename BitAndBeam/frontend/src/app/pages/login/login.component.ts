@@ -12,7 +12,7 @@ import { FormsModule } from '@angular/forms';
   imports: [CommonModule, FormsModule]
 })
 export class LoginComponent implements OnInit {
-  username = '';
+  email = '';
   password = '';
   error = false;
 
@@ -31,14 +31,16 @@ export class LoginComponent implements OnInit {
   }
 
   login(): void {
-    if (this.authService.login(this.username, this.password)) {
-      const returnUrl =
-        this.route.snapshot.queryParamMap.get('returnUrl') || '/upload';
-
-      // ✅ Replace current history entry
-      this.router.navigate([returnUrl], {replaceUrl: true});
-    } else {
-      this.error = true;
-    }
+    this.authService.login(this.email, this.password).subscribe({
+      next: () => {
+        const returnUrl =
+          this.route.snapshot.queryParamMap.get('returnUrl') || '/upload';
+        this.router.navigate([returnUrl], { replaceUrl: true });
+      },
+      error: (err) => {
+        console.error('Login failed', err);
+        this.error = true;
+      }
+    });
   }
 }
