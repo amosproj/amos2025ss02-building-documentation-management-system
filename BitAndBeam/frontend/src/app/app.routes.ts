@@ -1,3 +1,4 @@
+import { DocumentExplorerComponent } from './components/document-explorer/document-explorer.component';
 import { Routes } from '@angular/router';
 import { HomeComponent } from './pages/home/home.component';
 import { LoginComponent } from './pages/login/login.component';
@@ -9,7 +10,8 @@ export const routes: Routes = [
   { path: '', component: HomeComponent }, // default route
   { path: 'login', component: LoginComponent },
   { path: 'upload', component: UploadFileComponent, canActivate: [AuthGuard] },
-  { path: 'file-view', component: FileViewComponent, canActivate: [AuthGuard] },
+  { path: 'file-view', component: FileViewComponent },
   { path: 'documents/:id', component: FileViewComponent, canActivate: [AuthGuard] },
+  { path: 'document-explorer', component: DocumentExplorerComponent },
   { path: '**', redirectTo: 'upload' }
 ];
