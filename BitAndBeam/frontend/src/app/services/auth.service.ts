@@ -1,36 +1,37 @@
 import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Observable, tap } from 'rxjs';
 
 @Injectable({
-  providedIn: 'root',
+  providedIn: 'root'
 })
 export class AuthService {
-  private users = [
-    { username: 'user1', password: 'pass1' },
-    { username: 'user2', password: 'pass2' },
-  ];
+  constructor(private http: HttpClient) {}
 
-  private loggedInUser: string | null = null;
-
-  login(username: string, password: string): boolean {
-    const match = this.users.find(
-      (u) => u.username === username && u.password === password,
+  login(email: string, password: string): Observable<any> {
+    return this.http.post<{ token: string }>('/api/auth/login', {
+      email,
+      password
+    }).pipe(
+      tap(response => {
+        // ✅ Save the token in localStorage
+        localStorage.setItem('authToken', response.token);
+      })
     );
-    if (match) {
-      this.loggedInUser = username;
-      return true;
-    }
-    return false;
   }
 
   isAuthenticated(): boolean {
-    return this.loggedInUser !== null;
-  }
-
-  getUsername(): string | null {
-    return this.loggedInUser;
+    return !!localStorage.getItem('authToken');
   }
 
   logout(): void {
-    this.loggedInUser = null;
+    localStorage.removeItem('authToken');
+  }
+  getUsername(): string | null {
+    const token = localStorage.getItem('authToken');
+    if (!token) return null;
+
+    const payload = JSON.parse(atob(token.split('.')[1]));
+    return payload?.username || null;
   }
 }
