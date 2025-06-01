@@ -13,7 +13,7 @@ using BCrypt.Net;
 namespace BUILD.ING.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
+    [Route("api/auth")]
     public class AuthController : ControllerBase
     {
         private readonly AppDbContext _db;
@@ -57,7 +57,7 @@ namespace BUILD.ING.Controllers
 
             // Build the token
             var token = new JwtSecurityToken(
-                expires: DateTime.UtcNow.AddMinutes(1), // 1 minute validity
+                expires: DateTime.UtcNow.AddHours(1), // 1 hour validity
                 signingCredentials: creds,
                 claims: claims
             );
