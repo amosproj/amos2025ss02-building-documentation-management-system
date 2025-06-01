@@ -1,8 +1,35 @@
 services:
+
+  reverse-proxy:
+    image: traefik:v2.10
+    container_name: traefik
+    command:
+      - "--api.insecure=true"
+      - "--providers.docker=true"
+      - "--entrypoints.web.address=:80"
+      - "--entrypoints.websecure.address=:443"
+      - "--certificatesresolvers.le.acme.httpchallenge=true"
+      - "--certificatesresolvers.le.acme.httpchallenge.entrypoint=web"
+      - "--certificatesresolvers.le.acme.email=ouabosamuel10@gmail.com" 
+      - "--certificatesresolvers.le.acme.storage=/letsencrypt/acme.json"
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock:ro"
+      - "./letsencrypt:/letsencrypt"
+      - ./traefik_dynamic.yml:/etc/traefik/traefik_dynamic.yml
+
   ollama:
     build:
       context: ./ollama
       dockerfile: Dockerfile
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.ollama.rule=Host(`ollama.bitandbeam.duckdns.org`)"  
+      - "traefik.http.routers.ollama.entrypoints=websecure"
+      - "traefik.http.routers.ollama.tls.certresolver=le"
+      - "traefik.http.routers.ollama.middlewares=redirect@file"
     container_name: ollama
     ports:
       - "11434:11434"   # Ollama internal API
@@ -17,6 +44,12 @@ services:
     build:
       context: ./backend
       dockerfile: Dockerfile
+      labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.backend.rule=Host(`backend.bitandbeam.duckdns.org`)"  
+      - "traefik.http.routers.backend.entrypoints=websecure"
+      - "traefik.http.routers.backend.tls.certresolver=le"
+      - "traefik.http.routers.backend.middlewares=redirect@file"
     ports:
       - "5001:5000"
     depends_on:
@@ -32,6 +65,12 @@ services:
     build:
       context: ./frontend
       dockerfile: Dockerfile
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.frontend.rule=Host(`frontend.bitandbeam.duckdns.org`)"  
+      - "traefik.http.routers.frontend.entrypoints=websecure"
+      - "traefik.http.routers.frontend.tls.certresolver=le"
+      - "traefik.http.routers.frontend.middlewares=redirect@file"
     ports:
       - "8080:80"
     depends_on:
