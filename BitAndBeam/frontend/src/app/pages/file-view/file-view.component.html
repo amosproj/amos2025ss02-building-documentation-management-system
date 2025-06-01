@@ -13,13 +13,18 @@
       <div class="file-main-content" *ngIf="selectedFile">
 
         <!-- PDF Viewer -->
+         <!-- Updated PDF viewer to ngx-extended-pdf-viewer (ng2 version broke under Vite) -->
         <section class="pdf-viewer">
-            <pdf-viewer
-                    *ngIf="selectedFile?.url"
-                    [src]="selectedFile.url"
-                    [show-all]="true"
-                    style="display: block; height: 100%; width: 100%;">
-            </pdf-viewer>
+            <ngx-extended-pdf-viewer
+              *ngIf="selectedFile?.url"
+              [src]="selectedFile.url"
+              useBrowserLocale="true"
+              height="100%"
+              [showSidebarButton]="true"
+              [showToolbar]="true"
+            >
+            </ngx-extended-pdf-viewer>
+
 
         </section>
 
