@@ -3,6 +3,8 @@ using BUILD.ING.Models;
 using Microsoft.AspNetCore.Mvc;
 using BitAndBeam.Tika;
 using System.IO;
+using System.Text.Json;
+using Microsoft.Extensions.Logging;
 
 namespace BUILD.ING.Controllers
 {
@@ -13,13 +15,15 @@ namespace BUILD.ING.Controllers
         private readonly AppDbContext _context;
         private readonly IWebHostEnvironment _env;
         private readonly TikaService _tikaService;
+        private readonly ILogger<DocumentsController> _logger;
 
-        public DocumentsController(AppDbContext context, IWebHostEnvironment env, TikaService tikaService)
+        public DocumentsController(AppDbContext context, IWebHostEnvironment env, TikaService tikaService, ILogger<DocumentsController> logger)
         {
             Console.WriteLine("🚀 DocumentsController loaded");
             _context = context;
             _env = env;
             _tikaService = tikaService;
+            _logger = logger;
         }
 
         private string GetCurrentUserGroupId()
@@ -45,7 +49,27 @@ namespace BUILD.ING.Controllers
 
             // Extract metadata using TikaService
             var fileBytes = memoryStream.ToArray();
-            var metadata = await _tikaService.ExtractMetadataAsync(fileBytes, file.FileName);
+            string metadata;
+            try
+            {
+                metadata = await _tikaService.ExtractMetadataAsync(fileBytes, file.FileName);
+                
+                // Validate that the metadata is valid JSON
+                if (!IsValidJson(metadata))
+                {
+                    _logger.LogWarning($"Invalid metadata JSON returned by Tika for file {file.FileName}");
+                    metadata = "{ \"error\": \"Could not extract valid metadata from document\" }";
+                }
+                else
+                {
+                    _logger.LogInformation($"Successfully extracted metadata from {file.FileName}");
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"Error extracting metadata from {file.FileName}");
+                metadata = $"{{ \"error\": \"Failed to extract metadata: {ex.Message}\" }}";
+            }
             
             // Save file to disk
             using var fileStream = new FileStream(fullPath, FileMode.Create);
@@ -97,6 +121,22 @@ namespace BUILD.ING.Controllers
                 return NotFound();
 
             return Ok(document);
+        }
+        
+        private bool IsValidJson(string strInput)
+        {
+            if (string.IsNullOrWhiteSpace(strInput))
+                return false;
+                
+            try
+            {
+                var obj = JsonDocument.Parse(strInput);
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
         }
 
         [HttpPut("{id}")]
