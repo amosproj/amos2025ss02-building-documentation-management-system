@@ -93,6 +93,14 @@ builder.Services.AddAuthentication(options =>
         ValidateAudience = false, // set to true and specify valid audience in production
         ClockSkew = TimeSpan.Zero // remove default 5 min buffer for token expiration
     };
+    options.Events = new JwtBearerEvents
+    {
+        OnAuthenticationFailed = context =>
+        {
+            Console.WriteLine($"❌ JWT error: {context.Exception.Message}");
+            return Task.CompletedTask;
+        }
+    };
 });
 
 
