@@ -49,8 +49,8 @@ export class FileViewComponent {
         };
         // Determine file type for viewer
         const fileType = (doc.fileType ?? '').toLowerCase();
-        this.isPdf = fileType === 'application/pdf';
-        this.isImage = fileType === 'image/png' || fileType === 'image/jpeg';
+        this.isPdf = fileType === 'pdf';
+        this.isImage = fileType === 'png' || fileType === 'jpg' || fileType === 'jpeg';
       },
       error: (err) => {
         console.error('❌ Failed to load document:', err);
