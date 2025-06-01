@@ -97,7 +97,7 @@ dotnet format
 
 # BitandBeam: Secure Deployment with HTTPS
 
-This document describes how to configure, deploy, and test HTTPS support for the BitandBeam system using Traefik, Let's Encrypt, Docker, and DuckDNS.
+This describes how to configure, deploy, and test HTTPS support for the BitandBeam system using Traefik, Let's Encrypt, Docker, and DuckDNS.
 
 ---
 
@@ -140,3 +140,50 @@ duckdns:
     - TZ=Europe/Berlin
   restart: always
 
+🚀 Start the System
+
+- docker-compose up -d
+
+✅ Acceptance Criteria & Testing
+
+🔹 Criterion 1: Valid SSL Certificate
+
+Test Goal: Confirm Traefik obtained a valid Let's Encrypt certificate.
+
+✅ Browser Test:
+
+Open https://backend.bitandbeam.duckdns.org
+
+Look for a 🔒 padlock (SSL is working)
+
+🔹 Criterion 2: HTTP → HTTPS Redirection
+
+Test Goal: Verify HTTP is redirected to HTTPS.
+
+✅ Browser Test:
+
+Visit http://backend.bitandbeam.duckdns.org
+
+You should be automatically redirected to HTTPS
+
+🔹 Criterion 3: HTTPS Enforced on All Endpoints
+
+Test Goal: Ensure all subdomains only allow secure connections.
+
+✅ Test all endpoints:
+
+https://frontend.bitandbeam.duckdns.org
+
+https://backend.bitandbeam.duckdns.org
+
+https://ollama.bitandbeam.duckdns.org
+
+🔹 Criterion 4: Auto Certificate Renewal
+
+Test Goal: Confirm Let's Encrypt certificates are stored and renewable.
+
+✅ Check acme.json:
+
+docker exec traefik cat /letsencrypt/acme.json
+
+Should contain certificate entries for your subdomains.
