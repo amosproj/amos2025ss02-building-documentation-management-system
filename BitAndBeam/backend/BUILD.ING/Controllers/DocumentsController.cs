@@ -1,6 +1,8 @@
 using BUILD.ING.Data;
 using BUILD.ING.Models;
 using Microsoft.AspNetCore.Mvc;
+using BitAndBeam.Tika;
+using System.IO;
 
 namespace BUILD.ING.Controllers
 {
@@ -10,12 +12,14 @@ namespace BUILD.ING.Controllers
     {
         private readonly AppDbContext _context;
         private readonly IWebHostEnvironment _env;
+        private readonly TikaService _tikaService;
 
-        public DocumentsController(AppDbContext context, IWebHostEnvironment env)
+        public DocumentsController(AppDbContext context, IWebHostEnvironment env, TikaService tikaService)
         {
             Console.WriteLine("🚀 DocumentsController loaded");
             _context = context;
             _env = env;
+            _tikaService = tikaService;
         }
 
         private string GetCurrentUserGroupId()
@@ -34,8 +38,19 @@ namespace BUILD.ING.Controllers
 
             var fullPath = Path.Combine(uploadsPath, file.FileName);
 
-            using var stream = new FileStream(fullPath, FileMode.Create);
-            await file.CopyToAsync(stream).ConfigureAwait(false);
+            // Create a memory stream to read the file content for metadata extraction
+            using var memoryStream = new MemoryStream();
+            await file.CopyToAsync(memoryStream).ConfigureAwait(false);
+            memoryStream.Position = 0;
+
+            // Extract metadata using TikaService
+            var fileBytes = memoryStream.ToArray();
+            var metadata = await _tikaService.ExtractMetadataAsync(fileBytes, file.FileName);
+            
+            // Save file to disk
+            using var fileStream = new FileStream(fullPath, FileMode.Create);
+            memoryStream.Position = 0;
+            await memoryStream.CopyToAsync(fileStream).ConfigureAwait(false);
 
             var document = new Document
             {
@@ -50,7 +65,7 @@ namespace BUILD.ING.Controllers
                 Status = "draft",
                 IsPublic = false,
                 Description = "No description provided",
-                Metadata = "{}",
+                Metadata = metadata,  // Store the extracted metadata from Tika
                 UploadedAt = DateTime.UtcNow,
                 UploadedBy = null,
                 GroupId = GetCurrentUserGroupId()
