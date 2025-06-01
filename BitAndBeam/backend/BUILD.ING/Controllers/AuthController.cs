@@ -50,15 +50,14 @@ namespace BUILD.ING.Controllers
             // Set the claims to include in the token
             var claims = new[]
             {
-                new Claim(JwtRegisteredClaimNames.Sub, user.UserId.ToString()),
-                new Claim(JwtRegisteredClaimNames.Email, user.Email),
-                new Claim("orgId", user.OrganizationId.ToString()),
-                new Claim(ClaimTypes.Role, user.Role)
+                new Claim("uid", user.UserId.ToString()),         // user ID
+                new Claim("org", user.OrganizationId.ToString()), // organization ID
+                new Claim("r", user.Role.Substring(0, 1))          // role abbreviation (e.g., 'a' for admin)
             };
 
             // Build the token
             var token = new JwtSecurityToken(
-                expires: DateTime.UtcNow.AddHours(1), // 1 hour validity
+                expires: DateTime.UtcNow.AddMinutes(1), // 1 minute validity
                 signingCredentials: creds,
                 claims: claims
             );
