@@ -194,5 +194,47 @@ namespace BUILD.ING.Controllers
 
             return NoContent();
         }
+        [HttpGet("with-documents")]
+        public async Task<IActionResult> GetBuildingsWithDocuments()
+        {
+            var groupId = "group2"; // or use your method GetCurrentUserGroupId()
+
+            // Get buildings with their documents (filtered by group)
+            var buildingsWithDocuments = await _context.Buildings
+                .Include(b => b.Documents.Where(d => d.GroupId == groupId))
+                .ToListAsync();
+
+            // Get documents without any building
+            var unassignedDocuments = await _context.Documents
+                .Where(d => d.BuildingId == null && d.GroupId == groupId)
+                .ToListAsync();
+
+            var result = buildingsWithDocuments.Select(b => new
+            {
+                BuildingId = b.BuildingId,
+                BuildingName = b.Name,
+                Documents = b.Documents.Select(d => new {
+                    d.DocumentId,
+                    d.Title,
+                    d.FilePath
+                })
+            }).ToList();
+
+            if (unassignedDocuments.Any())
+            {
+                result.Add(new
+                {
+                    BuildingId = 0,
+                    BuildingName = "No Building Assigned",
+                    Documents = unassignedDocuments.Select(d => new {
+                        d.DocumentId,
+                        d.Title,
+                        d.FilePath
+                    })
+                });
+            }
+
+            return Ok(result);
+        }
     }
 }
