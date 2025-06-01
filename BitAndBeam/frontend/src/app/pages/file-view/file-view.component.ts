@@ -33,7 +33,7 @@ export class FileViewComponent {
     }
 
     this.buildingService.getDocumentById(id).subscribe({
-      next: (doc: ApiDocument)  => {
+      next: async (doc: ApiDocument)  => {
         console.log('📄 Loaded document:', doc);
         console.log('🔧 Config API URL:', this.config.apiUrl);
 
@@ -47,13 +47,11 @@ export class FileViewComponent {
             { label: 'Type', value: doc.fileType ?? 'unknown' }
           ]
         };
-        // Determine file type for viewer
+
         const fileType = (doc.fileType ?? '').toLowerCase();
         if (fileType === 'png' || fileType === 'jpg' || fileType === 'jpeg') {
-          // ✅ Wrap image in single-page PDF dynamically
           await this.createPdfWithImage(this.selectedFile.url, fileType);
         } else {
-          // ✅ Directly use the PDF file
           this.pdfSrc = this.selectedFile.url;
         }
       },
