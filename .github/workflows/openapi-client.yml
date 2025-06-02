@@ -19,6 +19,10 @@ on:
         description: "Whether the SDK was updated"
         value: ${{ jobs.generate-client.outputs.sdk_updated }}
 
+permissions:
+  contents: write
+  pull-requests: write
+
 jobs:
   generate-client:
     runs-on: ubuntu-latest
@@ -28,6 +32,8 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
