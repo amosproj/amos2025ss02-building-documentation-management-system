@@ -34,7 +34,7 @@ namespace BUILD.ING.Services
             try
             {
                 // Delegate to the TikaService's health check method
-                var result = await _tikaService.CheckHealthAsync(cancellationToken);
+                var result = await _tikaService.CheckHealthAsync(cancellationToken).ConfigureAwait(false);
 
                 // Add additional data to the health check result
                 var data = new System.Collections.Generic.Dictionary<string, object>

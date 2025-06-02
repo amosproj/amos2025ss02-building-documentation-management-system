@@ -92,90 +92,90 @@ if (app.Environment.IsDevelopment())
 app.UseCors(MyAllowSpecificOrigins);
 
 
-    // Run health checks during startup to verify Tika connectivity
-    var healthCheckService = scope.ServiceProvider.GetRequiredService<HealthCheckService>();
-    await healthCheckService.CheckHealthOnStartupAsync(scope.ServiceProvider);
+// Run health checks during startup to verify Tika connectivity
+var healthCheckService = scope.ServiceProvider.GetRequiredService<HealthCheckService>();
+await healthCheckService.CheckHealthOnStartupAsync(scope.ServiceProvider).ConfigureAwait(false);
 
-    // Configure the HTTP request pipeline.
-    app.UseStaticFiles();
-    app.UseSwagger();
-    app.UseSwaggerUI(c =>
-    {
-        c.SwaggerEndpoint("/swagger/v1/swagger.json", "BUILD.ING API v1");
-        c.RoutePrefix = "swagger";
-        c.EnableDeepLinking();
-        c.DefaultModelExpandDepth(2);
-        c.DefaultModelsExpandDepth(1);
-        c.DocExpansion(Swashbuckle.AspNetCore.SwaggerUI.DocExpansion.List);
-    });
-    app.UseCors(MyAllowSpecificOrigins);
-    app.UseHttpsRedirection();
-    app.MapControllers();
+// Configure the HTTP request pipeline.
+app.UseStaticFiles();
+app.UseSwagger();
+app.UseSwaggerUI(c =>
+{
+    c.SwaggerEndpoint("/swagger/v1/swagger.json", "BUILD.ING API v1");
+    c.RoutePrefix = "swagger";
+    c.EnableDeepLinking();
+    c.DefaultModelExpandDepth(2);
+    c.DefaultModelsExpandDepth(1);
+    c.DocExpansion(Swashbuckle.AspNetCore.SwaggerUI.DocExpansion.List);
+});
+app.UseCors(MyAllowSpecificOrigins);
+app.UseHttpsRedirection();
+app.MapControllers();
 
-    var summaries = new[]
-    {
+var summaries = new[]
+{
     "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
 };
 
-    app.MapGet("/weatherforecast", () =>
-    {
-        var forecast = Enumerable.Range(1, 5).Select(index =>
-            new WeatherForecast
-            (
-                DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
-                Random.Shared.Next(-20, 55),
-                summaries[Random.Shared.Next(summaries.Length)]
-            ))
-            .ToArray();
-        return forecast;
-    })
-    .WithName("GetWeatherForecast")
-    .WithOpenApi();
+app.MapGet("/weatherforecast", () =>
+{
+    var forecast = Enumerable.Range(1, 5).Select(index =>
+        new WeatherForecast
+        (
+            DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
+            Random.Shared.Next(-20, 55),
+            summaries[Random.Shared.Next(summaries.Length)]
+        ))
+        .ToArray();
+    return forecast;
+})
+.WithName("GetWeatherForecast")
+.WithOpenApi();
 
-    // Add health check endpoints
-    app.MapHealthChecks("/healthz"); // Basic health check endpoint that returns HTTP 200
+// Add health check endpoints
+app.MapHealthChecks("/healthz"); // Basic health check endpoint that returns HTTP 200
 
-    // Detailed health check endpoint for Tika
-    app.MapHealthChecks("/healthz/tika", new Microsoft.AspNetCore.Diagnostics.HealthChecks.HealthCheckOptions
-    {
-        Predicate = (check) => check.Tags.Contains("tika"),
-        ResponseWriter = HealthCheckExtensions.WriteDetailedJsonResponse,
-        ResultStatusCodes =
+// Detailed health check endpoint for Tika
+app.MapHealthChecks("/healthz/tika", new Microsoft.AspNetCore.Diagnostics.HealthChecks.HealthCheckOptions
+{
+    Predicate = (check) => check.Tags.Contains("tika"),
+    ResponseWriter = HealthCheckExtensions.WriteDetailedJsonResponse,
+    ResultStatusCodes =
     {
         [HealthStatus.Healthy] = StatusCodes.Status200OK,
         [HealthStatus.Degraded] = StatusCodes.Status200OK, // Still return 200 but with degraded status in body
         [HealthStatus.Unhealthy] = StatusCodes.Status503ServiceUnavailable
     },
-        AllowCachingResponses = false
-    });
+    AllowCachingResponses = false
+});
 
-    // Ready check endpoint that includes Tika
-    app.MapHealthChecks("/healthz/ready", new Microsoft.AspNetCore.Diagnostics.HealthChecks.HealthCheckOptions
-    {
-        Predicate = (check) => check.Tags.Contains("ready"),
-        ResponseWriter = HealthCheckExtensions.WriteDetailedJsonResponse,
-        AllowCachingResponses = false
-    });
+// Ready check endpoint that includes Tika
+app.MapHealthChecks("/healthz/ready", new Microsoft.AspNetCore.Diagnostics.HealthChecks.HealthCheckOptions
+{
+    Predicate = (check) => check.Tags.Contains("ready"),
+    ResponseWriter = HealthCheckExtensions.WriteDetailedJsonResponse,
+    AllowCachingResponses = false
+});
 
-    // Liveness check endpoint
-    app.MapHealthChecks("/healthz/live", new Microsoft.AspNetCore.Diagnostics.HealthChecks.HealthCheckOptions
-    {
-        Predicate = _ => false
-    });
+// Liveness check endpoint
+app.MapHealthChecks("/healthz/live", new Microsoft.AspNetCore.Diagnostics.HealthChecks.HealthCheckOptions
+{
+    Predicate = _ => false
+});
 
-    //Just to set a route at /
-    app.MapGet("/", () => "🚀 API is running! Visit /swagger , /weatherforecast or /healthz.");
+//Just to set a route at /
+app.MapGet("/", () => "🚀 API is running! Visit /swagger , /weatherforecast or /healthz.");
 
-    // Ensure the documents folder exists
-    app.UseStaticFiles(new StaticFileOptions
-    {
-        FileProvider = new PhysicalFileProvider("/app/documents"),
-        RequestPath = "/documents"
-    });
+// Ensure the documents folder exists
+app.UseStaticFiles(new StaticFileOptions
+{
+    FileProvider = new PhysicalFileProvider("/app/documents"),
+    RequestPath = "/documents"
+});
 
-    app.Run();
+app.Run();
 
-    record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
-    {
+record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
+{
     public int TemperatureF => 32 + (int) (TemperatureC / 0.5556);
 }

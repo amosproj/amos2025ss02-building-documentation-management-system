@@ -44,11 +44,11 @@ namespace BitAndBeam.Tika
                 var content = new ByteArrayContent(fileBytes);
 
                 // Send the request to Tika's text extraction endpoint
-                var response = await _httpClient.PostAsync($"{_tikaServerUrl}/tika/text", content);
+                var response = await _httpClient.PostAsync($"{_tikaServerUrl}/tika/text", content).ConfigureAwait(false);
 
                 if (response.IsSuccessStatusCode)
                 {
-                    var extractedText = await response.Content.ReadAsStringAsync();
+                    var extractedText = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
                     _logger.LogInformation($"Successfully extracted {extractedText.Length} characters from {fileName}");
                     return extractedText;
                 }
@@ -99,11 +99,11 @@ namespace BitAndBeam.Tika
                 var content = new ByteArrayContent(fileBytes);
 
                 // Send the request to Tika's metadata extraction endpoint
-                var response = await _httpClient.PostAsync($"{_tikaServerUrl}/tika/rmeta", content);
+                var response = await _httpClient.PostAsync($"{_tikaServerUrl}/tika/rmeta", content).ConfigureAwait(false);
 
                 if (response.IsSuccessStatusCode)
                 {
-                    var extractedMetadata = await response.Content.ReadAsStringAsync();
+                    var extractedMetadata = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
                     _logger.LogInformation($"Successfully extracted metadata from {fileName}");
                     return extractedMetadata;
                 }
@@ -142,10 +142,10 @@ namespace BitAndBeam.Tika
                 {
                     Timeout = TimeSpan.FromSeconds(5)
                 };
-                var response = await client.GetAsync($"{_tikaServerUrl}/version", cancellationToken);
+                var response = await client.GetAsync($"{_tikaServerUrl}/version", cancellationToken).ConfigureAwait(false);
                 if (response.IsSuccessStatusCode)
                 {
-                    var version = await response.Content.ReadAsStringAsync(cancellationToken);
+                    var version = await response.Content.ReadAsStringAsync(cancellationToken).ConfigureAwait(false);
                     _logger.LogInformation($"Tika server is healthy, running version: {version}");
                     return HealthCheckResult.Healthy($"Tika server is running version: {version}");
                 }
