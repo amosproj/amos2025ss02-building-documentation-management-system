@@ -159,7 +159,7 @@ using (var scope = app.Services.CreateScope())
     });
 
     app.Run();
-
+}
 
 // Place this at the end of the file, outside the configuration block
 record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
