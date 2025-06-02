@@ -9,7 +9,7 @@ import { FormsModule } from '@angular/forms';
   standalone: true,
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css'],
-  imports: [CommonModule, FormsModule]
+  imports: [CommonModule, FormsModule],
 })
 export class LoginComponent implements OnInit {
   username = '';
@@ -19,14 +19,13 @@ export class LoginComponent implements OnInit {
   constructor(
     private authService: AuthService,
     private router: Router,
-    private route: ActivatedRoute
-  ) {
-  }
+    private route: ActivatedRoute,
+  ) {}
 
   ngOnInit(): void {
     // Redirect logged-in user away from login page
     if (this.authService.isAuthenticated()) {
-      this.router.navigate(['/upload'], {replaceUrl: true});
+      this.router.navigate(['/upload'], { replaceUrl: true });
     }
   }
 
@@ -36,7 +35,7 @@ export class LoginComponent implements OnInit {
         this.route.snapshot.queryParamMap.get('returnUrl') || '/upload';
 
       // ✅ Replace current history entry
-      this.router.navigate([returnUrl], {replaceUrl: true});
+      this.router.navigate([returnUrl], { replaceUrl: true });
     } else {
       this.error = true;
     }

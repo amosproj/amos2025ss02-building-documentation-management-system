@@ -45,25 +45,27 @@ services:
       - documentdata:/app/documents
 
   frontend:
-    build:
-      context: ./frontend
-      dockerfile: Dockerfile
-    ports:
-      - "8080:80"
-    depends_on:
-      - backend
+    image: ghcr.io/amosproj/bitandbeam-frontend:latest
+    restart: always
     environment:
-      - API_URL=http://localhost:5000
-
-  openapi-client:
-    build:
-      context: ./openapi-client
-      dockerfile: Dockerfile
-    container_name: openapi_generator
+      - API_URL=http://amos.b-iq.net:5000
     depends_on:
       - backend
-    volumes:
-      - ./frontend/src/api:/local/generated-sdk
+    ports:
+      - "80:80"  # Optional: expose only if needed externally
+
+  ollama:
+    image: ghcr.io/amosproj/bitandbeam-ollama:latest
+    container_name: ollama
+    restart: always
+    ports:
+      - "11434:11434"
+      - "8000:8000"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/docs"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
 
   postgres:
     image: postgres:17
