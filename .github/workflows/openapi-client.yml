@@ -59,10 +59,30 @@ jobs:
             echo "sdk_updated=false" >> $GITHUB_OUTPUT
           fi
 
-      - name: Create Pull Request with updated client
+      - name: Configure Git
+        if: steps.check_changes.outputs.sdk_updated == 'true' && github.event_name == 'push' && github.ref == 'refs/heads/main'
+        run: |
+          git config --global user.name 'github-actions[bot]'
+          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+
+      - name: Commit and Push Changes
+        if: steps.check_changes.outputs.sdk_updated == 'true' && github.event_name == 'push' && github.ref == 'refs/heads/main'
+        run: |
+          # Create and switch to a new branch
+          git checkout -b chore/update-openapi-client
+          
+          # Stage and commit changes
+          git add BitAndBeam/frontend/src/api/
+          git commit -m "chore: update generated OpenAPI client"
+          
+          # Push to remote
+          git push -f origin chore/update-openapi-client
+
+      - name: Create Pull Request
         if: steps.check_changes.outputs.sdk_updated == 'true' && github.event_name == 'push' && github.ref == 'refs/heads/main'
         uses: peter-evans/create-pull-request@v5
         with:
+          token: ${{ secrets.GITHUB_TOKEN }}
           commit-message: "chore: update generated OpenAPI client"
           title: "chore: update generated OpenAPI client"
           body: "This PR updates the generated OpenAPI TypeScript client based on backend API changes."
