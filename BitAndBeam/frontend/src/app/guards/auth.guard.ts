@@ -3,7 +3,7 @@ import {
   CanActivate,
   ActivatedRouteSnapshot,
   RouterStateSnapshot,
-  Router
+  Router,
 } from '@angular/router';
 import { AuthService } from '../services/auth.service';
 import { BuildingService } from '../services/building.service';
@@ -13,10 +13,13 @@ export class AuthGuard implements CanActivate {
   constructor(
     private authService: AuthService,
     private router: Router,
-    private buildingService: BuildingService
+    private buildingService: BuildingService,
   ) {}
 
-  canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean {
+  canActivate(
+    route: ActivatedRouteSnapshot,
+    state: RouterStateSnapshot,
+  ): boolean {
     const isLoggedIn = this.authService.isAuthenticated();
 
     // Trying to access file-view directly without selecting a file
@@ -34,7 +37,7 @@ export class AuthGuard implements CanActivate {
     const returnUrl = state.url !== '/file-view' ? state.url : '/upload';
 
     this.router.navigate(['/login'], {
-      queryParams: { returnUrl }
+      queryParams: { returnUrl },
     });
     return false;
   }

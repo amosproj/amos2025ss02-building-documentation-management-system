@@ -1,3 +1,5 @@
+using Microsoft.Extensions.Logging; //
+
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -13,10 +15,11 @@ namespace BUILD.ING.Controllers
     public class BuildingsController : ControllerBase
     {
         private readonly AppDbContext _context;
-
-        public BuildingsController(AppDbContext context)
+        private readonly ILogger<BuildingsController> _logger;  // ADDED: Inject ILogger for logging
+        public BuildingsController(AppDbContext context, ILogger<BuildingsController> logger)
         {
             _context = context;
+            _logger = logger;
         }
 
         // POST: api/Buildings
@@ -24,11 +27,23 @@ namespace BUILD.ING.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateBuilding(Building building)
         {
+            _logger.LogInformation("CreateBuilding called at {Time}", DateTime.UtcNow); // ADDED: Log method entry
+
             building.CreatedAt = DateTime.UtcNow;
             building.UpdatedAt = DateTime.UtcNow;
 
             _context.Buildings.Add(building);
-            await _context.SaveChangesAsync().ConfigureAwait(false);
+
+            try
+            {
+                await _context.SaveChangesAsync().ConfigureAwait(false);
+                _logger.LogInformation("Building created successfully with ID {BuildingId}", building.BuildingId); // ADDED: Log success
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error creating building"); // ADDED: Log exception
+                return StatusCode(500, ex.Message);
+            }
 
             return Ok(new { id = building.BuildingId });
         }
@@ -38,8 +53,13 @@ namespace BUILD.ING.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Building>>> GetBuildings()
         {
-            //We can apply later group-based filtering here
-            return await _context.Buildings.ToListAsync().ConfigureAwait(false);
+            _logger.LogInformation("GetBuildings called at {Time}", DateTime.UtcNow);
+
+            var buildings = await _context.Buildings.ToListAsync().ConfigureAwait(false);
+
+            _logger.LogInformation("GetBuildings returned {Count} records", buildings.Count);
+
+            return buildings;
         }
 
         // GET: api/Buildings/{id}
@@ -47,13 +67,20 @@ namespace BUILD.ING.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<Building>> GetBuilding(int id)
         {
+            _logger.LogInformation("GetBuilding called for ID {BuildingId} at {Time}", id, DateTime.UtcNow);
+
             var building = await _context.Buildings
                 .Include(b => b.Documents)
                 .Include(b => b.BuildingDocumentRelations)
                 .FirstOrDefaultAsync(b => b.BuildingId == id).ConfigureAwait(false);
 
             if (building == null)
+            {
+                _logger.LogWarning("GetBuilding did not find building with ID {BuildingId}", id);
                 return NotFound();
+            }
+
+            _logger.LogInformation("GetBuilding found building with ID {BuildingId}", id);
 
             return building;
         }
@@ -139,21 +166,31 @@ namespace BUILD.ING.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteBuilding(int id)
         {
+            _logger.LogInformation("DeleteBuilding called for ID {BuildingId} at {Time}", id, DateTime.UtcNow);
+
             var building = await _context.Buildings
                 .Include(b => b.BuildingDocumentRelations)
                 .FirstOrDefaultAsync(b => b.BuildingId == id).ConfigureAwait(false);
 
             if (building == null)
+            {
+                _logger.LogWarning("DeleteBuilding could not find building with ID {BuildingId}", id);
                 return NotFound();
+            }
 
-            // Remove related building-document relations
-            _context.BuildingDocumentRelations.RemoveRange(building.BuildingDocumentRelations);
+            try
+            {
+                _context.BuildingDocumentRelations.RemoveRange(building.BuildingDocumentRelations);
+                _context.Buildings.Remove(building);
+                await _context.SaveChangesAsync().ConfigureAwait(false);
 
-            // Optionally remove documents if they are not shared
-            // _context.Documents.RemoveRange(building.Documents);
-
-            _context.Buildings.Remove(building);
-            await _context.SaveChangesAsync().ConfigureAwait(false);
+                _logger.LogInformation("DeleteBuilding successfully deleted building with ID {BuildingId}", id);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error deleting building with ID {BuildingId}", id);
+                return StatusCode(500, ex.Message);
+            }
 
             return NoContent();
         }

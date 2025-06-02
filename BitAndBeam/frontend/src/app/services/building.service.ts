@@ -1,11 +1,16 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable , from} from 'rxjs';
+import { BehaviorSubject, Observable, from } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { ConfigService } from '../config.service';
 import { AxiosResponse } from 'axios';
 import { map } from 'rxjs/operators';
-import { Configuration, DocumentsApi, Document as ApiDocument, BuildingsApi,
-  Building as ApiBuilding } from '../../api';
+import {
+  Configuration,
+  DocumentsApi,
+  Document as ApiDocument,
+  BuildingsApi,
+  Building as ApiBuilding,
+} from '../../api';
 
 export interface DocumentItem {
   id: number;
@@ -45,31 +50,30 @@ export class BuildingService {
   //Buildings
   getBuildings(): Observable<Building[]> {
     return from(
-        this.buildingsApi.apiBuildingsGet().then(res =>
-            res.data.map(apiB => ({
-              id: apiB.buildingId!,
-              name: apiB.name ?? '',
-              documents: [] // you can map documents if needed
-            }))
-        )
+      this.buildingsApi.apiBuildingsGet().then((res) =>
+        res.data.map((apiB) => ({
+          id: apiB.buildingId!,
+          name: apiB.name ?? '',
+          documents: [], // you can map documents if needed
+        })),
+      ),
     );
   }
 
   addBuilding(name: string): Observable<Building> {
     return from(
-        this.buildingsApi.apiBuildingsPost({ name }).then(() =>
-            this.buildingsApi.apiBuildingsGet().then(res => {
-              const last = res.data[res.data.length - 1];
-              return {
-                id: last.buildingId!,
-                name: last.name ?? '',
-                documents: []
-              };
-            })
-        )
+      this.buildingsApi.apiBuildingsPost({ name }).then(() =>
+        this.buildingsApi.apiBuildingsGet().then((res) => {
+          const last = res.data[res.data.length - 1];
+          return {
+            id: last.buildingId!,
+            name: last.name ?? '',
+            documents: [],
+          };
+        }),
+      ),
     );
   }
-
 
   deleteBuilding(id: number): Observable<void> {
     return from(this.buildingsApi.apiBuildingsIdDelete(id).then(() => {}));
@@ -78,8 +82,9 @@ export class BuildingService {
   //Docs
   getDocumentById(id: number): Observable<ApiDocument> {
     return from(
-        this.documentsApi.apiDocumentsIdGet(id)
-            .then(res => (res as unknown as AxiosResponse<ApiDocument>).data)
+      this.documentsApi
+        .apiDocumentsIdGet(id)
+        .then((res) => (res as unknown as AxiosResponse<ApiDocument>).data),
     );
   }
   deleteDocument(id: number): Observable<void> {

@@ -10,6 +10,10 @@ export const routes: Routes = [
   { path: 'login', component: LoginComponent },
   { path: 'upload', component: UploadFileComponent, canActivate: [AuthGuard] },
   { path: 'file-view', component: FileViewComponent, canActivate: [AuthGuard] },
-  { path: 'documents/:id', component: FileViewComponent, canActivate: [AuthGuard] },
-  { path: '**', redirectTo: 'upload' }
+  {
+    path: 'documents/:id',
+    component: FileViewComponent,
+    canActivate: [AuthGuard],
+  },
+  { path: '**', redirectTo: 'upload' },
 ];

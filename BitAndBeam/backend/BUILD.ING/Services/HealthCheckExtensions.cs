@@ -58,7 +58,7 @@ namespace BUILD.ING.Services
                 logger.LogInformation("Running startup health checks...");
 
                 // Only check ready tagged services
-                var report = await healthCheckService.CheckHealthAsync(check => check.Tags.Contains("ready"));
+                var report = await healthCheckService.CheckHealthAsync(check => check.Tags.Contains("ready")).ConfigureAwait(false);
 
                 if (report.Status == HealthStatus.Healthy)
                 {

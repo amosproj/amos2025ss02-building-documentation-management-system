@@ -53,7 +53,7 @@ services:
     depends_on:
       - backend
     environment:
-      - API_URL=http://localhost:5000
+      - API_URL=http://localhost:5001
 
   openapi-client:
     build:
@@ -61,9 +61,15 @@ services:
       dockerfile: Dockerfile
     container_name: openapi_generator
     depends_on:
-      - backend
+      backend:
+        condition: service_started
     volumes:
       - ./frontend/src/api:/local/generated-sdk
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://backend:5000/swagger/v1/swagger.json"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   postgres:
     image: postgres:17
