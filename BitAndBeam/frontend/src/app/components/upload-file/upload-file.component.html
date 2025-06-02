@@ -20,10 +20,16 @@
         #fileInput
       />
       <div *ngIf="uploading" class="upload-status">⏳ Uploading...</div>
-      <div *ngIf="uploadSuccess" class="upload-status success">✅ Upload successful!</div>
-      <div *ngIf="uploadError" class="upload-status error">{{ uploadError }}</div>
+      <div *ngIf="uploadSuccess" class="upload-status success">
+        ✅ Upload successful!
+      </div>
+      <div *ngIf="uploadError" class="upload-status error">
+        {{ uploadError }}
+      </div>
 
-      <button class="choose-file" (click)="fileInput.click()">Choose File</button>
+      <button class="choose-file" (click)="fileInput.click()">
+        Choose File
+      </button>
 
       <div *ngIf="uploadedFile" class="file-preview">
         📎 {{ uploadedFile.name }}
@@ -31,29 +37,52 @@
 
       <!-- Folder assignment dialog -->
       <div *ngIf="uploadedFile" class="folder-assign">
-        <p>📄 <strong>{{ uploadedFile.name }}</strong> uploaded. Choose a folder:</p>
+        <p>
+          📄 <strong>{{ uploadedFile.name }}</strong> uploaded. Choose a folder:
+        </p>
         <select [(ngModel)]="selectedBuildingId">
           <option *ngFor="let building of buildings" [value]="building.id">
             {{ building.name }}
           </option>
         </select>
         <!--  <button (click)="uploadDocumentToBuilding()">Assign</button> -->
-          <button (click)="createBuildingAndUpload()">New Folder + Assign</button>
+        <button (click)="createBuildingAndUpload()">New Folder + Assign</button>
+      </div>
+    </div>
+
+    <!-- AI Assistant Section -->
+    <div class="chat-box">
+      <h3>AI Assistant</h3>
+
+      <button class="toggle-history-btn" (click)="toggleHistory()">
+        {{ showHistory ? "Hide History" : "Show History" }}
+      </button>
+
+      <div class="chat-history" *ngIf="showHistory">
+        <div
+          *ngFor="let msg of messages"
+          [ngClass]="msg.sender === 'user' ? 'user-message' : 'ai-message'"
+        >
+          <strong *ngIf="msg.sender !== 'user'">AI</strong
+          >{{ msg.sender !== "user" ? ":" : "" }}
+          <span [innerHTML]="msg.text | markdownBold"></span>
         </div>
       </div>
 
+      <!-- Error message -->
+      <div *ngIf="errorMessage" class="error-message">
+        {{ errorMessage }}
+      </div>
 
-      <!-- AI Assistant Section -->
-    <div class="ai-assistant">
-      <h3>AI Assistant</h3>
-      <p>Ask questions or extract data from your documents</p>
-
-      <div class="chat-box">
-        <div class="chat-header">🤖 How can I help you today?</div>
-        <div class="chat-input">
-          <input type="text" placeholder="Type a message..." />
-          <button>➤</button>
-        </div>
+      <!-- Input box -->
+      <div class="chat-input">
+        <input
+          [(ngModel)]="userInput"
+          type="text"
+          placeholder="Type a message..."
+          (keyup.enter)="sendMessage()"
+        />
+        <button class="send-btn" (click)="sendMessage()">➤</button>
       </div>
     </div>
   </main>

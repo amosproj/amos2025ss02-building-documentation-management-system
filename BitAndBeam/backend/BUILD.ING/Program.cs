@@ -1,13 +1,20 @@
 // ----------------- SETUP -----------------
 // Using directives and configuration setup
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using BitAndBeam.Tika;
+
 using BUILD.ING.Data;
+using BUILD.ING.Data.Seed;
 using BUILD.ING.Models;
+using BUILD.ING.Services;
 using BUILD.ING.Swagger;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.OpenApi.Models;
-using BUILD.ING.Data.Seed;
+
+
 
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.Authorization;
@@ -108,9 +115,13 @@ builder.Services.AddSwaggerGen(options =>
     });
 });
 
+// Add health check services
+builder.Services.AddHealthChecks()
+    .AddCheck<TikaHealthCheck>("tika_health_check",
+        failureStatus: HealthStatus.Degraded, // Don't fail app startup if Tika is down
+        tags: new[] { "ready", "tika" }, // Tag for grouping
+        timeout: TimeSpan.FromSeconds(5));
 
-// Add health check service
-builder.Services.AddHealthChecks();
 builder.Services.AddHttpClient();
 
 // ---------- JWT AUTHENTICATION CONFIGURATION ----------
@@ -150,6 +161,9 @@ builder.Services.AddAuthentication(options =>
     };
 });
 
+// Register Tika service
+builder.Services.AddSingleton<TikaService>();
+builder.Services.AddSingleton<TikaHealthCheck>();
 
 var app = builder.Build();
 
@@ -232,6 +246,24 @@ if (app.Environment.IsDevelopment())
 
 app.UseCors(MyAllowSpecificOrigins);
 
+
+// Run health checks during startup to verify Tika connectivity
+var healthCheckService = scope.ServiceProvider.GetRequiredService<HealthCheckService>();
+await healthCheckService.CheckHealthOnStartupAsync(scope.ServiceProvider).ConfigureAwait(false);
+
+// Configure the HTTP request pipeline.
+app.UseStaticFiles();
+app.UseSwagger();
+app.UseSwaggerUI(c =>
+{
+    c.SwaggerEndpoint("/swagger/v1/swagger.json", "BUILD.ING API v1");
+    c.RoutePrefix = "swagger";
+    c.EnableDeepLinking();
+    c.DefaultModelExpandDepth(2);
+    c.DefaultModelsExpandDepth(1);
+    c.DocExpansion(Swashbuckle.AspNetCore.SwaggerUI.DocExpansion.List);
+});
+app.UseCors(MyAllowSpecificOrigins);
 app.UseHttpsRedirection();
 
 app.UseAuthentication();  // must be before Authorization
@@ -264,6 +296,34 @@ app.MapGet("/weatherforecast", () =>
 //Adds health check endpoint that returns HTTP 200
 app.MapHealthChecks("/healthz").AllowAnonymous();
 
+// Detailed health check endpoint for Tika
+app.MapHealthChecks("/healthz/tika", new Microsoft.AspNetCore.Diagnostics.HealthChecks.HealthCheckOptions
+{
+    Predicate = (check) => check.Tags.Contains("tika"),
+    ResponseWriter = HealthCheckExtensions.WriteDetailedJsonResponse,
+    ResultStatusCodes =
+    {
+        [HealthStatus.Healthy] = StatusCodes.Status200OK,
+        [HealthStatus.Degraded] = StatusCodes.Status200OK, // Still return 200 but with degraded status in body
+        [HealthStatus.Unhealthy] = StatusCodes.Status503ServiceUnavailable
+    },
+    AllowCachingResponses = false
+});
+
+// Ready check endpoint that includes Tika
+app.MapHealthChecks("/healthz/ready", new Microsoft.AspNetCore.Diagnostics.HealthChecks.HealthCheckOptions
+{
+    Predicate = (check) => check.Tags.Contains("ready"),
+    ResponseWriter = HealthCheckExtensions.WriteDetailedJsonResponse,
+    AllowCachingResponses = false
+});
+
+// Liveness check endpoint
+app.MapHealthChecks("/healthz/live", new Microsoft.AspNetCore.Diagnostics.HealthChecks.HealthCheckOptions
+{
+    Predicate = _ => false
+});
+
 //Just to set a route at /
 app.MapGet("/", () => "🚀 API is running! Visit /swagger , /weatherforecast or /healthz.");
 
@@ -274,12 +334,9 @@ app.MapGet("/", () => "🚀 API is running! Visit /swagger , /weatherforecast or
 //    RequestPath = "/documents"
 //});
 
-
 app.Run();
 
 record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
 {
     public int TemperatureF => 32 + (int) (TemperatureC / 0.5556);
 }
-
-
