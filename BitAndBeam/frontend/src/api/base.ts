@@ -12,19 +12,13 @@
  * Do not edit the class manually.
  */
 
-
 import type { Configuration } from './configuration';
-// Some imports not used depending on template conditions
-// @ts-ignore
 import type { AxiosPromise, AxiosInstance, RawAxiosRequestConfig } from 'axios';
 import globalAxios from 'axios';
 
-export const BASE_PATH = "http://localhost".replace(/\/+$/, "");
+// Use the globally declared Window interface from env.d.ts
+export const BASE_PATH = (window.__env?.API_URL || "").replace(/\/+$/, "");
 
-/**
- *
- * @export
- */
 export const COLLECTION_FORMATS = {
     csv: ",",
     ssv: " ",
@@ -32,21 +26,11 @@ export const COLLECTION_FORMATS = {
     pipes: "|",
 };
 
-/**
- *
- * @export
- * @interface RequestArgs
- */
 export interface RequestArgs {
     url: string;
     options: RawAxiosRequestConfig;
 }
 
-/**
- *
- * @export
- * @class BaseAPI
- */
 export class BaseAPI {
     protected configuration: Configuration | undefined;
 
@@ -56,14 +40,8 @@ export class BaseAPI {
             this.basePath = configuration.basePath ?? basePath;
         }
     }
-};
+}
 
-/**
- *
- * @export
- * @class RequiredError
- * @extends {Error}
- */
 export class RequiredError extends Error {
     constructor(public field: string, msg?: string) {
         super(msg);
@@ -78,9 +56,4 @@ interface ServerMap {
     }[];
 }
 
-/**
- *
- * @export
- */
-export const operationServerMap: ServerMap = {
-}
+export const operationServerMap: ServerMap = {};

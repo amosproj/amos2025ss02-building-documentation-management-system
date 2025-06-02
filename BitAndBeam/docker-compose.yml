@@ -37,7 +37,7 @@ services:
     depends_on:
       - backend
     environment:
-      - API_URL=http://localhost:5000
+      - API_URL=http://localhost:5001
 
   openapi-client:
     build:

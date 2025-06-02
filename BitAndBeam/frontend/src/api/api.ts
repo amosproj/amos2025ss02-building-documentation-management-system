@@ -26,6 +26,19 @@ import { BASE_PATH, COLLECTION_FORMATS, BaseAPI, RequiredError, operationServerM
 /**
  * 
  * @export
+ * @interface ApiDocumentsPostRequest
+ */
+export interface ApiDocumentsPostRequest {
+    /**
+     * 
+     * @type {File}
+     * @memberof ApiDocumentsPostRequest
+     */
+    'file'?: File;
+}
+/**
+ * 
+ * @export
  * @interface Building
  */
 export interface Building {

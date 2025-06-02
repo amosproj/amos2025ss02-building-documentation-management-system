@@ -8,6 +8,10 @@ declare const window: any;
 })
 export class ConfigService {
   get apiUrl(): string {
-    return window.__env?.API_URL || 'http://localhost:5001';
+    const envApiUrl = window.__env?.API_URL;
+    if (!envApiUrl) {
+      throw new Error('API_URL environment variable is not set. The application cannot function without it.');
+    }
+    return envApiUrl;
   }
 }
