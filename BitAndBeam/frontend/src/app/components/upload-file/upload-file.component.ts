@@ -6,13 +6,14 @@ import { FormsModule } from '@angular/forms';
 import { RouterModule, Router } from '@angular/router';
 import { HttpClientModule } from '@angular/common/http';
 import type { AxiosResponse } from 'axios';
-import { DocumentsApi, Configuration } from '../../../api';
+import { DocumentsApi, OllamaApi, Configuration, OllamaRequest } from '../../../api';
 import { BuildingService } from '../../services/building.service';
+import { MarkdownBoldPipe } from '../../pipes/markdown-bold.pipe';
 
 @Component({
   selector: 'app-upload-file',
   standalone: true,
-  imports: [CommonModule, RouterModule, SidebarComponent, FormsModule, HttpClientModule],
+  imports: [CommonModule, RouterModule, SidebarComponent, FormsModule, HttpClientModule, MarkdownBoldPipe],
   templateUrl: './upload-file.component.html',
   styleUrls: ['./upload-file.component.css'],
 })
@@ -24,15 +25,23 @@ export class UploadFileComponent implements OnInit {
   selectedBuildingId: number | null = null;
   buildings: any[] = [];
 
+  // AI Chat Properties
+  showHistory: boolean = true; 
+  userInput: string = '';
+  messages: { sender: 'user' | 'ai', text: string }[] = [];
+  errorMessage: string = '';
+
   private documentsApi: DocumentsApi;
+  private ollamaApi: OllamaApi;
+
 
   constructor(
     private config: ConfigService,
     private router: Router,
     public buildingService: BuildingService
   ) {
-    const apiConfig = new Configuration({ basePath: this.config.apiUrl });
-    this.documentsApi = new DocumentsApi(apiConfig);
+    this.documentsApi = new DocumentsApi(new Configuration({ basePath: this.config.apiUrl }));
+    this.ollamaApi = new OllamaApi(new Configuration({ basePath: this.config.apiUrl }));
   }
 
   ngOnInit() {
@@ -99,6 +108,42 @@ export class UploadFileComponent implements OnInit {
       },
       error: (err) => console.error('Failed to create building', err)
     });
+  }
+
+  // ✅ AI Chat Message Sender
+  sendMessage() {
+    const prompt = this.userInput.trim();
+    if (!prompt) return;
+
+    // Add user's message to history
+    this.messages.push({ sender: 'user', text: prompt });
+    this.userInput = '';
+    this.errorMessage = '';
+
+    // Full conversation context after current push
+    const context = this.messages
+      .map(msg => (msg.sender === 'user' ? 'User: ' : 'AI: ') + msg.text)
+      .join('\n');
+
+      const requestPayload: OllamaRequest = {
+        prompt: prompt,
+        context: context
+      };
+
+      this.ollamaApi.apiOllamaAskPost(requestPayload)
+        .then((res) => {
+          const responseText = (res.data as any)?.response || 'No response received.';
+          this.messages.push({ sender: 'ai', text: responseText });
+        })
+        .catch((err: any) => {
+          console.error('Error from AI API:', err);
+          this.errorMessage = '⚠️ AI Assistant is not responding. Please try again later.';
+        });
+
+  }
+
+  toggleHistory() {
+      this.showHistory = !this.showHistory;
   }
 
 }

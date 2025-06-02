@@ -2,7 +2,6 @@ using BUILD.ING.Data;
 using BUILD.ING.Models;
 using Microsoft.AspNetCore.Mvc;
 
-
 namespace BUILD.ING.Controllers
 {
     [ApiController]
@@ -18,16 +17,12 @@ namespace BUILD.ING.Controllers
             _context = context;
             _env = env;
         }
-        // Simulate current user group (hardcoded for now)
+
         private string GetCurrentUserGroupId()
         {
-            return "group2"; // change this to test other groups later
+            return "group2"; // Hardcoded for now
         }
-        /// <summary>
-        /// Uploads a document (PDF, DOCX, etc.)
-        /// </summary>
-        /// <param name="file">The file to upload</param>
-        /// <returns>Document ID</returns>
+
         [HttpPost]
         public async Task<IActionResult> UploadDocument(IFormFile file)
         {
@@ -37,18 +32,16 @@ namespace BUILD.ING.Controllers
             var uploadsPath = Path.Combine("/app/documents");
             Directory.CreateDirectory(uploadsPath);
 
-            var filePath = Path.Combine(uploadsPath, file.FileName);
+            var fullPath = Path.Combine(uploadsPath, file.FileName);
 
-            using var stream = new FileStream(filePath, FileMode.Create);
+            using var stream = new FileStream(fullPath, FileMode.Create);
             await file.CopyToAsync(stream).ConfigureAwait(false);
-
-            var baseUrl = $"{Request.Scheme}://{Request.Host}";
 
             var document = new Document
             {
                 Title = Path.GetFileNameWithoutExtension(file.FileName),
                 FileName = file.FileName,
-                FilePath = $"{baseUrl}/documents/{file.FileName}",
+                FilePath = file.FileName, // Just store file name
                 FileType = Path.GetExtension(file.FileName)?.TrimStart('.').ToLower() ?? "unknown",
                 FileSize = (int) file.Length,
                 UploadDate = DateTime.UtcNow,
@@ -66,14 +59,12 @@ namespace BUILD.ING.Controllers
             _context.Documents.Add(document);
             await _context.SaveChangesAsync().ConfigureAwait(false);
 
-            return Ok(new { DocumentId = document.DocumentId, FilePath = document.FilePath });
+            var baseUrl = $"{Request.Scheme}://{Request.Host}";
+            var fileUrl = $"{baseUrl}/documents/{document.FileName}";
 
+            return Ok(new { document.DocumentId, FileUrl = fileUrl });
         }
 
-
-        /// <summary>
-        /// Update a document (for example: title)
-        /// </summary>
         [HttpGet]
         public IActionResult GetAllDocuments()
         {
@@ -81,6 +72,7 @@ namespace BUILD.ING.Controllers
             var documents = _context.Documents.Where(d => d.GroupId == groupId).ToList();
             return Ok(documents);
         }
+
         [HttpGet("{id}")]
         public IActionResult GetDocumentById(int id)
         {
@@ -91,6 +83,7 @@ namespace BUILD.ING.Controllers
 
             return Ok(document);
         }
+
         [HttpPut("{id}")]
         public IActionResult UpdateDocumentTitle(int id, [FromBody] DocumentUpdateRequest request)
         {
@@ -103,6 +96,7 @@ namespace BUILD.ING.Controllers
 
             return Ok(document);
         }
+
         [HttpDelete("{id}")]
         public IActionResult DeleteDocument(int id)
         {
@@ -110,17 +104,23 @@ namespace BUILD.ING.Controllers
             if (document == null)
                 return NotFound();
 
-            // Try to delete the physical file
-            if (System.IO.File.Exists(document.FilePath))
+            var filePath = Path.Combine("/app/documents", document.FileName);
+            if (System.IO.File.Exists(filePath))
             {
-                System.IO.File.Delete(document.FilePath);
+                System.IO.File.Delete(filePath);
+                Console.WriteLine($"✅ File deleted: {filePath}");
+            }
+            else
+            {
+                Console.WriteLine($"⚠️ File not found at: {filePath}");
             }
 
             _context.Documents.Remove(document);
             _context.SaveChanges();
 
-            return NoContent(); // 204 - success, no body
+            return NoContent();
         }
+
         [HttpGet("{id}/download")]
         public IActionResult DownloadDocument(int id)
         {
@@ -134,8 +134,6 @@ namespace BUILD.ING.Controllers
                 return NotFound();
 
             var fileBytes = System.IO.File.ReadAllBytes(filePath);
-
-            // 👇 Forces browser to download the file
             return File(fileBytes, "application/octet-stream", document.FileName);
         }
 
@@ -153,8 +151,6 @@ namespace BUILD.ING.Controllers
 
             var fileBytes = System.IO.File.ReadAllBytes(filePath);
             return File(fileBytes, "application/pdf", document.FileName);
-
         }
-
     }
 }
