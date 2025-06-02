@@ -10,7 +10,9 @@ export class ConfigService {
   get apiUrl(): string {
     const envApiUrl = window.__env?.API_URL;
     if (!envApiUrl) {
-      throw new Error('API_URL environment variable is not set. The application cannot function without it.');
+      throw new Error(
+        'API_URL environment variable is not set. The application cannot function without it.',
+      );
     }
     return envApiUrl;
   }
