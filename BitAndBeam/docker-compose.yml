@@ -27,7 +27,7 @@ services:
       dockerfile: Dockerfile
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.ollama.rule=Host(`ollama.bitandbeam.duckdns.org`)"  
+      - "traefik.http.routers.ollama.rule=PathPrefix(`/ollama`)"  
       - "traefik.http.routers.ollama.entrypoints=websecure"
       - "traefik.http.routers.ollama.tls.certresolver=le"
       - "traefik.http.routers.ollama.middlewares=redirect@file"
@@ -47,7 +47,7 @@ services:
       dockerfile: Dockerfile
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.backend.rule=Host(`backend.bitandbeam.duckdns.org`)"  
+      - "traefik.http.routers.backend.rule=PathPrefix(`/api`)"  
       - "traefik.http.routers.backend.entrypoints=websecure"
       - "traefik.http.routers.backend.tls.certresolver=le"
       - "traefik.http.routers.backend.middlewares=redirect@file"
@@ -70,7 +70,7 @@ services:
       dockerfile: Dockerfile
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.frontend.rule=Host(`frontend.bitandbeam.duckdns.org`)"  
+      - "traefik.http.routers.frontend.rule=PathPrefix(`/`)"  
       - "traefik.http.routers.frontend.entrypoints=websecure"
       - "traefik.http.routers.frontend.tls.certresolver=le"
       - "traefik.http.routers.frontend.middlewares=redirect@file"
@@ -79,7 +79,7 @@ services:
     depends_on:
       - backend
     environment:
-      - API_URL=http://localhost:5000
+      - API_URL=https://amos.b-iq.net/api 
 
   openapi-client:
     build:
