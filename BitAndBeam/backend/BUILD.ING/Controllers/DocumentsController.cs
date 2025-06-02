@@ -100,7 +100,7 @@ namespace BUILD.ING.Controllers
             var baseUrl = $"{Request.Scheme}://{Request.Host}";
             var fileUrl = $"{baseUrl}/documents/{document.FileName}";
 
-            return Ok(new { document.DocumentId, FileUrl = fileUrl });
+            return Ok(new { document.DocumentId, FileUrl = fileUrl, Metadata = metadata });
         }
 
         [HttpGet]
