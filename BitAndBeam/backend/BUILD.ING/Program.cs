@@ -1,5 +1,6 @@
 using BitAndBeam.Tika;
 using BUILD.ING.Data;
+using BUILD.ING.Data.Seed;
 using BUILD.ING.Models;
 using BUILD.ING.Services;
 using BUILD.ING.Swagger;
@@ -76,6 +77,20 @@ using (var scope = app.Services.CreateScope())
 {
     var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
     db.Database.Migrate(); //führt Migration beim Start automatisch aus
+
+    var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    await DatabaseSeeder.SeedAsync(context).ConfigureAwait(false);
+}
+
+// Configure the HTTP request pipeline.
+if (app.Environment.IsDevelopment())
+{
+    app.UseSwagger();
+    app.UseSwaggerUI();
+}
+
+app.UseCors(MyAllowSpecificOrigins);
+
 
     // Run health checks during startup to verify Tika connectivity
     var healthCheckService = scope.ServiceProvider.GetRequiredService<HealthCheckService>();
