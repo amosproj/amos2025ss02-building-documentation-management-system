@@ -105,85 +105,69 @@ This describes how to configure, deploy, and test HTTPS support for the BitandBe
 
 - ✅ Reverse proxy: **Traefik v2**
 - ✅ Free SSL/TLS: **Let's Encrypt (ACME)**
-- ✅ Domain: **DuckDNS**
+- ✅ Domain: **amos.b-iq.net**
 - ✅ Automatic HTTP → HTTPS redirection
-- ✅ Services: `backend`, `frontend`, `ollama`, etc.
+- ✅ Services routed via path-based routing (e.g. /, /api, /ollama)
 - ✅ Port 80/443 exposed via Docker & router
 
 ---
 
-## ⚙️ Prerequisites
+## ⚙️Setup Overview
+- Docker Compose used to define services
 
-- Docker & Docker Compose installed
-- Publicly reachable server with open **ports 80 and 443**
-- A [DuckDNS](https://www.duckdns.org/) account
+- Traefik handles HTTPS termination and routing based on path
+
+- Let's Encrypt provides valid, auto-renewed certificates
+
+- DNS A-record for amos.b-iq.net points to the public server IP
 
 ---
+✅ Global Functionality Testing
 
-## 📦 Setup Instructions
+🔹 Test 1: HTTPS and Certificate Validity
 
-### 1. Create a DuckDNS Subdomain
+curl -v https://amos.b-iq.net
 
-- Go to [https://www.duckdns.org](https://www.duckdns.org)
-- Log in with GitHub/Google
-- Register your subdomain (e.g., `bitandbeam`)
-- Note your DuckDNS **token**
+✅ Expect:
 
-Optional: Run a DuckDNS updater container to keep your IP synced.
+SSL certificate verify ok.
 
-```yaml
-duckdns:
-  image: linuxserver/duckdns
-  environment:
-    - SUBDOMAINS=bitandbeam
-    - TOKEN=your-duckdns-token
-    - TZ=Europe/Berlin
-  restart: always
+Response from your frontend or landing page
 
-🚀 Start the System
+Or simply open https://amos.b-iq.net in a browser
 
-- docker-compose up -d
+You should see a 🔒 padlock icon
 
-✅ Acceptance Criteria & Testing
+Certificate should be issued by Let's Encrypt
 
-🔹 Criterion 1: Valid SSL Certificate
+🔹 Test 2: HTTP Redirects to HTTPS
 
-Test Goal: Confirm Traefik obtained a valid Let's Encrypt certificate.
+curl -I http://amos.b-iq.net
 
-✅ Browser Test:
+✅ Expect:
 
-Open https://backend.bitandbeam.duckdns.org
+HTTP/1.1 308 Permanent Redirect
+Location: https://amos.b-iq.net
 
-Look for a 🔒 padlock (SSL is working)
+🔹 Test 3: Path-Based Routing for Services
 
-🔹 Criterion 2: HTTP → HTTPS Redirection
+Functionality                 Path                    How to Test
 
-Test Goal: Verify HTTP is redirected to HTTPS.
+Frontend UI                     /                     Open in browser
+ 
+Backend API                   /api/...                Use curl or your app
 
-✅ Browser Test:
+Ollama Service                /ollama/...             Use HTTP client or test endpoint
+ 
+Example:
 
-Visit http://backend.bitandbeam.duckdns.org
+curl -X GET https://amos.b-iq.net/api/health
+curl -X GET https://amos.b-iq.net/ollama/health
 
-You should be automatically redirected to HTTPS
+✅ Expect 200 OK responses
 
-🔹 Criterion 3: HTTPS Enforced on All Endpoints
-
-Test Goal: Ensure all subdomains only allow secure connections.
-
-✅ Test all endpoints:
-
-https://frontend.bitandbeam.duckdns.org
-
-https://backend.bitandbeam.duckdns.org
-
-https://ollama.bitandbeam.duckdns.org
-
-🔹 Criterion 4: Auto Certificate Renewal
-
-Test Goal: Confirm Let's Encrypt certificates are stored and renewable.
-
-✅ Check acme.json:
+🔹 Test 4: Automatic Certificate Storage
 
 docker exec traefik cat /letsencrypt/acme.json
 
-Should contain certificate entries for your subdomains.
+✅ You should see JSON entries showing that Let's Encrypt certs have been saved.
