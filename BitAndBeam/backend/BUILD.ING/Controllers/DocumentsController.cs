@@ -81,16 +81,33 @@ namespace BUILD.ING.Controllers
             var documents = _context.Documents.Where(d => d.GroupId == groupId).ToList();
             return Ok(documents);
         }
-        [HttpGet("{id}")]
-        public IActionResult GetDocumentById(int id)
-        {
-            var groupId = GetCurrentUserGroupId();
-            var document = _context.Documents.FirstOrDefault(d => d.DocumentId == id && d.GroupId == groupId);
-            if (document == null)
-                return NotFound();
+[HttpGet("{id}")]
+public IActionResult GetDocumentById(int id)
+{
+    try
+    {
+        var groupId = GetCurrentUserGroupId();
+        Console.WriteLine($"📥 Looking for Document ID: {id}, Group: {groupId}");
 
-            return Ok(document);
+        var document = _context.Documents.FirstOrDefault(d => d.DocumentId == id && d.GroupId == groupId);
+
+        if (document == null)
+        {
+            Console.WriteLine("❌ Document not found.");
+            return NotFound();
         }
+
+        Console.WriteLine($"✅ Found document: {document.Title}");
+        return Ok(document);
+    }
+    catch (Exception ex)
+    {
+        Console.WriteLine("💥 Exception in GetDocumentById:");
+        Console.WriteLine(ex.ToString());
+        return StatusCode(500, "Internal server error");
+    }
+}
+
         [HttpPut("{id}")]
         public IActionResult UpdateDocumentTitle(int id, [FromBody] DocumentUpdateRequest request)
         {
