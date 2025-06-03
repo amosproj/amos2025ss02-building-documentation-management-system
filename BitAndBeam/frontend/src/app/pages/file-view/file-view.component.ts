@@ -6,7 +6,6 @@ import { ConfigService } from '../../config.service';
 import { SidebarComponent} from '../../components/sidebar/sidebar.component';
 import { BuildingService, DocumentItem, DocumentResponse } from '../../services/building.service';
 import { Configuration, DocumentsApi, Document as ApiDocument } from '../../../api';
-import { PDFDocument } from 'pdf-lib';
 
 @Component({
   standalone: true,
@@ -19,7 +18,8 @@ export class FileViewComponent {
 
   selectedFile: DocumentItem | null = null;
   notFound = false;
-  pdfSrc: string | null = null;
+  isPdf = false;
+  isImage = false;
 
   constructor(private config: ConfigService,private route: ActivatedRoute,private router: Router, private buildingService: BuildingService) {}
   ngOnInit(): void {
@@ -33,7 +33,7 @@ export class FileViewComponent {
     }
 
     this.buildingService.getDocumentById(id).subscribe({
-      next: async (doc: ApiDocument)  => {
+      next: (doc: ApiDocument)  => {
         console.log('📄 Loaded document:', doc);
         console.log('🔧 Config API URL:', this.config.apiUrl);
 
@@ -47,13 +47,10 @@ export class FileViewComponent {
             { label: 'Type', value: doc.fileType ?? 'unknown' }
           ]
         };
-
+        // Determine file type for viewer
         const fileType = (doc.fileType ?? '').toLowerCase();
-        if (fileType === 'png' || fileType === 'jpg' || fileType === 'jpeg') {
-          await this.createPdfWithImage(this.selectedFile.url, fileType);
-        } else {
-          this.pdfSrc = this.selectedFile.url;
-        }
+        this.isPdf = fileType === 'pdf';
+        this.isImage = fileType === 'png' || fileType === 'jpg' || fileType === 'jpeg';
       },
       error: (err) => {
         console.error('❌ Failed to load document:', err);
@@ -61,30 +58,6 @@ export class FileViewComponent {
       }
     });
   }
-
-  async createPdfWithImage(imageUrl: string, fileType: string) {
-    const response = await fetch(imageUrl);
-    const imageBytes = await response.arrayBuffer();
-
-    const pdfDoc = await PDFDocument.create();
-    const page = pdfDoc.addPage();
-
-    let embeddedImage;
-    if (fileType === 'png') {
-      embeddedImage = await pdfDoc.embedPng(imageBytes);
-    } else {
-      embeddedImage = await pdfDoc.embedJpg(imageBytes);
-    }
-
-    const { width, height } = embeddedImage.scale(1);
-    page.setSize(width, height);
-    page.drawImage(embeddedImage, { x: 0, y: 0, width, height });
-
-    const pdfBytes = await pdfDoc.save();
-    const pdfBlob = new Blob([pdfBytes], { type: 'application/pdf' });
-    this.pdfSrc = URL.createObjectURL(pdfBlob);
-  }
-
   downloadFile(): void {
     if (this.selectedFile?.id) {
       this.buildingService.downloadDocument(this.selectedFile.id);
