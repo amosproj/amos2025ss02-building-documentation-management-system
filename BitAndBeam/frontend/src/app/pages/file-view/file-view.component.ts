@@ -45,6 +45,7 @@ export class FileViewComponent {
             { label: 'Type', value: doc.fileType ?? 'unknown' }
           ]
         };
+        console.log('📂 Preview URL:', this.selectedFile.url);
       },
       error: (err) => {
         console.error('❌ Failed to load document:', err);
