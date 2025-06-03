@@ -10,14 +10,21 @@
 
       <!-- Main File Content -->
       <div class="file-main-content" *ngIf="selectedFile">
-        <!-- PDF Viewer -->
-        <section class="pdf-viewer">
+
+        <!-- Image viewer for images -->
+        <section class="image-viewer" *ngIf="isImage">
+          <img
+            [src]="selectedFile.url"
+            alt="Document Image"
+            style="display: block; max-width: 100%; max-height: 100%; margin: auto; object-fit: contain;">
+        </section>
+
+        <!-- PDF viewer for PDFs -->
+        <section class="pdf-viewer" *ngIf="isPdf">
           <pdf-viewer
-            *ngIf="selectedFile?.url"
             [src]="selectedFile.url"
             [show-all]="true"
-            style="display: block; height: 100%; width: 100%"
-          >
+            style="display: block; height: 100%; width: 100%;">
           </pdf-viewer>
         </section>
 
