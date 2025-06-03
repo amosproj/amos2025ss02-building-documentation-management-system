@@ -1,14 +1,32 @@
 services:
+  tika:
+    build:
+      context: ./tika
+      dockerfile: Dockerfile
+    container_name: tika
+    ports:
+      - "9998:9998"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9998/tika"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+  
   backend:
-    image: ghcr.io/amosproj/bitandbeam-backend:latest
-    restart: always
-    environment:
-      - ASPNETCORE_ENVIRONMENT=Production
-      - ConnectionStrings__DefaultConnection=Host=postgres;Port=5432;Database=bitandbeam;Username=postgres;Password=postgres
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    ports:
+      - "5001:5000"
     depends_on:
       - postgres
-    ports:
-      - "5000:5000"
+      - ollama
+      - tika
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ConnectionStrings__DefaultConnection=Host=postgres;Port=5432;Database=bitandbeam;Username=postgres;Password=postgres
+      - Tika__ServerUrl=http://tika:9998
     volumes:
       - documentdata:/app/documents
 
@@ -16,7 +34,7 @@ services:
     image: ghcr.io/amosproj/bitandbeam-frontend:latest
     restart: always
     environment:
-      - API_URL=http://backend:5000
+      - API_URL=http://amos.b-iq.net:5000
     depends_on:
       - backend
     ports:
@@ -39,25 +57,16 @@ services:
     image: postgres:17
     container_name: bitandbeam_postgres
     restart: always
+    ports:
+      - "5432:5432"
     volumes:
+      - .:/app
       - pgdata:/var/lib/postgresql/data
       - ./database/schema.sql:/docker-entrypoint-initdb.d/init.sql
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
       POSTGRES_DB: bitandbeam
-
-  tika:
-    image: apache/tika
-    container_name: bitandbeam_tika
-    restart: always
-    ports:
-      - "9998:9998"
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:9998/version"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
 
 volumes:
   documentdata:

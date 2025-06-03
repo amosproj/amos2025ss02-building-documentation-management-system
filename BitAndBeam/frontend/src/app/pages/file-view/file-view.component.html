@@ -1,9 +1,8 @@
 <!-- file-view.component.html -->
 <div class="layout">
-  <app-sidebar>  </app-sidebar>
+  <app-sidebar> </app-sidebar>
   <div class="main-area">
     <div class="file-view-container">
-
       <!-- Not Found Message -->
       <div *ngIf="notFound" class="not-found">
         <p>Document Not Found</p>
@@ -38,12 +37,13 @@
           </div>
 
           <div class="meta-actions">
-            <button class="download-btn" (click)="downloadFile()">Download</button>
+            <button class="download-btn" (click)="downloadFile()">
+              Download
+            </button>
             <button class="delete-btn" (click)="deleteFile()">Delete</button>
           </div>
         </aside>
-
-        </div>
       </div>
     </div>
   </div>
+</div>

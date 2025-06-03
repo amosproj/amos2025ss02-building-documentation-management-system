@@ -5,8 +5,7 @@
     <button class="collapse-btn" (click)="toggleExplorer()">☰</button>
   </aside>
   <!-- Only the file list collapses -->
-  <div class="file-explorer" [class.collapsed]="isExplorerCollapsed">
-  </div>
+  <div class="file-explorer" [class.collapsed]="isExplorerCollapsed"></div>
   <!-- Top: Logo -->
   <div class="sidebar-top">
     <div class="logo-section">
@@ -22,13 +21,16 @@
       <div *ngFor="let building of buildings">
         <div class="building-name">
           📁 {{ building.name }}
-          <button (click)="deleteBuilding(building.id)" class="delete-building">🗑️</button>
+          <button (click)="deleteBuilding(building.id)" class="delete-building">
+            🗑️
+          </button>
         </div>
 
         <div
           class="document"
           *ngFor="let doc of building.documents"
-          (click)="viewDocument(doc)">
+          (click)="viewDocument(doc)"
+        >
           📄 {{ doc.name }}
         </div>
       </div>
@@ -45,8 +47,5 @@
       </div>
     </div>
     <button class="logout-btn" (click)="logout()">Logout</button>
-
   </div>
-
 </aside>
-

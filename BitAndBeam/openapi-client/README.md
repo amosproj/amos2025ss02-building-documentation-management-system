@@ -6,11 +6,14 @@ The frontend uses a **TypeScript SDK** auto-generated from the backend’s OpenA
 
 ### 📦 When to Regenerate the SDK
 
-You should regenerate the SDK whenever:
+The SDK is automatically regenerated when:
 
-- A backend route or controller changes  
-- Request or response models are updated  
-- New endpoints are added
+- Backend API changes are pushed to main branch
+- OpenAPI client generator configuration changes
+
+You should manually regenerate the SDK (using docker compose) whenever:
+
+- Manual regeneration is needed during local development
 
 ---
 
@@ -68,22 +71,40 @@ VITE_API_URL=http://backend:5000
 
 ### 🚀 How the SDK is Handled in Production
 
-- The SDK is generated **only in development** and committed to version control.
-- The **production build** (in GitHub Actions) uses the committed `frontend/src/api` code.
-- The SDK is **not re-generated during production Docker builds** to ensure stability and repeatability.
-- Backend should continue serving the actual API in production, as visible on /swagger/v1/swagger.json during development. Swagger UI or swagger.json are not necessary to be hosted during production.
-- Frontend image should be rebuilt after SDK changes.
+The SDK generation is fully automated in the CI/CD pipeline:
 
-> ✅ This makes your production frontend always use a validated, tested version of the SDK.
+1. **Automatic Generation**
+   - A GitHub Actions workflow monitors backend API changes
+   - When changes are detected, it automatically regenerates the SDK
+   - The workflow uses the same Docker-based approach as local development
+
+2. **Review Process**
+   - Generated SDK changes are submitted as a pull request
+   - PR is automatically labeled with "automated" and "api-client"
+   - Team can review the SDK changes before merging
+
+3. **Version Control**
+   - Generated SDK is tracked in version control (`frontend/src/api`)
+   - This ensures consistent SDK versions across all environments
+   - Frontend builds use the committed SDK version
+
+4. **Production Deployment**
+   - Backend continues serving the API in production
+   - Frontend uses the validated, committed SDK version
+   - No runtime SDK generation in production for stability
+
+> ✅ This automated process ensures SDK consistency while maintaining code quality through review.
 
 ---
 
 ### ✅ Summary
 
-| Task                     | How                            |
-|--------------------------|--------------------------------|
-| Generate SDK (dev)       | Run Docker container manually  |
-| Use in frontend          | Import from `@/api`            |
-| Production build         | Uses committed SDK             |
+| Task                    | How                                      |
+|-------------------------|------------------------------------------|
+| Generate SDK (dev)      | Run Docker container manually            |
+| Generate SDK (prod)     | Automated via GitHub Actions             |
+| Review Changes          | Through auto-generated pull requests     |
+| Use in frontend         | Import from `@/api`                      |
+| Production build        | Uses committed SDK version               |
 
 ---

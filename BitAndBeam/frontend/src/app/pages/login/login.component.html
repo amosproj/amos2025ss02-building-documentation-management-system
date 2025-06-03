@@ -2,16 +2,36 @@
   <div class="login-container">
     <div class="login-box">
       <div class="logo-section">
-        <img src="assets/team-logo.png" alt="Bit & Beam Logo" class="logo-img" />
+        <img
+          src="assets/team-logo.png"
+          alt="Bit & Beam Logo"
+          class="logo-img"
+        />
         <span class="logo-text">BIT & BEAM</span>
       </div>
       <h2 class="login-heading">Login</h2>
       <form (ngSubmit)="login()" class="login-form">
-        <input type="text" placeholder="Username" [(ngModel)]="username" name="username" required class="login-input" />
-        <input type="password" placeholder="Password" [(ngModel)]="password" name="password" required class="login-input" />
+        <input
+          type="text"
+          placeholder="Username"
+          [(ngModel)]="username"
+          name="username"
+          required
+          class="login-input"
+        />
+        <input
+          type="password"
+          placeholder="Password"
+          [(ngModel)]="password"
+          name="password"
+          required
+          class="login-input"
+        />
         <button type="submit" class="primary-btn login-btn">Login</button>
       </form>
-      <p *ngIf="error" class="error-msg">Invalid credentials. Please try again.</p>
+      <p *ngIf="error" class="error-msg">
+        Invalid credentials. Please try again.
+      </p>
     </div>
   </div>
 </div>
