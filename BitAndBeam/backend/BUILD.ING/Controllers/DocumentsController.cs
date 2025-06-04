@@ -1,9 +1,9 @@
+using System.IO;
+using System.Text.Json;
+using BitAndBeam.Tika;
 using BUILD.ING.Data;
 using BUILD.ING.Models;
 using Microsoft.AspNetCore.Mvc;
-using BitAndBeam.Tika;
-using System.IO;
-using System.Text.Json;
 using Microsoft.Extensions.Logging;
 
 namespace BUILD.ING.Controllers
@@ -52,8 +52,8 @@ namespace BUILD.ING.Controllers
             string metadata = "{}";
             try
             {
-                var extractedMetadata = await _tikaService.ExtractMetadataAsync(fileBytes, file.FileName);
-                
+                var extractedMetadata = await _tikaService.ExtractMetadataAsync(fileBytes, file.FileName).ConfigureAwait(false);
+
                 // Validate that the metadata is valid JSON
                 if (IsValidJson(extractedMetadata))
                 {
@@ -69,7 +69,7 @@ namespace BUILD.ING.Controllers
             {
                 _logger.LogError(ex, $"Error extracting metadata from {file.FileName}. Using empty metadata.");
             }
-            
+
             // Save file to disk
             using var fileStream = new FileStream(fullPath, FileMode.Create);
             memoryStream.Position = 0;
@@ -121,12 +121,12 @@ namespace BUILD.ING.Controllers
 
             return Ok(document);
         }
-        
+
         private bool IsValidJson(string strInput)
         {
             if (string.IsNullOrWhiteSpace(strInput))
                 return false;
-                
+
             try
             {
                 var obj = JsonDocument.Parse(strInput);
@@ -215,7 +215,7 @@ namespace BUILD.ING.Controllers
                 _ => "application/octet-stream" // fallback
             };
 
-           return File(fileBytes, contentType);
+            return File(fileBytes, contentType);
 
         }
     }

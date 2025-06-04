@@ -1,5 +1,3 @@
-using Microsoft.Extensions.Logging; //
-
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -7,6 +5,7 @@ using BUILD.ING.Data;
 using BUILD.ING.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging; //
 
 namespace BUILD.ING.Controllers
 {
