@@ -14,7 +14,9 @@ using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.OpenApi.Models;
 
-
+using Serilog;                      // Added: Serilog namespace
+using Serilog.Context;              // Added: for log context enrichment
+using System.Diagnostics;          // Added: for Activity (trace IDs)
 
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.Authorization;
@@ -38,7 +40,6 @@ Log.Logger = new LoggerConfiguration()
 
 // Tell ASP.NET Core to use Serilog instead of the default logger
 builder.Host.UseSerilog();
-#endregion
 
 // ----------------- CONNECTION -----------------
 var conn = builder.Configuration.GetConnectionString("DefaultConnection");
@@ -57,8 +58,6 @@ builder.Services.AddCors(options =>
                                 .AllowAnyHeader()
                                 .AllowAnyMethod();
                       });
-});
-
 
 
 // ----------------- GLOBAL AUTHORIZATION POLICY -----------------
@@ -246,6 +245,10 @@ if (app.Environment.IsDevelopment())
 
 app.UseCors(MyAllowSpecificOrigins);
 
+app.UseAuthorization();
+app.UseHttpsRedirection();
+
+app.MapControllers();
 
 // Run health checks during startup to verify Tika connectivity
 var healthCheckService = scope.ServiceProvider.GetRequiredService<HealthCheckService>();
