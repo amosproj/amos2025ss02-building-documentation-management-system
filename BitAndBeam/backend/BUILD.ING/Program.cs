@@ -114,7 +114,7 @@ builder.Services.AddHealthChecks()
     .AddCheck("self", () => HealthCheckResult.Healthy());
 
 // Add Services
-// Tika services have been temporarily removed to fix build
+builder.Services.AddHttpClient<BitAndBeam.Tika.TikaService>();
 
 var app = builder.Build();
 
