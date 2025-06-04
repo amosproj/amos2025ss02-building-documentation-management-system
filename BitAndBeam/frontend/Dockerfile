@@ -36,6 +36,6 @@ CMD ["/bin/sh", "-c", "\
     mv /usr/share/nginx/html/assets/env.temp.js /usr/share/nginx/html/assets/env.js && \
     nginx -g 'daemon off;'"]
 
-EXPOSE 80
+#EXPOSE 80
 
 #RUN rm -rf /usr/share/nginx/html/*
