@@ -337,9 +337,11 @@ app.MapGet("/", () => "🚀 API is running! Visit /swagger , /weatherforecast or
 //    RequestPath = "/documents"
 //});
 
-app.Run();
+    app.Run();
+}
 
+// Place this at the end of the file, outside the configuration block
 record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
 {
-    public int TemperatureF => 32 + (int) (TemperatureC / 0.5556);
+    public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
 }
