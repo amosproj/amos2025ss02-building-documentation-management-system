@@ -80,6 +80,10 @@ using (var scope = app.Services.CreateScope())
 
     var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
     await DatabaseSeeder.SeedAsync(context).ConfigureAwait(false);
+
+    // Run health checks during startup to verify Tika connectivity
+    var healthCheckService = scope.ServiceProvider.GetRequiredService<HealthCheckService>();
+    await healthCheckService.CheckHealthOnStartupAsync(scope.ServiceProvider);
 }
 
 // Configure the HTTP request pipeline.
@@ -91,10 +95,7 @@ if (app.Environment.IsDevelopment())
 
 app.UseCors(MyAllowSpecificOrigins);
 
-
-    // Run health checks during startup to verify Tika connectivity
-    var healthCheckService = scope.ServiceProvider.GetRequiredService<HealthCheckService>();
-    await healthCheckService.CheckHealthOnStartupAsync(scope.ServiceProvider);
+    
 
     // Configure the HTTP request pipeline.
     app.UseStaticFiles();
