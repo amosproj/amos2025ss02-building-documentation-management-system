@@ -46,6 +46,7 @@ export class SidebarComponent {
   }
 
   addBuilding(): void {
+
     const name = prompt('Enter building name:');
     if (!name) return;
 
@@ -53,7 +54,10 @@ export class SidebarComponent {
       next: (newBuilding) => this.buildings.push(newBuilding),
       error: (err) => console.error('Failed to add building', err),
     });
+    this.router.navigate(['/create-building']);
+
   }
+
 
   deleteBuilding(id: number): void {
     if (!confirm('Are you sure you want to delete this building?')) return;

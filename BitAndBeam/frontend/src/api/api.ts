@@ -146,6 +146,61 @@ export interface Building {
 /**
  *
  * @export
+ * @interface BuildingCreateDto
+ */
+export interface BuildingCreateDto {
+    /**
+     * 
+     * @type {string}
+     * @memberof BuildingCreateDto
+     */
+    'name'?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof BuildingCreateDto
+     */
+    'address'?: string | null;
+    /**
+     * 
+     * @type {number}
+     * @memberof BuildingCreateDto
+     */
+    'constructionYear'?: number | null;
+    /**
+     * 
+     * @type {number}
+     * @memberof BuildingCreateDto
+     */
+    'totalArea'?: number | null;
+    /**
+     * 
+     * @type {number}
+     * @memberof BuildingCreateDto
+     */
+    'floors'?: number | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof BuildingCreateDto
+     */
+    'description'?: string | null;
+    /**
+     * 
+     * @type {number}
+     * @memberof BuildingCreateDto
+     */
+    'organizationId'?: number;
+    /**
+     * 
+     * @type {NpgsqlPoint}
+     * @memberof BuildingCreateDto
+     */
+    'coordinates'?: NpgsqlPoint;
+}
+/**
+ * 
+ * @export
  * @interface BuildingDocumentRelation
  */
 export interface BuildingDocumentRelation {
@@ -993,6 +1048,7 @@ export const BuildingsApiAxiosParamCreator = function (
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
+
     apiBuildingsDebugFullGet: async (
       options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
@@ -1256,6 +1312,245 @@ export const BuildingsApiAxiosParamCreator = function (
       };
     },
   };
+
+    public rootGet(options?: RawAxiosRequestConfig) {
+        return BuildINGApiFp(this.configuration).rootGet(options).then((request) => request(this.axios, this.basePath));
+    }
+}
+
+
+
+/**
+ * BuildingsApi - axios parameter creator
+ * @export
+ */
+export const BuildingsApiAxiosParamCreator = function (configuration?: Configuration) {
+    return {
+        /**
+         * 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        apiBuildingsDebugDbGet: async (options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/api/Buildings/debug-db`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        apiBuildingsDebugFullGet: async (options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/api/Buildings/debug-full`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        apiBuildingsGet: async (options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/api/Buildings`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {number} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        apiBuildingsIdDelete: async (id: number, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('apiBuildingsIdDelete', 'id', id)
+            const localVarPath = `/api/Buildings/{id}`
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'DELETE', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {number} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        apiBuildingsIdGet: async (id: number, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('apiBuildingsIdGet', 'id', id)
+            const localVarPath = `/api/Buildings/{id}`
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {number} id 
+         * @param {Building} [building] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        apiBuildingsIdPut: async (id: number, building?: Building, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('apiBuildingsIdPut', 'id', id)
+            const localVarPath = `/api/Buildings/{id}`
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'PUT', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(building, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {BuildingCreateDto} [buildingCreateDto] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        apiBuildingsPost: async (buildingCreateDto?: BuildingCreateDto, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/api/Buildings`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(buildingCreateDto, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+    }
+
 };
 
 /**
@@ -1263,202 +1558,59 @@ export const BuildingsApiAxiosParamCreator = function (
  * @export
  */
 export const BuildingsApiFp = function (configuration?: Configuration) {
-  const localVarAxiosParamCreator =
-    BuildingsApiAxiosParamCreator(configuration);
+  const localVarAxiosParamCreator = BuildingsApiAxiosParamCreator(configuration);
+
   return {
-    /**
-     *
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    async apiBuildingsDebugDbGet(
-      options?: RawAxiosRequestConfig,
-    ): Promise<
-      (axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>
-    > {
-      const localVarAxiosArgs =
-        await localVarAxiosParamCreator.apiBuildingsDebugDbGet(options);
+    async apiBuildingsDebugDbGet(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+      const localVarAxiosArgs = await localVarAxiosParamCreator.apiBuildingsDebugDbGet(options);
       const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
-      const localVarOperationServerBasePath =
-        operationServerMap['BuildingsApi.apiBuildingsDebugDbGet']?.[
-          localVarOperationServerIndex
-        ]?.url;
-      return (axios, basePath) =>
-        createRequestFunction(
-          localVarAxiosArgs,
-          globalAxios,
-          BASE_PATH,
-          configuration,
-        )(axios, localVarOperationServerBasePath || basePath);
+      const localVarOperationServerBasePath = operationServerMap['BuildingsApi.apiBuildingsDebugDbGet']?.[localVarOperationServerIndex]?.url;
+      return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
     },
-    /**
-     *
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    async apiBuildingsDebugFullGet(
-      options?: RawAxiosRequestConfig,
-    ): Promise<
-      (axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>
-    > {
-      const localVarAxiosArgs =
-        await localVarAxiosParamCreator.apiBuildingsDebugFullGet(options);
+
+    async apiBuildingsDebugFullGet(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+      const localVarAxiosArgs = await localVarAxiosParamCreator.apiBuildingsDebugFullGet(options);
       const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
-      const localVarOperationServerBasePath =
-        operationServerMap['BuildingsApi.apiBuildingsDebugFullGet']?.[
-          localVarOperationServerIndex
-        ]?.url;
-      return (axios, basePath) =>
-        createRequestFunction(
-          localVarAxiosArgs,
-          globalAxios,
-          BASE_PATH,
-          configuration,
-        )(axios, localVarOperationServerBasePath || basePath);
+      const localVarOperationServerBasePath = operationServerMap['BuildingsApi.apiBuildingsDebugFullGet']?.[localVarOperationServerIndex]?.url;
+      return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
     },
-    /**
-     *
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    async apiBuildingsGet(
-      options?: RawAxiosRequestConfig,
-    ): Promise<
-      (
-        axios?: AxiosInstance,
-        basePath?: string,
-      ) => AxiosPromise<Array<Building>>
-    > {
-      const localVarAxiosArgs =
-        await localVarAxiosParamCreator.apiBuildingsGet(options);
+
+    async apiBuildingsGet(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<Building>>> {
+      const localVarAxiosArgs = await localVarAxiosParamCreator.apiBuildingsGet(options);
       const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
-      const localVarOperationServerBasePath =
-        operationServerMap['BuildingsApi.apiBuildingsGet']?.[
-          localVarOperationServerIndex
-        ]?.url;
-      return (axios, basePath) =>
-        createRequestFunction(
-          localVarAxiosArgs,
-          globalAxios,
-          BASE_PATH,
-          configuration,
-        )(axios, localVarOperationServerBasePath || basePath);
+      const localVarOperationServerBasePath = operationServerMap['BuildingsApi.apiBuildingsGet']?.[localVarOperationServerIndex]?.url;
+      return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
     },
-    /**
-     *
-     * @param {number} id
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    async apiBuildingsIdDelete(
-      id: number,
-      options?: RawAxiosRequestConfig,
-    ): Promise<
-      (axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>
-    > {
-      const localVarAxiosArgs =
-        await localVarAxiosParamCreator.apiBuildingsIdDelete(id, options);
+
+    async apiBuildingsIdDelete(id: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+      const localVarAxiosArgs = await localVarAxiosParamCreator.apiBuildingsIdDelete(id, options);
       const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
-      const localVarOperationServerBasePath =
-        operationServerMap['BuildingsApi.apiBuildingsIdDelete']?.[
-          localVarOperationServerIndex
-        ]?.url;
-      return (axios, basePath) =>
-        createRequestFunction(
-          localVarAxiosArgs,
-          globalAxios,
-          BASE_PATH,
-          configuration,
-        )(axios, localVarOperationServerBasePath || basePath);
+      const localVarOperationServerBasePath = operationServerMap['BuildingsApi.apiBuildingsIdDelete']?.[localVarOperationServerIndex]?.url;
+      return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
     },
-    /**
-     *
-     * @param {number} id
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    async apiBuildingsIdGet(
-      id: number,
-      options?: RawAxiosRequestConfig,
-    ): Promise<
-      (axios?: AxiosInstance, basePath?: string) => AxiosPromise<Building>
-    > {
-      const localVarAxiosArgs =
-        await localVarAxiosParamCreator.apiBuildingsIdGet(id, options);
+
+    async apiBuildingsIdGet(id: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Building>> {
+      const localVarAxiosArgs = await localVarAxiosParamCreator.apiBuildingsIdGet(id, options);
       const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
-      const localVarOperationServerBasePath =
-        operationServerMap['BuildingsApi.apiBuildingsIdGet']?.[
-          localVarOperationServerIndex
-        ]?.url;
-      return (axios, basePath) =>
-        createRequestFunction(
-          localVarAxiosArgs,
-          globalAxios,
-          BASE_PATH,
-          configuration,
-        )(axios, localVarOperationServerBasePath || basePath);
+      const localVarOperationServerBasePath = operationServerMap['BuildingsApi.apiBuildingsIdGet']?.[localVarOperationServerIndex]?.url;
+      return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
     },
-    /**
-     *
-     * @param {number} id
-     * @param {Building} [building]
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    async apiBuildingsIdPut(
-      id: number,
-      building?: Building,
-      options?: RawAxiosRequestConfig,
-    ): Promise<
-      (axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>
-    > {
-      const localVarAxiosArgs =
-        await localVarAxiosParamCreator.apiBuildingsIdPut(
-          id,
-          building,
-          options,
-        );
+
+    async apiBuildingsIdPut(id: number, building?: Building, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+      const localVarAxiosArgs = await localVarAxiosParamCreator.apiBuildingsIdPut(id, building, options);
       const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
-      const localVarOperationServerBasePath =
-        operationServerMap['BuildingsApi.apiBuildingsIdPut']?.[
-          localVarOperationServerIndex
-        ]?.url;
-      return (axios, basePath) =>
-        createRequestFunction(
-          localVarAxiosArgs,
-          globalAxios,
-          BASE_PATH,
-          configuration,
-        )(axios, localVarOperationServerBasePath || basePath);
+      const localVarOperationServerBasePath = operationServerMap['BuildingsApi.apiBuildingsIdPut']?.[localVarOperationServerIndex]?.url;
+      return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
     },
-    /**
-     *
-     * @param {Building} [building]
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    async apiBuildingsPost(
-      building?: Building,
-      options?: RawAxiosRequestConfig,
-    ): Promise<
-      (axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>
-    > {
-      const localVarAxiosArgs =
-        await localVarAxiosParamCreator.apiBuildingsPost(building, options);
+
+    async apiBuildingsPost(buildingCreateDto?: BuildingCreateDto, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+      const localVarAxiosArgs = await localVarAxiosParamCreator.apiBuildingsPost(buildingCreateDto, options);
       const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
-      const localVarOperationServerBasePath =
-        operationServerMap['BuildingsApi.apiBuildingsPost']?.[
-          localVarOperationServerIndex
-        ]?.url;
-      return (axios, basePath) =>
-        createRequestFunction(
-          localVarAxiosArgs,
-          globalAxios,
-          BASE_PATH,
-          configuration,
-        )(axios, localVarOperationServerBasePath || basePath);
+      const localVarOperationServerBasePath = operationServerMap['BuildingsApi.apiBuildingsPost']?.[localVarOperationServerIndex]?.url;
+      return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
     },
   };
+};
 };
 
 /**
@@ -1473,7 +1625,81 @@ export const BuildingsApiFactory = function (
   const localVarFp = BuildingsApiFp(configuration);
   return {
     /**
-     *
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    apiBuildingsDebugDbGet(options?: any): AxiosPromise<void> {
+      return localVarFp.apiBuildingsDebugDbGet(options).then((request) =>
+        request(axios, basePath),
+      );
+    },
+
+    /**
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    apiBuildingsDebugFullGet(options?: any): AxiosPromise<void> {
+      return localVarFp.apiBuildingsDebugFullGet(options).then((request) =>
+        request(axios, basePath),
+      );
+    },
+
+    /**
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    apiBuildingsGet(options?: any): AxiosPromise<Array<Building>> {
+      return localVarFp.apiBuildingsGet(options).then((request) =>
+        request(axios, basePath),
+      );
+    },
+
+    /**
+     * @param {number} id
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    apiBuildingsIdDelete(id: number, options?: any): AxiosPromise<void> {
+      return localVarFp.apiBuildingsIdDelete(id, options).then((request) =>
+        request(axios, basePath),
+      );
+    },
+
+    /**
+     * @param {number} id
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    apiBuildingsIdGet(id: number, options?: any): AxiosPromise<Building> {
+      return localVarFp.apiBuildingsIdGet(id, options).then((request) =>
+        request(axios, basePath),
+      );
+    },
+
+    /**
+     * @param {number} id
+     * @param {Building} [building]
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    apiBuildingsIdPut(id: number, building?: Building, options?: any): AxiosPromise<void> {
+      return localVarFp.apiBuildingsIdPut(id, building, options).then((request) =>
+        request(axios, basePath),
+      );
+    },
+
+    /**
+     * @param {BuildingCreateDto} [buildingCreateDto]
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    apiBuildingsPost(buildingCreateDto?: BuildingCreateDto, options?: any): AxiosPromise<void> {
+      return localVarFp.apiBuildingsPost(buildingCreateDto, options).then((request) =>
+        request(axios, basePath),
+      );
+    },
+  };
+};
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
@@ -1531,6 +1757,7 @@ export const BuildingsApiFactory = function (
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
+
     apiBuildingsIdPut(
       id: number,
       building?: Building,
@@ -1543,9 +1770,19 @@ export const BuildingsApiFactory = function (
     /**
      *
      * @param {Building} [building]
+
+    public apiBuildingsIdPut(id: number, building?: Building, options?: RawAxiosRequestConfig) {
+        return BuildingsApiFp(this.configuration).apiBuildingsIdPut(id, building, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {BuildingCreateDto} [buildingCreateDto] 
+
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
+
     apiBuildingsPost(building?: Building, options?: any): AxiosPromise<void> {
       return localVarFp
         .apiBuildingsPost(building, options)
@@ -1553,6 +1790,14 @@ export const BuildingsApiFactory = function (
     },
   };
 };
+
+    public apiBuildingsPost(buildingCreateDto?: BuildingCreateDto, options?: RawAxiosRequestConfig) {
+        return BuildingsApiFp(this.configuration).apiBuildingsPost(buildingCreateDto, options).then((request) => request(this.axios, this.basePath));
+    }
+}
+
+
+
 
 /**
  * BuildingsApi - object-oriented interface

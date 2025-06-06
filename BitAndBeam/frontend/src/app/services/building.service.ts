@@ -1,9 +1,8 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable, from } from 'rxjs';
+import { BehaviorSubject, Observable, from, switchMap, map } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { ConfigService } from '../config.service';
 import { AxiosResponse } from 'axios';
-import { map } from 'rxjs/operators';
 import {
   Configuration,
   DocumentsApi,
@@ -60,21 +59,24 @@ export class BuildingService {
     );
   }
 
-  addBuilding(name: string): Observable<Building> {
-    return from(
-      this.buildingsApi.apiBuildingsPost({ name }).then(() =>
-        this.buildingsApi.apiBuildingsGet().then((res) => {
-          const last = res.data[res.data.length - 1];
-          return {
-            id: last.buildingId!,
-            name: last.name ?? '',
-            documents: [],
-          };
-        }),
-      ),
-    );
-  }
+addBuilding(building: Partial<ApiBuilding>): Observable<Building> {
+  return from(this.buildingsApi.apiBuildingsPost(building)).pipe(
+    switchMap((res) => {
+      const createdId = (res.data as unknown as { id: number }).id;
 
+      return from(this.buildingsApi.apiBuildingsIdGet(createdId)).pipe(
+        map((b) => {
+          const fetchedBuilding = b.data as ApiBuilding;
+          return {
+            id: fetchedBuilding.buildingId!,
+            name: fetchedBuilding.name ?? '',
+            documents: []
+          } as Building;
+        })
+      );
+    })
+  );
+}
   deleteBuilding(id: number): Observable<void> {
     return from(this.buildingsApi.apiBuildingsIdDelete(id).then(() => {}));
   }

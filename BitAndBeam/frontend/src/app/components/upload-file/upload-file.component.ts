@@ -6,12 +6,7 @@ import { FormsModule } from '@angular/forms';
 import { RouterModule, Router } from '@angular/router';
 import { HttpClientModule } from '@angular/common/http';
 import type { AxiosResponse } from 'axios';
-import {
-  DocumentsApi,
-  OllamaApi,
-  Configuration,
-  OllamaRequest,
-} from '../../../api';
+import { DocumentsApi, Building as ApiBuilding,  OllamaApi, Configuration, OllamaRequest } from '../../../api'; 
 import { BuildingService } from '../../services/building.service';
 import { MarkdownBoldPipe } from '../../pipes/markdown-bold.pipe';
 
@@ -118,14 +113,16 @@ export class UploadFileComponent implements OnInit {
     const name = prompt('New building name:');
     if (!name?.trim() || !this.uploadedFile) return;
 
-    this.buildingService.addBuilding(name).subscribe({
+    const building: Partial<ApiBuilding> = { name }; // Only the name for now
+
+    this.buildingService.addBuilding(building).subscribe({
       next: (building) => {
-        // this.selectedBuildingId = building.id;
         this.uploadDocumentToServer(this.uploadedFile!);
       },
       error: (err) => console.error('Failed to create building', err),
     });
   }
+
 
   // ✅ AI Chat Message Sender
   sendMessage() {

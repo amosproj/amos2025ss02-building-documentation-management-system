@@ -1,0 +1,53 @@
+<div class="create-building-form">
+  <h2>Create New Building</h2>
+
+  <div *ngIf="errorMessage" class="error-message">{{ errorMessage }}</div>
+  <div *ngIf="successMessage" class="success-message">{{ successMessage }}</div>
+
+  <form (ngSubmit)="submitForm()">
+    <label>
+      Name*:
+      <input [(ngModel)]="building.name" name="name" required />
+    </label>
+
+    <label>
+      Address*:
+      <input [(ngModel)]="building.address" name="address" required />
+    </label>
+
+    <label>
+      Construction Year:
+      <input type="number" [(ngModel)]="building.constructionYear" name="constructionYear" />
+    </label>
+
+    <label>
+      Total Area (m²):
+      <input type="number" [(ngModel)]="building.totalArea" name="totalArea" />
+    </label>
+
+    <label>
+      Floors:
+      <input type="number" [(ngModel)]="building.floors" name="floors" />
+    </label>
+
+    <label>
+      Description:
+      <textarea [(ngModel)]="building.description" name="description"></textarea>
+    </label>
+    <label for="latitude">Latitude:</label>
+    <input type="number" id="latitude" [(ngModel)]="building.latitude" name="latitude">
+
+    <label for="longitude">Longitude:</label>
+    <input type="number" id="longitude" [(ngModel)]="building.longitude" name="longitude">
+
+    <label>
+      Organization*:
+      <select [(ngModel)]="building.organizationId" name="organizationId" required>
+        <option [ngValue]="null" disabled selected>Select an organization</option>
+        <option *ngFor="let org of organizations" [ngValue]="org.id">{{ org.name }}</option>
+      </select>
+    </label>
+
+    <button type="submit">Create</button>
+  </form>
+</div>

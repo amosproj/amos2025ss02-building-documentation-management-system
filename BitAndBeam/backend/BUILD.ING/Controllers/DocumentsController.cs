@@ -204,7 +204,19 @@ namespace BUILD.ING.Controllers
                 return NotFound();
 
             var fileBytes = System.IO.File.ReadAllBytes(filePath);
-            return File(fileBytes, "application/pdf", document.FileName);
+
+            // Determine content type based on file extension
+            string contentType = document.FileType switch
+            {
+                "pdf" => "application/pdf",
+                "png" => "image/png",
+                "jpg" => "image/jpeg",
+                "jpeg" => "image/jpeg",
+                _ => "application/octet-stream" // fallback
+            };
+
+            return File(fileBytes, contentType);
+
         }
     }
 }

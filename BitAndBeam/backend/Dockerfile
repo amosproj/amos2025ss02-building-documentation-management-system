@@ -9,6 +9,8 @@ WORKDIR /app
 COPY ./BUILD.ING/*.csproj ./BUILD.ING/
 WORKDIR /app/BUILD.ING
 RUN dotnet restore
+RUN dotnet add package Npgsql
+RUN dotnet add package Npgsql.NetTopologySuite
 
 # Copy everything else 
 COPY ./BUILD.ING/. ./
