@@ -71,3 +71,4 @@ services:
 volumes:
   documentdata:
   pgdata:
+
