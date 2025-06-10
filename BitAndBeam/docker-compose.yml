@@ -1,25 +1,5 @@
 services:
 
-  reverse-proxy:
-    image: traefik:v2.10
-    container_name: traefik
-    command:
-      - "--providers.docker=true"
-      - "--entrypoints.web.address=:80"
-      - "--entrypoints.websecure.address=:443"
-      - "--certificatesresolvers.le.acme.httpchallenge=true"
-      - "--certificatesresolvers.le.acme.httpchallenge.entrypoint=web"
-      - "--certificatesresolvers.le.acme.email=ouabosamuel10@gmail.com" 
-      - "--certificatesresolvers.le.acme.storage=/letsencrypt/acme.json"
-      - "--providers.file.filename=/etc/traefik/traefik_dynamic.yml"
-    ports:
-      - "80:80"
-      - "443:443"
-    volumes:
-      - "/var/run/docker.sock:/var/run/docker.sock:ro"
-      - "./letsencrypt:/letsencrypt"
-      - "./traefik_dynamic.yml:/etc/traefik/traefik_dynamic.yml"
-
   tika:
     build:
       context: ./tika
@@ -37,13 +17,7 @@ services:
   ollama:
     build:
       context: ./ollama
-      dockerfile: Dockerfile
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.ollama.rule=PathPrefix(`/ollama`)"  
-      - "traefik.http.routers.ollama.entrypoints=websecure"
-      - "traefik.http.routers.ollama.tls.certresolver=le"
-      - "traefik.http.routers.ollama.middlewares=redirect@file"
+      dockerfile: Dockerfile 
     container_name: ollama
     ports:
       - "11434:11434"   # Ollama internal API
@@ -57,15 +31,7 @@ services:
   backend:
     build:
       context: ./backend
-      dockerfile: Dockerfile
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.backend.rule=PathPrefix(`/api`)"  
-      - "traefik.http.routers.backend.entrypoints=websecure"
-      - "traefik.http.routers.backend.tls.certresolver=le"
-      - "traefik.http.routers.backend.middlewares=redirect@file"
-      - "traefik.http.services.backend.loadbalancer.server.port=5000"
-
+      dockerfile: Dockerfile 
     ports:
       - "5001:5000"
     depends_on:
@@ -82,19 +48,13 @@ services:
   frontend:
     build:
       context: ./frontend
-      dockerfile: Dockerfile
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.frontend.rule=PathPrefix(`/`)"  
-      - "traefik.http.routers.frontend.entrypoints=websecure"
-      - "traefik.http.routers.frontend.tls.certresolver=le"
-      - "traefik.http.routers.frontend.middlewares=redirect@file"
-      - "traefik.http.services.frontend.loadbalancer.server.port=80"
+      dockerfile: Dockerfile 
     depends_on:
       - backend
     environment:
-
-      - API_URL=https://amos.b-iq.net/api 
+     - API_URL=http://localhost:5001/api 
+    ports:
+     - "8080:80"
 
 
   openapi-client:
