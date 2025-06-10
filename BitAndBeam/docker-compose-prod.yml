@@ -19,6 +19,12 @@ services:
     volumes:
       - "/var/run/docker.sock:/var/run/docker.sock:ro"
       - "./letsencrypt:/letsencrypt"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.acme.rule=Host(`amos.b-iq.net`) && PathPrefix(`/.well-known/acme-challenge/`)"
+      - "traefik.http.routers.acme.entrypoints=web"
+      - "traefik.http.routers.acme.priority=1000"
+      - "traefik.http.routers.acme.service=noop@internal"
     
 
 
