@@ -5,26 +5,30 @@ services:
     command:
       - "--log.level=INFO"
       - "--providers.docker=true"
+      - "--providers.file.filename=/etc/traefik/traefik_dynamic.yml"
+      - "--providers.file.directory=/etc/traefik"  # better than filename
+      - "--providers.file.watch=true"
       - "--entrypoints.web.address=:80"
-      - "--entrypoints.websecure.address=:443"
-      - "--entrypoints.web.http.redirections.entryPoint.to=websecure"
+      - "--entrypoints.websecure.address=:443" 
       - "--entrypoints.web.http.redirections.entryPoint.scheme=https"
       - "--certificatesresolvers.le.acme.httpchallenge=true"
       - "--certificatesresolvers.le.acme.httpchallenge.entrypoint=web"
       - "--certificatesresolvers.le.acme.email=ouabosamuel10@gmail.com"
       - "--certificatesresolvers.le.acme.storage=/letsencrypt/acme.json"
+      - "--api.dashboard=true"
+      - "--api.insecure=true"    # for testing, allows access on port 8080
+      - "--entrypoints.web.address=:80"
+      - "--entrypoints.websecure.address=:443"
+      - "--entrypoints.traefik.address=:8080"  # required for dashboard!
     ports:
       - "80:80"
       - "443:443"
     volumes:
       - "/var/run/docker.sock:/var/run/docker.sock:ro"
       - "./letsencrypt:/letsencrypt"
+      - "./traefik_dynamic.yml:/etc/traefik/traefik_dynamic.yml:ro"
     labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.acme.rule=Host(`amos.b-iq.net`) && PathPrefix(`/.well-known/acme-challenge/`)"
-      - "traefik.http.routers.acme.entrypoints=web"
-      - "traefik.http.routers.acme.priority=1000"
-      - "traefik.http.routers.acme.service=noop@internal"
+      - "traefik.enable=true" 
     
 
 
@@ -71,13 +75,10 @@ services:
     depends_on:
       - backend
     volumes:
-    - /home/samuel/BitAndBeam/frontend/default.conf:/etc/nginx/conf.d/default.conf:ro
+      - /home/samuel/BitAndBeam/frontend/default.conf:/etc/nginx/conf.d/default.conf:ro
     labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.frontend.rule=Host(`amos.b-iq.net`) && PathPrefixRegexp(`^/(?!\\.well-known/acme-challenge).*`)"
-      - "traefik.http.routers.frontend.entrypoints=websecure"
-      - "traefik.http.routers.frontend.tls.certresolver=le"
-      - "traefik.http.services.frontend.loadbalancer.server.port=80"
+      - "traefik.enable=false"
+
     
 
   ollama:

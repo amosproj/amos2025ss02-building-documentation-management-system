@@ -1,6 +1,27 @@
 http:
-  middlewares:
-    redirect:
-      redirectScheme:
-        scheme: https
-        permanent: true
+  routers:
+    acme:
+      rule: "Host(`amos.b-iq.net`) && PathPrefix(`/.well-known/acme-challenge/`)"
+      entryPoints:
+        - web
+      priority: 1000
+      service: noop@internal
+
+    frontend:
+      rule: "Host(`amos.b-iq.net`) && PathPrefix(`/`) && !PathPrefix(`/.well-known/acme-challenge/`)"
+      entryPoints:
+        - web
+        - websecure
+      middelwares:
+        - redirect
+      tls:
+        certResolver: le
+      service: frontend
+
+  services:
+    frontend:
+      loadBalancer:
+        servers:
+          - url: "http://bitandbeam-frontend-1:80"
+
+
