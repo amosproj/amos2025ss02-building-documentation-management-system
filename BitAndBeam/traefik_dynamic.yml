@@ -1,34 +1,9 @@
-http:
-  routers:
-    acme:
-      rule: "Host(`amos.b-iq.net`) && PathPrefix(`/.well-known/acme-challenge/`)"
-      entryPoints:
-        - web
-      priority: 1000
-      service: frontend
-
-    frontend:
-      rule: "Host(`amos.b-iq.net`)"
-      entryPoints: 
-        - websecure
-      middlewares:
-        - redirect
-
-      tls:
-        certResolver: le
-      service: frontend
-      priority: 10
-
+http: 
   middlewares:
     redirect:
       redirectScheme:
         scheme: https
         permanent: true
-
-  services:
-    frontend:
-      loadBalancer:
-        servers:
-          - url: "http://frontend:80"
+ 
 
 
