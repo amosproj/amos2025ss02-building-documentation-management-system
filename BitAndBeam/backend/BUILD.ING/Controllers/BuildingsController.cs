@@ -63,26 +63,73 @@ namespace BUILD.ING.Controllers
         // GET: api/Buildings
         // Returns a list of all buildings
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Building>>> GetBuildings()
+        public async Task<ActionResult<IEnumerable<BuildingDto>>> GetBuildings()
         {
-            //We can apply later group-based filtering here
-            return await _context.Buildings.ToListAsync().ConfigureAwait(false);
+            var buildings = await _context.Buildings.ToListAsync().ConfigureAwait(false);
+            var buildingIds = buildings.Select(b => b.BuildingId).ToList();
+            var documents = _context.Documents
+                .Where(d => d.BuildingId.HasValue && buildingIds.Contains(d.BuildingId.Value))
+                .Select(d => new { d.BuildingId, d.DocumentId, d.Title })
+                .ToList();
+            var orgMap = _context.Organizations.ToDictionary(o => o.OrganizationId, o => o.Name);
+            var dtos = buildings.Select(b => new BuildingDto
+            {
+                BuildingId = b.BuildingId,
+                Name = b.Name,
+                StreetName = b.StreetName,
+                HouseNumber = b.HouseNumber,
+                PostalCode = b.PostalCode,
+                City = b.City,
+                Country = b.Country,
+                ConstructionYear = b.ConstructionYear,
+                TotalArea = b.TotalArea,
+                Floors = b.Floors,
+                Description = b.Description,
+                Coordinates = b.Coordinates?.ToString(),
+                CreatedAt = b.CreatedAt,
+                UpdatedAt = b.UpdatedAt,
+                OrganizationId = b.OrganizationId,
+                OrganizationName = orgMap.ContainsKey(b.OrganizationId) ? orgMap[b.OrganizationId] : null,
+                Documents = documents.Where(d => d.BuildingId == b.BuildingId)
+                    .Select(d => new KeyValuePair<int, string>(d.DocumentId, d.Title)).ToList()
+            }).ToList();
+            return Ok(dtos);
         }
 
         // GET: api/Buildings/{id}
         // Returns a single building by ID
         [HttpGet("{id}")]
-        public async Task<ActionResult<Building>> GetBuilding(int id)
+        public async Task<ActionResult<BuildingDto>> GetBuilding(int id)
         {
-            var building = await _context.Buildings
-                .Include(b => b.Documents)
-                .Include(b => b.BuildingDocumentRelations)
-                .FirstOrDefaultAsync(b => b.BuildingId == id).ConfigureAwait(false);
-
+            var building = await _context.Buildings.FirstOrDefaultAsync(b => b.BuildingId == id).ConfigureAwait(false);
             if (building == null)
                 return NotFound();
-
-            return building;
+            var orgName = _context.Organizations.Where(o => o.OrganizationId == building.OrganizationId).Select(o => o.Name).FirstOrDefault();
+            var documents = _context.Documents
+                .Where(d => d.BuildingId == id)
+                .Select(d => new KeyValuePair<int, string>(d.DocumentId, d.Title))
+                .ToList();
+            var dto = new BuildingDto
+            {
+                BuildingId = building.BuildingId,
+                Name = building.Name,
+                StreetName = building.StreetName,
+                HouseNumber = building.HouseNumber,
+                PostalCode = building.PostalCode,
+                City = building.City,
+                Country = building.Country,
+                ConstructionYear = building.ConstructionYear,
+                TotalArea = building.TotalArea,
+                Floors = building.Floors,
+                Description = building.Description,
+                Coordinates = building.Coordinates?.ToString(),
+                CreatedAt = building.CreatedAt,
+                UpdatedAt = building.UpdatedAt,
+                OrganizationId = building.OrganizationId,
+                OrganizationName = orgName,
+                Documents = documents
+            };
+            return Ok(dto);
         }
 
         // PUT: api/Buildings/{id}
