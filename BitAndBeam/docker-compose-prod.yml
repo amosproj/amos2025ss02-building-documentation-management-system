@@ -21,8 +21,7 @@ services:
       - "80:80"
       - "443:443"
     volumes:
-      - "/var/run/docker.sock:/var/run/docker.sock:ro"
-      - "./letsencrypt:/letsencrypt"
+      - "/var/run/docker.sock:/var/run/docker.sock:ro" 
       - "./traefik_dynamic.yml:/etc/traefik/traefik_dynamic.yml:ro"
       - "/home/samuel/BitAndBeam/letsencrypt:/letsencrypt"
     labels:
@@ -76,10 +75,15 @@ services:
       - /home/samuel/BitAndBeam/frontend/default.conf:/etc/nginx/conf.d/default.conf:ro
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.frontend.rule=Host(`amos.b-iq.net`)"
+      - "traefik.http.routers.frontend.rule=Host(`amos.b-iq.net`) && !PathPrefix(`/.well-known/acme-challenge/`)"
       - "traefik.http.routers.frontend.entrypoints=websecure"
       - "traefik.http.routers.frontend.tls.certresolver=le"
       - "traefik.http.services.frontend.loadbalancer.server.port=80"
+      - "traefik.http.routers.frontend-http.rule=Host(`amos.b-iq.net`)"
+      - "traefik.http.routers.frontend-http.entrypoints=web"
+      - "traefik.http.routers.frontend-http.middlewares=redirect"
+      - "traefik.http.routers.frontend-http.priority=1"
+      
 
 
     
