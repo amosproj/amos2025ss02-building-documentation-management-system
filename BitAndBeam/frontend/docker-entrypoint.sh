@@ -17,4 +17,5 @@ cat /usr/share/nginx/html/browser/assets/env.js
 
 # Start nginx
 echo "Starting nginx..."
-exec nginx -g 'daemon off;'
+# Drop privileges to nginx
+exec su-exec nginx nginx -g 'daemon off;'
