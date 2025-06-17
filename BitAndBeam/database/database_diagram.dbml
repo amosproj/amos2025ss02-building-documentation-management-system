@@ -37,7 +37,7 @@ Table buildings {
 Table document_categories {
   category_id serial [pk]
   name varchar(50) [not null]
-  description text
+  description text [default: null]
   parent_category_id integer [ref: > document_categories.category_id]
   created_at timestamp [default: `CURRENT_TIMESTAMP`]
 }

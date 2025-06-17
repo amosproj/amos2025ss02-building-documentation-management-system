@@ -36,7 +36,7 @@ CREATE TABLE "buildings" (
 CREATE TABLE "document_categories" (
     "category_id" SERIAL PRIMARY KEY,
     "name" VARCHAR(50) NOT NULL,
-    "description" TEXT,
+    "description" TEXT DEFAULT NULL,
     "parent_category_id" INTEGER REFERENCES "document_categories" ("category_id") ON DELETE SET NULL,
     "created_at" TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );

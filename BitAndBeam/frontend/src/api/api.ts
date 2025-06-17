@@ -584,11 +584,29 @@ export interface DocumentTagRelation {
  */
 export interface DocumentUpdateRequest {
     /**
-     * New title of the document
+     * New title, category and/or building of the document. If a property is null, the original value is kept.
      * @type {string}
      * @memberof DocumentUpdateRequest
      */
     'title'?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof DocumentUpdateRequest
+     */
+    'description'?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof DocumentUpdateRequest
+     */
+    'category'?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof DocumentUpdateRequest
+     */
+    'building'?: string | null;
 }
 /**
  * 

@@ -121,14 +121,22 @@ namespace BUILD.ING.Controllers
             if (document == null)
                 return NotFound();
 
-            // Handle Category lookup
+            // Handle Category lookup or creation
             if (!string.IsNullOrEmpty(request.Category))
             {
                 var category = _context.DocumentCategories.FirstOrDefault(c => c.Name == request.Category);
                 if (category == null)
-                    return BadRequest($"Category '{request.Category}' not found.");
+                {
+                    category = new DocumentCategory { Name = request.Category };
+                    _context.DocumentCategories.Add(category);
+                    _context.SaveChanges(); // Save to get the generated CategoryId
+                }
                 document.CategoryId = category.CategoryId;
                 document.Category = category;
+                if (category.Documents == null)
+                    category.Documents = new List<Document>();
+                if (!category.Documents.Contains(document))
+                    category.Documents.Add(document);
             }
 
             // Handle Building lookup
