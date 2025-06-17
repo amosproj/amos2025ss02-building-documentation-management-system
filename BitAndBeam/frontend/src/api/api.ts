@@ -127,12 +127,6 @@ export interface Building {
     'organization'?: Organization;
     /**
      * 
-     * @type {Array<Document>}
-     * @memberof Building
-     */
-    'documents'?: Array<Document> | null;
-    /**
-     * 
      * @type {Array<BuildingDocumentRelation>}
      * @memberof Building
      */
