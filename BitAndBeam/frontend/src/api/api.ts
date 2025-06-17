@@ -950,7 +950,7 @@ export const BuildINGApiFactory = function (configuration?: Configuration, baseP
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getWeatherForecast(options?: any): AxiosPromise<Array<WeatherForecast>> {
+        getWeatherForecast(options?: RawAxiosRequestConfig): AxiosPromise<Array<WeatherForecast>> {
             return localVarFp.getWeatherForecast(options).then((request) => request(axios, basePath));
         },
         /**
@@ -958,7 +958,7 @@ export const BuildINGApiFactory = function (configuration?: Configuration, baseP
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        rootGet(options?: any): AxiosPromise<string> {
+        rootGet(options?: RawAxiosRequestConfig): AxiosPromise<string> {
             return localVarFp.rootGet(options).then((request) => request(axios, basePath));
         },
     };
@@ -1330,7 +1330,7 @@ export const BuildingsApiFactory = function (configuration?: Configuration, base
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        apiBuildingsDebugDbGet(options?: any): AxiosPromise<void> {
+        apiBuildingsDebugDbGet(options?: RawAxiosRequestConfig): AxiosPromise<void> {
             return localVarFp.apiBuildingsDebugDbGet(options).then((request) => request(axios, basePath));
         },
         /**
@@ -1338,7 +1338,7 @@ export const BuildingsApiFactory = function (configuration?: Configuration, base
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        apiBuildingsDebugFullGet(options?: any): AxiosPromise<void> {
+        apiBuildingsDebugFullGet(options?: RawAxiosRequestConfig): AxiosPromise<void> {
             return localVarFp.apiBuildingsDebugFullGet(options).then((request) => request(axios, basePath));
         },
         /**
@@ -1346,48 +1346,110 @@ export const BuildingsApiFactory = function (configuration?: Configuration, base
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        apiBuildingsGet(options?: any): AxiosPromise<Array<Building>> {
+        apiBuildingsGet(options?: RawAxiosRequestConfig): AxiosPromise<Array<Building>> {
             return localVarFp.apiBuildingsGet(options).then((request) => request(axios, basePath));
         },
         /**
          * 
-         * @param {number} id 
+         * @param {BuildingsApiApiBuildingsIdDeleteRequest} requestParameters Request parameters.
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        apiBuildingsIdDelete(id: number, options?: any): AxiosPromise<void> {
-            return localVarFp.apiBuildingsIdDelete(id, options).then((request) => request(axios, basePath));
+        apiBuildingsIdDelete(requestParameters: BuildingsApiApiBuildingsIdDeleteRequest, options?: RawAxiosRequestConfig): AxiosPromise<void> {
+            return localVarFp.apiBuildingsIdDelete(requestParameters.id, options).then((request) => request(axios, basePath));
         },
         /**
          * 
-         * @param {number} id 
+         * @param {BuildingsApiApiBuildingsIdGetRequest} requestParameters Request parameters.
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        apiBuildingsIdGet(id: number, options?: any): AxiosPromise<Building> {
-            return localVarFp.apiBuildingsIdGet(id, options).then((request) => request(axios, basePath));
+        apiBuildingsIdGet(requestParameters: BuildingsApiApiBuildingsIdGetRequest, options?: RawAxiosRequestConfig): AxiosPromise<Building> {
+            return localVarFp.apiBuildingsIdGet(requestParameters.id, options).then((request) => request(axios, basePath));
         },
         /**
          * 
-         * @param {number} id 
-         * @param {Building} [building] 
+         * @param {BuildingsApiApiBuildingsIdPutRequest} requestParameters Request parameters.
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        apiBuildingsIdPut(id: number, building?: Building, options?: any): AxiosPromise<void> {
-            return localVarFp.apiBuildingsIdPut(id, building, options).then((request) => request(axios, basePath));
+        apiBuildingsIdPut(requestParameters: BuildingsApiApiBuildingsIdPutRequest, options?: RawAxiosRequestConfig): AxiosPromise<void> {
+            return localVarFp.apiBuildingsIdPut(requestParameters.id, requestParameters.building, options).then((request) => request(axios, basePath));
         },
         /**
          * 
-         * @param {BuildingCreateDto} [buildingCreateDto] 
+         * @param {BuildingsApiApiBuildingsPostRequest} requestParameters Request parameters.
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        apiBuildingsPost(buildingCreateDto?: BuildingCreateDto, options?: any): AxiosPromise<void> {
-            return localVarFp.apiBuildingsPost(buildingCreateDto, options).then((request) => request(axios, basePath));
+        apiBuildingsPost(requestParameters: BuildingsApiApiBuildingsPostRequest = {}, options?: RawAxiosRequestConfig): AxiosPromise<void> {
+            return localVarFp.apiBuildingsPost(requestParameters.buildingCreateDto, options).then((request) => request(axios, basePath));
         },
     };
 };
+
+/**
+ * Request parameters for apiBuildingsIdDelete operation in BuildingsApi.
+ * @export
+ * @interface BuildingsApiApiBuildingsIdDeleteRequest
+ */
+export interface BuildingsApiApiBuildingsIdDeleteRequest {
+    /**
+     * 
+     * @type {number}
+     * @memberof BuildingsApiApiBuildingsIdDelete
+     */
+    readonly id: number
+}
+
+/**
+ * Request parameters for apiBuildingsIdGet operation in BuildingsApi.
+ * @export
+ * @interface BuildingsApiApiBuildingsIdGetRequest
+ */
+export interface BuildingsApiApiBuildingsIdGetRequest {
+    /**
+     * 
+     * @type {number}
+     * @memberof BuildingsApiApiBuildingsIdGet
+     */
+    readonly id: number
+}
+
+/**
+ * Request parameters for apiBuildingsIdPut operation in BuildingsApi.
+ * @export
+ * @interface BuildingsApiApiBuildingsIdPutRequest
+ */
+export interface BuildingsApiApiBuildingsIdPutRequest {
+    /**
+     * 
+     * @type {number}
+     * @memberof BuildingsApiApiBuildingsIdPut
+     */
+    readonly id: number
+
+    /**
+     * 
+     * @type {Building}
+     * @memberof BuildingsApiApiBuildingsIdPut
+     */
+    readonly building?: Building
+}
+
+/**
+ * Request parameters for apiBuildingsPost operation in BuildingsApi.
+ * @export
+ * @interface BuildingsApiApiBuildingsPostRequest
+ */
+export interface BuildingsApiApiBuildingsPostRequest {
+    /**
+     * 
+     * @type {BuildingCreateDto}
+     * @memberof BuildingsApiApiBuildingsPost
+     */
+    readonly buildingCreateDto?: BuildingCreateDto
+}
 
 /**
  * BuildingsApi - object-oriented interface
@@ -1428,47 +1490,46 @@ export class BuildingsApi extends BaseAPI {
 
     /**
      * 
-     * @param {number} id 
+     * @param {BuildingsApiApiBuildingsIdDeleteRequest} requestParameters Request parameters.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof BuildingsApi
      */
-    public apiBuildingsIdDelete(id: number, options?: RawAxiosRequestConfig) {
-        return BuildingsApiFp(this.configuration).apiBuildingsIdDelete(id, options).then((request) => request(this.axios, this.basePath));
+    public apiBuildingsIdDelete(requestParameters: BuildingsApiApiBuildingsIdDeleteRequest, options?: RawAxiosRequestConfig) {
+        return BuildingsApiFp(this.configuration).apiBuildingsIdDelete(requestParameters.id, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
      * 
-     * @param {number} id 
+     * @param {BuildingsApiApiBuildingsIdGetRequest} requestParameters Request parameters.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof BuildingsApi
      */
-    public apiBuildingsIdGet(id: number, options?: RawAxiosRequestConfig) {
-        return BuildingsApiFp(this.configuration).apiBuildingsIdGet(id, options).then((request) => request(this.axios, this.basePath));
+    public apiBuildingsIdGet(requestParameters: BuildingsApiApiBuildingsIdGetRequest, options?: RawAxiosRequestConfig) {
+        return BuildingsApiFp(this.configuration).apiBuildingsIdGet(requestParameters.id, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
      * 
-     * @param {number} id 
-     * @param {Building} [building] 
+     * @param {BuildingsApiApiBuildingsIdPutRequest} requestParameters Request parameters.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof BuildingsApi
      */
-    public apiBuildingsIdPut(id: number, building?: Building, options?: RawAxiosRequestConfig) {
-        return BuildingsApiFp(this.configuration).apiBuildingsIdPut(id, building, options).then((request) => request(this.axios, this.basePath));
+    public apiBuildingsIdPut(requestParameters: BuildingsApiApiBuildingsIdPutRequest, options?: RawAxiosRequestConfig) {
+        return BuildingsApiFp(this.configuration).apiBuildingsIdPut(requestParameters.id, requestParameters.building, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
      * 
-     * @param {BuildingCreateDto} [buildingCreateDto] 
+     * @param {BuildingsApiApiBuildingsPostRequest} requestParameters Request parameters.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof BuildingsApi
      */
-    public apiBuildingsPost(buildingCreateDto?: BuildingCreateDto, options?: RawAxiosRequestConfig) {
-        return BuildingsApiFp(this.configuration).apiBuildingsPost(buildingCreateDto, options).then((request) => request(this.axios, this.basePath));
+    public apiBuildingsPost(requestParameters: BuildingsApiApiBuildingsPostRequest = {}, options?: RawAxiosRequestConfig) {
+        return BuildingsApiFp(this.configuration).apiBuildingsPost(requestParameters.buildingCreateDto, options).then((request) => request(this.axios, this.basePath));
     }
 }
 
@@ -1825,66 +1886,156 @@ export const DocumentsApiFactory = function (configuration?: Configuration, base
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        apiDocumentsGet(options?: any): AxiosPromise<void> {
+        apiDocumentsGet(options?: RawAxiosRequestConfig): AxiosPromise<void> {
             return localVarFp.apiDocumentsGet(options).then((request) => request(axios, basePath));
         },
         /**
          * 
-         * @param {number} id 
+         * @param {DocumentsApiApiDocumentsIdDeleteRequest} requestParameters Request parameters.
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        apiDocumentsIdDelete(id: number, options?: any): AxiosPromise<void> {
-            return localVarFp.apiDocumentsIdDelete(id, options).then((request) => request(axios, basePath));
+        apiDocumentsIdDelete(requestParameters: DocumentsApiApiDocumentsIdDeleteRequest, options?: RawAxiosRequestConfig): AxiosPromise<void> {
+            return localVarFp.apiDocumentsIdDelete(requestParameters.id, options).then((request) => request(axios, basePath));
         },
         /**
          * 
-         * @param {number} id 
+         * @param {DocumentsApiApiDocumentsIdDownloadGetRequest} requestParameters Request parameters.
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        apiDocumentsIdDownloadGet(id: number, options?: any): AxiosPromise<void> {
-            return localVarFp.apiDocumentsIdDownloadGet(id, options).then((request) => request(axios, basePath));
+        apiDocumentsIdDownloadGet(requestParameters: DocumentsApiApiDocumentsIdDownloadGetRequest, options?: RawAxiosRequestConfig): AxiosPromise<void> {
+            return localVarFp.apiDocumentsIdDownloadGet(requestParameters.id, options).then((request) => request(axios, basePath));
         },
         /**
          * 
-         * @param {number} id 
+         * @param {DocumentsApiApiDocumentsIdGetRequest} requestParameters Request parameters.
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        apiDocumentsIdGet(id: number, options?: any): AxiosPromise<void> {
-            return localVarFp.apiDocumentsIdGet(id, options).then((request) => request(axios, basePath));
+        apiDocumentsIdGet(requestParameters: DocumentsApiApiDocumentsIdGetRequest, options?: RawAxiosRequestConfig): AxiosPromise<void> {
+            return localVarFp.apiDocumentsIdGet(requestParameters.id, options).then((request) => request(axios, basePath));
         },
         /**
          * 
-         * @param {number} id 
+         * @param {DocumentsApiApiDocumentsIdPreviewGetRequest} requestParameters Request parameters.
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        apiDocumentsIdPreviewGet(id: number, options?: any): AxiosPromise<void> {
-            return localVarFp.apiDocumentsIdPreviewGet(id, options).then((request) => request(axios, basePath));
+        apiDocumentsIdPreviewGet(requestParameters: DocumentsApiApiDocumentsIdPreviewGetRequest, options?: RawAxiosRequestConfig): AxiosPromise<void> {
+            return localVarFp.apiDocumentsIdPreviewGet(requestParameters.id, options).then((request) => request(axios, basePath));
         },
         /**
          * 
-         * @param {number} id 
-         * @param {DocumentUpdateRequest} [documentUpdateRequest] 
+         * @param {DocumentsApiApiDocumentsIdPutRequest} requestParameters Request parameters.
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        apiDocumentsIdPut(id: number, documentUpdateRequest?: DocumentUpdateRequest, options?: any): AxiosPromise<void> {
-            return localVarFp.apiDocumentsIdPut(id, documentUpdateRequest, options).then((request) => request(axios, basePath));
+        apiDocumentsIdPut(requestParameters: DocumentsApiApiDocumentsIdPutRequest, options?: RawAxiosRequestConfig): AxiosPromise<void> {
+            return localVarFp.apiDocumentsIdPut(requestParameters.id, requestParameters.documentUpdateRequest, options).then((request) => request(axios, basePath));
         },
         /**
          * 
-         * @param {File} [file] 
+         * @param {DocumentsApiApiDocumentsPostRequest} requestParameters Request parameters.
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        apiDocumentsPost(file?: File, options?: any): AxiosPromise<void> {
-            return localVarFp.apiDocumentsPost(file, options).then((request) => request(axios, basePath));
+        apiDocumentsPost(requestParameters: DocumentsApiApiDocumentsPostRequest = {}, options?: RawAxiosRequestConfig): AxiosPromise<void> {
+            return localVarFp.apiDocumentsPost(requestParameters.file, options).then((request) => request(axios, basePath));
         },
     };
 };
+
+/**
+ * Request parameters for apiDocumentsIdDelete operation in DocumentsApi.
+ * @export
+ * @interface DocumentsApiApiDocumentsIdDeleteRequest
+ */
+export interface DocumentsApiApiDocumentsIdDeleteRequest {
+    /**
+     * 
+     * @type {number}
+     * @memberof DocumentsApiApiDocumentsIdDelete
+     */
+    readonly id: number
+}
+
+/**
+ * Request parameters for apiDocumentsIdDownloadGet operation in DocumentsApi.
+ * @export
+ * @interface DocumentsApiApiDocumentsIdDownloadGetRequest
+ */
+export interface DocumentsApiApiDocumentsIdDownloadGetRequest {
+    /**
+     * 
+     * @type {number}
+     * @memberof DocumentsApiApiDocumentsIdDownloadGet
+     */
+    readonly id: number
+}
+
+/**
+ * Request parameters for apiDocumentsIdGet operation in DocumentsApi.
+ * @export
+ * @interface DocumentsApiApiDocumentsIdGetRequest
+ */
+export interface DocumentsApiApiDocumentsIdGetRequest {
+    /**
+     * 
+     * @type {number}
+     * @memberof DocumentsApiApiDocumentsIdGet
+     */
+    readonly id: number
+}
+
+/**
+ * Request parameters for apiDocumentsIdPreviewGet operation in DocumentsApi.
+ * @export
+ * @interface DocumentsApiApiDocumentsIdPreviewGetRequest
+ */
+export interface DocumentsApiApiDocumentsIdPreviewGetRequest {
+    /**
+     * 
+     * @type {number}
+     * @memberof DocumentsApiApiDocumentsIdPreviewGet
+     */
+    readonly id: number
+}
+
+/**
+ * Request parameters for apiDocumentsIdPut operation in DocumentsApi.
+ * @export
+ * @interface DocumentsApiApiDocumentsIdPutRequest
+ */
+export interface DocumentsApiApiDocumentsIdPutRequest {
+    /**
+     * 
+     * @type {number}
+     * @memberof DocumentsApiApiDocumentsIdPut
+     */
+    readonly id: number
+
+    /**
+     * 
+     * @type {DocumentUpdateRequest}
+     * @memberof DocumentsApiApiDocumentsIdPut
+     */
+    readonly documentUpdateRequest?: DocumentUpdateRequest
+}
+
+/**
+ * Request parameters for apiDocumentsPost operation in DocumentsApi.
+ * @export
+ * @interface DocumentsApiApiDocumentsPostRequest
+ */
+export interface DocumentsApiApiDocumentsPostRequest {
+    /**
+     * 
+     * @type {File}
+     * @memberof DocumentsApiApiDocumentsPost
+     */
+    readonly file?: File
+}
 
 /**
  * DocumentsApi - object-oriented interface
@@ -1905,69 +2056,68 @@ export class DocumentsApi extends BaseAPI {
 
     /**
      * 
-     * @param {number} id 
+     * @param {DocumentsApiApiDocumentsIdDeleteRequest} requestParameters Request parameters.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof DocumentsApi
      */
-    public apiDocumentsIdDelete(id: number, options?: RawAxiosRequestConfig) {
-        return DocumentsApiFp(this.configuration).apiDocumentsIdDelete(id, options).then((request) => request(this.axios, this.basePath));
+    public apiDocumentsIdDelete(requestParameters: DocumentsApiApiDocumentsIdDeleteRequest, options?: RawAxiosRequestConfig) {
+        return DocumentsApiFp(this.configuration).apiDocumentsIdDelete(requestParameters.id, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
      * 
-     * @param {number} id 
+     * @param {DocumentsApiApiDocumentsIdDownloadGetRequest} requestParameters Request parameters.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof DocumentsApi
      */
-    public apiDocumentsIdDownloadGet(id: number, options?: RawAxiosRequestConfig) {
-        return DocumentsApiFp(this.configuration).apiDocumentsIdDownloadGet(id, options).then((request) => request(this.axios, this.basePath));
+    public apiDocumentsIdDownloadGet(requestParameters: DocumentsApiApiDocumentsIdDownloadGetRequest, options?: RawAxiosRequestConfig) {
+        return DocumentsApiFp(this.configuration).apiDocumentsIdDownloadGet(requestParameters.id, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
      * 
-     * @param {number} id 
+     * @param {DocumentsApiApiDocumentsIdGetRequest} requestParameters Request parameters.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof DocumentsApi
      */
-    public apiDocumentsIdGet(id: number, options?: RawAxiosRequestConfig) {
-        return DocumentsApiFp(this.configuration).apiDocumentsIdGet(id, options).then((request) => request(this.axios, this.basePath));
+    public apiDocumentsIdGet(requestParameters: DocumentsApiApiDocumentsIdGetRequest, options?: RawAxiosRequestConfig) {
+        return DocumentsApiFp(this.configuration).apiDocumentsIdGet(requestParameters.id, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
      * 
-     * @param {number} id 
+     * @param {DocumentsApiApiDocumentsIdPreviewGetRequest} requestParameters Request parameters.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof DocumentsApi
      */
-    public apiDocumentsIdPreviewGet(id: number, options?: RawAxiosRequestConfig) {
-        return DocumentsApiFp(this.configuration).apiDocumentsIdPreviewGet(id, options).then((request) => request(this.axios, this.basePath));
+    public apiDocumentsIdPreviewGet(requestParameters: DocumentsApiApiDocumentsIdPreviewGetRequest, options?: RawAxiosRequestConfig) {
+        return DocumentsApiFp(this.configuration).apiDocumentsIdPreviewGet(requestParameters.id, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
      * 
-     * @param {number} id 
-     * @param {DocumentUpdateRequest} [documentUpdateRequest] 
+     * @param {DocumentsApiApiDocumentsIdPutRequest} requestParameters Request parameters.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof DocumentsApi
      */
-    public apiDocumentsIdPut(id: number, documentUpdateRequest?: DocumentUpdateRequest, options?: RawAxiosRequestConfig) {
-        return DocumentsApiFp(this.configuration).apiDocumentsIdPut(id, documentUpdateRequest, options).then((request) => request(this.axios, this.basePath));
+    public apiDocumentsIdPut(requestParameters: DocumentsApiApiDocumentsIdPutRequest, options?: RawAxiosRequestConfig) {
+        return DocumentsApiFp(this.configuration).apiDocumentsIdPut(requestParameters.id, requestParameters.documentUpdateRequest, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
      * 
-     * @param {File} [file] 
+     * @param {DocumentsApiApiDocumentsPostRequest} requestParameters Request parameters.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof DocumentsApi
      */
-    public apiDocumentsPost(file?: File, options?: RawAxiosRequestConfig) {
-        return DocumentsApiFp(this.configuration).apiDocumentsPost(file, options).then((request) => request(this.axios, this.basePath));
+    public apiDocumentsPost(requestParameters: DocumentsApiApiDocumentsPostRequest = {}, options?: RawAxiosRequestConfig) {
+        return DocumentsApiFp(this.configuration).apiDocumentsPost(requestParameters.file, options).then((request) => request(this.axios, this.basePath));
     }
 }
 
@@ -2049,15 +2199,29 @@ export const OllamaApiFactory = function (configuration?: Configuration, basePat
         /**
          * 
          * @summary Sends prompt to Ollama backend and returns response with metadata.
-         * @param {OllamaRequest} [ollamaRequest] Prompt and optional context
+         * @param {OllamaApiApiOllamaAskPostRequest} requestParameters Request parameters.
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        apiOllamaAskPost(ollamaRequest?: OllamaRequest, options?: any): AxiosPromise<void> {
-            return localVarFp.apiOllamaAskPost(ollamaRequest, options).then((request) => request(axios, basePath));
+        apiOllamaAskPost(requestParameters: OllamaApiApiOllamaAskPostRequest = {}, options?: RawAxiosRequestConfig): AxiosPromise<void> {
+            return localVarFp.apiOllamaAskPost(requestParameters.ollamaRequest, options).then((request) => request(axios, basePath));
         },
     };
 };
+
+/**
+ * Request parameters for apiOllamaAskPost operation in OllamaApi.
+ * @export
+ * @interface OllamaApiApiOllamaAskPostRequest
+ */
+export interface OllamaApiApiOllamaAskPostRequest {
+    /**
+     * Prompt and optional context
+     * @type {OllamaRequest}
+     * @memberof OllamaApiApiOllamaAskPost
+     */
+    readonly ollamaRequest?: OllamaRequest
+}
 
 /**
  * OllamaApi - object-oriented interface
@@ -2069,13 +2233,13 @@ export class OllamaApi extends BaseAPI {
     /**
      * 
      * @summary Sends prompt to Ollama backend and returns response with metadata.
-     * @param {OllamaRequest} [ollamaRequest] Prompt and optional context
+     * @param {OllamaApiApiOllamaAskPostRequest} requestParameters Request parameters.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof OllamaApi
      */
-    public apiOllamaAskPost(ollamaRequest?: OllamaRequest, options?: RawAxiosRequestConfig) {
-        return OllamaApiFp(this.configuration).apiOllamaAskPost(ollamaRequest, options).then((request) => request(this.axios, this.basePath));
+    public apiOllamaAskPost(requestParameters: OllamaApiApiOllamaAskPostRequest = {}, options?: RawAxiosRequestConfig) {
+        return OllamaApiFp(this.configuration).apiOllamaAskPost(requestParameters.ollamaRequest, options).then((request) => request(this.axios, this.basePath));
     }
 }
 
@@ -2207,21 +2371,35 @@ export const TikaApiFactory = function (configuration?: Configuration, basePath?
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        apiTikaHealthGet(options?: any): AxiosPromise<void> {
+        apiTikaHealthGet(options?: RawAxiosRequestConfig): AxiosPromise<void> {
             return localVarFp.apiTikaHealthGet(options).then((request) => request(axios, basePath));
         },
         /**
          * 
          * @summary Receives a document file and returns both extracted text content and structured metadata in a single response.
-         * @param {File} [file] The file being uploaded
+         * @param {TikaApiApiTikaProcessPostRequest} requestParameters Request parameters.
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        apiTikaProcessPost(file?: File, options?: any): AxiosPromise<void> {
-            return localVarFp.apiTikaProcessPost(file, options).then((request) => request(axios, basePath));
+        apiTikaProcessPost(requestParameters: TikaApiApiTikaProcessPostRequest = {}, options?: RawAxiosRequestConfig): AxiosPromise<void> {
+            return localVarFp.apiTikaProcessPost(requestParameters.file, options).then((request) => request(axios, basePath));
         },
     };
 };
+
+/**
+ * Request parameters for apiTikaProcessPost operation in TikaApi.
+ * @export
+ * @interface TikaApiApiTikaProcessPostRequest
+ */
+export interface TikaApiApiTikaProcessPostRequest {
+    /**
+     * The file being uploaded
+     * @type {File}
+     * @memberof TikaApiApiTikaProcessPost
+     */
+    readonly file?: File
+}
 
 /**
  * TikaApi - object-oriented interface
@@ -2244,13 +2422,13 @@ export class TikaApi extends BaseAPI {
     /**
      * 
      * @summary Receives a document file and returns both extracted text content and structured metadata in a single response.
-     * @param {File} [file] The file being uploaded
+     * @param {TikaApiApiTikaProcessPostRequest} requestParameters Request parameters.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof TikaApi
      */
-    public apiTikaProcessPost(file?: File, options?: RawAxiosRequestConfig) {
-        return TikaApiFp(this.configuration).apiTikaProcessPost(file, options).then((request) => request(this.axios, this.basePath));
+    public apiTikaProcessPost(requestParameters: TikaApiApiTikaProcessPostRequest = {}, options?: RawAxiosRequestConfig) {
+        return TikaApiFp(this.configuration).apiTikaProcessPost(requestParameters.file, options).then((request) => request(this.axios, this.basePath));
     }
 }
 
