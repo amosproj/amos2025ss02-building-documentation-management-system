@@ -50,7 +50,7 @@ services:
     volumes:
       - ./frontend/src/api:/local/generated-sdk
     environment:
-      - BACKEND_URL=http://localhost:5001
+      - BACKEND_URL=http://backend:5000
     healthcheck:
       test: ["CMD", "curl", "-f", "http://backend:5000/swagger/v1/swagger.json"]
       interval: 10s

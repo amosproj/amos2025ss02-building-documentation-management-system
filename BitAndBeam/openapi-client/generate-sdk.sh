@@ -10,4 +10,9 @@ echo "Swagger spec available. Generating SDK..."
 openapi-generator-cli generate \
   -i /tmp/swagger.json \
   -g typescript-axios \
-  -o /local/generated-sdk
+  -o /local/generated-sdk \
+  --additional-properties=baseUrl=${BACKEND_URL} \
+  --additional-properties=useSingleRequestParameter=true
+
+# Update configuration.ts to use the environment URL
+sed -i "s|baseURL: \".*\"|baseURL: window.__env.API_URL|g" /local/generated-sdk/configuration.ts
