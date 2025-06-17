@@ -121,9 +121,23 @@ namespace BUILD.ING.Controllers
             if (document == null)
                 return NotFound();
 
-            document.Title = request.Title;
-            _context.SaveChanges();
+            var requestType = request.GetType();
+            var documentType = document.GetType();
+            foreach (var reqProp in requestType.GetProperties())
+            {
+                var docProp = documentType.GetProperty(reqProp.Name);
+                if (docProp == null || !docProp.CanWrite)
+                {
+                    return BadRequest($"Field '{reqProp.Name}' does not exist on Document.");
+                }
+                if (!docProp.PropertyType.IsAssignableFrom(reqProp.PropertyType))
+                {
+                    return BadRequest($"Type mismatch for field '{reqProp.Name}': expected {docProp.PropertyType.Name}, got {reqProp.PropertyType.Name}.");
+                }
+                docProp.SetValue(document, reqProp.GetValue(request));
+            }
 
+            _context.SaveChanges();
             return Ok(document);
         }
 
