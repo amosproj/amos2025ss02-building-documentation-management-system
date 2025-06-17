@@ -121,10 +121,35 @@ namespace BUILD.ING.Controllers
             if (document == null)
                 return NotFound();
 
+            // Handle Category lookup
+            if (!string.IsNullOrEmpty(request.Category))
+            {
+                var category = _context.DocumentCategories.FirstOrDefault(c => c.Name == request.Category);
+                if (category == null)
+                    return BadRequest($"Category '{request.Category}' not found.");
+                document.CategoryId = category.CategoryId;
+                document.Category = category;
+            }
+
+            // Handle Building lookup
+            if (!string.IsNullOrEmpty(request.Building))
+            {
+                var building = _context.Buildings.FirstOrDefault(b => b.Name == request.Building);
+                if (building == null)
+                    return BadRequest($"Building '{request.Building}' not found.");
+                document.BuildingId = building.BuildingId;
+                document.Building = building;
+            }
+
             var requestType = request.GetType();
             var documentType = document.GetType();
             foreach (var reqProp in requestType.GetProperties())
             {
+                if (reqProp.Name == "Category" || reqProp.Name == "Building")
+                    continue; // Already handled above
+                var value = reqProp.GetValue(request);
+                if (value == null)
+                    continue; // Skip nulls to keep original value
                 var docProp = documentType.GetProperty(reqProp.Name);
                 if (docProp == null || !docProp.CanWrite)
                 {
@@ -134,7 +159,7 @@ namespace BUILD.ING.Controllers
                 {
                     return BadRequest($"Type mismatch for field '{reqProp.Name}': expected {docProp.PropertyType.Name}, got {reqProp.PropertyType.Name}.");
                 }
-                docProp.SetValue(document, reqProp.GetValue(request));
+                docProp.SetValue(document, value);
             }
 
             _context.SaveChanges();
