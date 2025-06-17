@@ -88,7 +88,7 @@ jobs:
             fi
 
             # Build all required services
-            docker compose -f docker-compose-prod.yml build frontend backend ollama postgres tika
+            docker compose -f docker-compose-prod.yml build --no-cache frontend backend ollama postgres tika
 
             # Push all built images
             docker compose -f docker-compose-prod.yml push frontend backend ollama postgres tika

@@ -1,21 +1,17 @@
 #!/bin/sh
 
-# Exit on any error
 set -e
 
-echo "Starting entrypoint script..."
+echo "Generating env.js..."
 
-# Create assets directory in the browser directory if it doesn't exist
-mkdir -p /usr/share/nginx/html/browser/assets
-
-# Create or update env.js in the browser/assets directory
-echo "Updating environment variables in env.js..."
-echo "window.__env = { API_URL: \"${API_URL}\" };" > /usr/share/nginx/html/browser/assets/env.js
+cat <<EOF > /usr/share/nginx/html/browser/assets/env.js
+window.__env = {
+  API_URL: "${API_URL}"
+};
+EOF
 
 echo "env.js content:"
 cat /usr/share/nginx/html/browser/assets/env.js
 
-# Start nginx
-echo "Starting nginx..."
-# Drop privileges to nginx
-exec su-exec nginx nginx -g 'daemon off;'
+# Start nginx in foreground
+exec nginx -g 'daemon off;'
