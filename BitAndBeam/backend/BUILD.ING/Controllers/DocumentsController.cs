@@ -133,10 +133,6 @@ namespace BUILD.ING.Controllers
                 }
                 document.CategoryId = category.CategoryId;
                 document.Category = category;
-                if (category.Documents == null)
-                    category.Documents = new List<Document>();
-                if (!category.Documents.Contains(document))
-                    category.Documents.Add(document);
             }
 
             // Handle Building lookup
