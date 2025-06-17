@@ -100,6 +100,8 @@ namespace BUILD.ING.Controllers
         {
             var groupId = GetCurrentUserGroupId();
             var documents = _context.Documents.Where(d => d.GroupId == groupId).ToList();
+            var categoryMap = _context.DocumentCategories.ToDictionary(c => c.CategoryId, c => c.Name);
+            var buildingMap = _context.Buildings.ToDictionary(b => b.BuildingId, b => b.Name);
             var dtos = documents.Select(document => new BUILD.ING.Dto.DocumentDto
             {
                 DocumentId = document.DocumentId,
@@ -108,9 +110,9 @@ namespace BUILD.ING.Controllers
                 FileType = document.FileType,
                 FileSize = document.FileSize,
                 CategoryId = document.CategoryId,
-                CategoryName = document.Category?.Name,
+                CategoryName = document.CategoryId.HasValue && categoryMap.ContainsKey(document.CategoryId.Value) ? categoryMap[document.CategoryId.Value] : null,
                 BuildingId = document.BuildingId,
-                BuildingName = document.Building?.Name,
+                BuildingName = document.BuildingId.HasValue && buildingMap.ContainsKey(document.BuildingId.Value) ? buildingMap[document.BuildingId.Value] : null,
                 UploadedBy = document.UploadedBy,
                 UploadDate = document.UploadDate,
                 LastModified = document.LastModified,
@@ -133,7 +135,12 @@ namespace BUILD.ING.Controllers
             var document = _context.Documents.FirstOrDefault(d => d.DocumentId == id && d.GroupId == groupId);
             if (document == null)
                 return NotFound();
-
+            var categoryName = document.CategoryId.HasValue
+                ? _context.DocumentCategories.Where(c => c.CategoryId == document.CategoryId.Value).Select(c => c.Name).FirstOrDefault()
+                : null;
+            var buildingName = document.BuildingId.HasValue
+                ? _context.Buildings.Where(b => b.BuildingId == document.BuildingId.Value).Select(b => b.Name).FirstOrDefault()
+                : null;
             var dto = new BUILD.ING.Dto.DocumentDto
             {
                 DocumentId = document.DocumentId,
@@ -142,9 +149,9 @@ namespace BUILD.ING.Controllers
                 FileType = document.FileType,
                 FileSize = document.FileSize,
                 CategoryId = document.CategoryId,
-                CategoryName = document.Category?.Name,
+                CategoryName = categoryName,
                 BuildingId = document.BuildingId,
-                BuildingName = document.Building?.Name,
+                BuildingName = buildingName,
                 UploadedBy = document.UploadedBy,
                 UploadDate = document.UploadDate,
                 LastModified = document.LastModified,
@@ -161,7 +168,7 @@ namespace BUILD.ING.Controllers
         }
 
         [HttpPut("{id}")]
-        public IActionResult UpdateDocumentTitle(int id, [FromBody] DocumentUpdateRequest request)
+        public IActionResult UpdateDocument(int id, [FromBody] DocumentUpdateRequest request)
         {
             var document = _context.Documents.FirstOrDefault(d => d.DocumentId == id && d.GroupId == GetCurrentUserGroupId());
             if (document == null)
