@@ -186,6 +186,10 @@ namespace BUILD.ING.Controllers
                 }
                 document.CategoryId = category.CategoryId;
                 document.Category = category;
+                if (category.Documents == null)
+                    category.Documents = new List<Document>();
+                if (!category.Documents.Contains(document))
+                    category.Documents.Add(document); // Ensure the document is linked to the category
             }
 
             // Handle Building lookup
@@ -196,6 +200,10 @@ namespace BUILD.ING.Controllers
                     return BadRequest($"Building '{request.Building}' not found.");
                 document.BuildingId = building.BuildingId;
                 document.Building = building;
+                if (building.Documents == null)
+                    building.Documents = new List<Document>();
+                if (!building.Documents.Contains(document))
+                    building.Documents.Add(document); // Ensure the document is linked to the building
             }
 
             var requestType = request.GetType();
