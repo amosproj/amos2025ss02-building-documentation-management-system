@@ -127,6 +127,12 @@ export interface Building {
     'organization'?: Organization;
     /**
      * 
+     * @type {Array<Document>}
+     * @memberof Building
+     */
+    'documents'?: Array<Document> | null;
+    /**
+     * 
      * @type {Array<BuildingDocumentRelation>}
      * @memberof Building
      */
@@ -247,6 +253,115 @@ export interface BuildingDocumentRelation {
      * @memberof BuildingDocumentRelation
      */
     'relationType'?: string | null;
+}
+/**
+ * 
+ * @export
+ * @interface BuildingDto
+ */
+export interface BuildingDto {
+    /**
+     * 
+     * @type {number}
+     * @memberof BuildingDto
+     */
+    'buildingId'?: number;
+    /**
+     * 
+     * @type {string}
+     * @memberof BuildingDto
+     */
+    'name'?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof BuildingDto
+     */
+    'streetName'?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof BuildingDto
+     */
+    'houseNumber'?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof BuildingDto
+     */
+    'postalCode'?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof BuildingDto
+     */
+    'city'?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof BuildingDto
+     */
+    'country'?: string | null;
+    /**
+     * 
+     * @type {number}
+     * @memberof BuildingDto
+     */
+    'constructionYear'?: number | null;
+    /**
+     * 
+     * @type {number}
+     * @memberof BuildingDto
+     */
+    'totalArea'?: number | null;
+    /**
+     * 
+     * @type {number}
+     * @memberof BuildingDto
+     */
+    'floors'?: number | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof BuildingDto
+     */
+    'description'?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof BuildingDto
+     */
+    'coordinates'?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof BuildingDto
+     */
+    'createdAt'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof BuildingDto
+     */
+    'updatedAt'?: string;
+    /**
+     * 
+     * @type {number}
+     * @memberof BuildingDto
+     */
+    'organizationId'?: number;
+    /**
+     * 
+     * @type {string}
+     * @memberof BuildingDto
+     */
+    'organizationName'?: string | null;
+    /**
+     * 
+     * @type {Array<DocumentIdTitleDto>}
+     * @memberof BuildingDto
+     */
+    'documents'?: Array<DocumentIdTitleDto> | null;
 }
 /**
  * 
@@ -447,6 +562,31 @@ export interface DocumentCategory {
      * @memberof DocumentCategory
      */
     'subCategories'?: Array<DocumentCategory> | null;
+    /**
+     * 
+     * @type {Array<Document>}
+     * @memberof DocumentCategory
+     */
+    'documents'?: Array<Document> | null;
+}
+/**
+ * 
+ * @export
+ * @interface DocumentIdTitleDto
+ */
+export interface DocumentIdTitleDto {
+    /**
+     * 
+     * @type {number}
+     * @memberof DocumentIdTitleDto
+     */
+    'id'?: number;
+    /**
+     * 
+     * @type {string}
+     * @memberof DocumentIdTitleDto
+     */
+    'title'?: string | null;
 }
 /**
  * 
@@ -1266,7 +1406,7 @@ export const BuildingsApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async apiBuildingsGet(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<Building>>> {
+        async apiBuildingsGet(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<BuildingDto>>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.apiBuildingsGet(options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['BuildingsApi.apiBuildingsGet']?.[localVarOperationServerIndex]?.url;
@@ -1290,7 +1430,7 @@ export const BuildingsApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async apiBuildingsIdGet(id: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Building>> {
+        async apiBuildingsIdGet(id: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<BuildingDto>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.apiBuildingsIdGet(id, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['BuildingsApi.apiBuildingsIdGet']?.[localVarOperationServerIndex]?.url;
@@ -1352,7 +1492,7 @@ export const BuildingsApiFactory = function (configuration?: Configuration, base
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        apiBuildingsGet(options?: any): AxiosPromise<Array<Building>> {
+        apiBuildingsGet(options?: any): AxiosPromise<Array<BuildingDto>> {
             return localVarFp.apiBuildingsGet(options).then((request) => request(axios, basePath));
         },
         /**
@@ -1370,7 +1510,7 @@ export const BuildingsApiFactory = function (configuration?: Configuration, base
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        apiBuildingsIdGet(id: number, options?: any): AxiosPromise<Building> {
+        apiBuildingsIdGet(id: number, options?: any): AxiosPromise<BuildingDto> {
             return localVarFp.apiBuildingsIdGet(id, options).then((request) => request(axios, basePath));
         },
         /**

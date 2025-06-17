@@ -14,7 +14,6 @@ namespace BUILD.ING.Models
 
         public DocumentCategory ParentCategory { get; set; }
         public ICollection<DocumentCategory> SubCategories { get; set; }
-        [JsonIgnore]
         public ICollection<Document> Documents { get; set; }
     }
 }

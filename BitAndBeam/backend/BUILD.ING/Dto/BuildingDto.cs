@@ -3,6 +3,12 @@ using System.Collections.Generic;
 
 namespace BUILD.ING.Dto
 {
+    public class DocumentIdTitleDto
+    {
+        public int Id { get; set; }
+        public string Title { get; set; }
+    }
+
     public class BuildingDto
     {
         public int BuildingId { get; set; }
@@ -21,6 +27,6 @@ namespace BUILD.ING.Dto
         public DateTime UpdatedAt { get; set; }
         public int OrganizationId { get; set; }
         public string? OrganizationName { get; set; }
-        public List<KeyValuePair<int, string>> Documents { get; set; } = new List<KeyValuePair<int, string>>();
+        public List<DocumentIdTitleDto> Documents { get; set; } = new List<DocumentIdTitleDto>();
     }
 }

@@ -91,7 +91,7 @@ namespace BUILD.ING.Controllers
                 OrganizationId = b.OrganizationId,
                 OrganizationName = orgMap.ContainsKey(b.OrganizationId) ? orgMap[b.OrganizationId] : null,
                 Documents = documents.Where(d => d.BuildingId == b.BuildingId)
-                    .Select(d => new KeyValuePair<int, string>(d.DocumentId, d.Title)).ToList()
+                    .Select(d => new DocumentIdTitleDto { Id = d.DocumentId, Title = d.Title }).ToList()
             }).ToList();
             return Ok(dtos);
         }
@@ -107,7 +107,7 @@ namespace BUILD.ING.Controllers
             var orgName = _context.Organizations.Where(o => o.OrganizationId == building.OrganizationId).Select(o => o.Name).FirstOrDefault();
             var documents = _context.Documents
                 .Where(d => d.BuildingId == id)
-                .Select(d => new KeyValuePair<int, string>(d.DocumentId, d.Title))
+                .Select(d => new DocumentIdTitleDto { Id = d.DocumentId, Title = d.Title })
                 .ToList();
             var dto = new BuildingDto
             {
