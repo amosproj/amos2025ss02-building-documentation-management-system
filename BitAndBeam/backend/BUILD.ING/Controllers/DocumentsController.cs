@@ -111,7 +111,30 @@ namespace BUILD.ING.Controllers
             if (document == null)
                 return NotFound();
 
-            return Ok(document);
+            var dto = new BUILD.ING.Dto.DocumentDto
+            {
+                DocumentId = document.DocumentId,
+                Title = document.Title,
+                FilePath = document.FilePath,
+                FileType = document.FileType,
+                FileSize = document.FileSize,
+                CategoryId = document.CategoryId,
+                CategoryName = document.Category?.Name,
+                BuildingId = document.BuildingId,
+                BuildingName = document.Building?.Name,
+                UploadedBy = document.UploadedBy,
+                UploadDate = document.UploadDate,
+                LastModified = document.LastModified,
+                Version = document.Version,
+                Status = document.Status,
+                Description = document.Description,
+                IsPublic = document.IsPublic,
+                Metadata = document.Metadata,
+                FileName = document.FileName,
+                UploadedAt = document.UploadedAt,
+                GroupId = document.GroupId
+            };
+            return Ok(dto);
         }
 
         [HttpPut("{id}")]
@@ -167,7 +190,34 @@ namespace BUILD.ING.Controllers
             }
 
             _context.SaveChanges();
-            return Ok(document);
+            // Reload navigation properties to ensure up-to-date values
+            _context.Entry(document).Reference(d => d.Category).Load();
+            _context.Entry(document).Reference(d => d.Building).Load();
+
+            var dto = new BUILD.ING.Dto.DocumentDto
+            {
+                DocumentId = document.DocumentId,
+                Title = document.Title,
+                FilePath = document.FilePath,
+                FileType = document.FileType,
+                FileSize = document.FileSize,
+                CategoryId = document.CategoryId,
+                CategoryName = document.Category?.Name,
+                BuildingId = document.BuildingId,
+                BuildingName = document.Building?.Name,
+                UploadedBy = document.UploadedBy,
+                UploadDate = document.UploadDate,
+                LastModified = document.LastModified,
+                Version = document.Version,
+                Status = document.Status,
+                Description = document.Description,
+                IsPublic = document.IsPublic,
+                Metadata = document.Metadata,
+                FileName = document.FileName,
+                UploadedAt = document.UploadedAt,
+                GroupId = document.GroupId
+            };
+            return Ok(dto);
         }
 
         [HttpDelete("{id}")]
