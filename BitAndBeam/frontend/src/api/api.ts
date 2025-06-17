@@ -453,12 +453,6 @@ export interface DocumentCategory {
      * @memberof DocumentCategory
      */
     'subCategories'?: Array<DocumentCategory> | null;
-    /**
-     * 
-     * @type {Array<Document>}
-     * @memberof DocumentCategory
-     */
-    'documents'?: Array<Document> | null;
 }
 /**
  * 
