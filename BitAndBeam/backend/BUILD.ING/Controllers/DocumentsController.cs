@@ -100,7 +100,30 @@ namespace BUILD.ING.Controllers
         {
             var groupId = GetCurrentUserGroupId();
             var documents = _context.Documents.Where(d => d.GroupId == groupId).ToList();
-            return Ok(documents);
+            var dtos = documents.Select(document => new BUILD.ING.Dto.DocumentDto
+            {
+                DocumentId = document.DocumentId,
+                Title = document.Title,
+                FilePath = document.FilePath,
+                FileType = document.FileType,
+                FileSize = document.FileSize,
+                CategoryId = document.CategoryId,
+                CategoryName = document.Category?.Name,
+                BuildingId = document.BuildingId,
+                BuildingName = document.Building?.Name,
+                UploadedBy = document.UploadedBy,
+                UploadDate = document.UploadDate,
+                LastModified = document.LastModified,
+                Version = document.Version,
+                Status = document.Status,
+                Description = document.Description,
+                IsPublic = document.IsPublic,
+                Metadata = document.Metadata,
+                FileName = document.FileName,
+                UploadedAt = document.UploadedAt,
+                GroupId = document.GroupId
+            }).ToList();
+            return Ok(dtos);
         }
 
         [HttpGet("{id}")]
