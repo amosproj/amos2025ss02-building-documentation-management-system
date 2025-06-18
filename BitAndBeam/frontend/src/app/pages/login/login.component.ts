@@ -44,8 +44,8 @@ export class LoginComponent implements OnInit {
         this.error = true;
       }
     });
-    console.log('Login attempted with:', { username: this.username, password: this.password });
-    if (this.authService.login(this.username, this.password)) {
+    console.log('Login attempted with:', { username: this.email, password: this.password });
+    if (this.authService.login(this.email, this.password)) {
       console.log('Login successful');
       const returnUrl =
         this.route.snapshot.queryParamMap.get('returnUrl') || '/upload';
