@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Text.Json.Serialization;
 
 namespace BUILD.ING.Models
 {
@@ -7,12 +8,13 @@ namespace BUILD.ING.Models
     {
         public int CategoryId { get; set; }
         public string Name { get; set; }
-        public string Description { get; set; }
+        public string? Description { get; set; }
         public int? ParentCategoryId { get; set; }
         public DateTime CreatedAt { get; set; }
 
         public DocumentCategory ParentCategory { get; set; }
         public ICollection<DocumentCategory> SubCategories { get; set; }
+        [JsonIgnore]
         public ICollection<Document> Documents { get; set; }
     }
 }

@@ -1,14 +1,13 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
-using Microsoft.IdentityModel.Tokens;
 using System.Text;
-
+using BCrypt.Net;
+using BUILD.ING.Data;
+using BUILD.ING.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using BUILD.ING.Models;
-using BUILD.ING.Data;
 using Microsoft.EntityFrameworkCore;
-using BCrypt.Net;
+using Microsoft.IdentityModel.Tokens;
 
 namespace BUILD.ING.Controllers
 {
@@ -34,7 +33,7 @@ namespace BUILD.ING.Controllers
         {
             // Find user by email
             var user = await _db.Users.Include(u => u.Organization)
-                                      .FirstOrDefaultAsync(u => u.Email == request.Email);
+                                      .FirstOrDefaultAsync(u => u.Email == request.Email).ConfigureAwait(false);
 
             // Return 401 if no match or password incorrect
             if (user == null || !BCrypt.Net.BCrypt.Verify(request.Password, user.PasswordHash))

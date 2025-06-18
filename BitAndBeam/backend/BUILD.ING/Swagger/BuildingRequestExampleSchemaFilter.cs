@@ -14,7 +14,11 @@ namespace BUILD.ING.Swagger
                 {
                     ["buildingId"] = new OpenApiInteger(1),
                     ["name"] = new OpenApiString("Neuer Gebäudename"),
-                    ["address"] = new OpenApiString("Beispielstraße 99"),
+                    ["streetName"] = new OpenApiString("Beispielstraße"),
+                    ["houseNumber"] = new OpenApiString("99"),
+                    ["postalCode"] = new OpenApiString("12345"),
+                    ["city"] = new OpenApiString("Beispielstadt"),
+                    ["country"] = new OpenApiString("Deutschland"),
                     ["constructionYear"] = new OpenApiInteger(2022),
                     ["totalArea"] = new OpenApiDouble(200.5),
                     ["floors"] = new OpenApiInteger(4),

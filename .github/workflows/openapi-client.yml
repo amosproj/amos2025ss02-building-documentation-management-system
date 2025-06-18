@@ -1,0 +1,98 @@
+name: OpenAPI Client Generation
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'BitAndBeam/backend/**'
+      - 'BitAndBeam/openapi-client/**'
+  pull_request:
+    branches:
+      - main
+    paths:
+      - 'BitAndBeam/backend/**'
+      - 'BitAndBeam/openapi-client/**'
+  workflow_call:
+    outputs:
+      sdk_updated:
+        description: "Whether the SDK was updated"
+        value: ${{ jobs.generate-client.outputs.sdk_updated }}
+
+jobs:
+  generate-client:
+    runs-on: ubuntu-latest
+    outputs:
+      sdk_updated: ${{ steps.check_changes.outputs.sdk_updated }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Clean up existing generated files
+        run: |
+          rm -rf BitAndBeam/frontend/src/api/*
+          mkdir -p BitAndBeam/frontend/src/api
+
+      - name: Build required services
+        working-directory: BitAndBeam
+        run: |
+          # Build only the services we need
+          docker compose build postgres backend openapi-client
+
+      - name: Start services and generate SDK
+        working-directory: BitAndBeam
+        run: |
+          # Ensure the api directory has correct permissions
+          sudo chown -R $USER:$USER frontend/src/api
+          
+          # Start postgres and wait for it to be ready
+          docker compose up -d postgres
+          echo "Waiting for postgres to be ready..."
+          sleep 10
+          
+          # Start backend
+          docker compose up -d backend
+          echo "Waiting for backend to be ready..."
+          sleep 10
+          
+          # Run openapi-client with production BACKEND_URL
+          docker compose run --rm \
+            -e BACKEND_URL=http://amos.b-iq.net:5000 \
+            openapi-client
+          
+          # Fix permissions of generated files
+          sudo chown -R $USER:$USER frontend/src/api
+
+      - name: Cleanup Docker containers
+        working-directory: BitAndBeam
+        if: always()
+        run: |
+          docker compose down --remove-orphans
+          docker image prune -f
+
+      - name: Check for changes in generated SDK
+        id: check_changes
+        run: |
+          if [[ -n $(git status --porcelain BitAndBeam/frontend/src/api) ]]; then
+            echo "Changes detected in generated SDK"
+            echo "sdk_updated=true" >> $GITHUB_OUTPUT
+          else
+            echo "No changes in generated SDK"
+            echo "sdk_updated=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Create Pull Request
+        if: steps.check_changes.outputs.sdk_updated == 'true'
+        uses: peter-evans/create-pull-request@v5
+        with:
+          commit-message: "chore: update generated OpenAPI client"
+          title: "chore: update generated OpenAPI client"
+          body: "This PR updates the generated OpenAPI TypeScript client based on backend API changes."
+          branch: "chore/update-openapi-client"
+          base: "main"
+          labels: "automated,openapi-client"
+          delete-branch: true

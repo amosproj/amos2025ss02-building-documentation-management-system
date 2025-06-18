@@ -13,6 +13,7 @@
 ![Start web service](https://github.com/amosproj/amos2025ss02-building-documentation-management-system/actions/workflows/docker-ci.yml/badge.svg?branch=main&nocache=1)
 ![Frontend Linting](https://github.com/amosproj/amos2025ss02-building-documentation-management-system/actions/workflows/frontend-lint.yml/badge.svg?nocache=1)
 ![Backend Linting](https://github.com/amosproj/amos2025ss02-building-documentation-management-system/actions/workflows/backend-lint.yml/badge.svg?nocache=1)
+![OpenAPI Client Generation](https://github.com/amosproj/amos2025ss02-building-documentation-management-system/actions/workflows/openapi-client.yml/badge.svg?nocache=1)
 
 Web service available at: [amos.b-iq.net](http://amos.b-iq.net/)
 

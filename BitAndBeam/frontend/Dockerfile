@@ -9,21 +9,36 @@ RUN npm run build --configuration=production
 # Step 2: Serve it with NGINX
 FROM nginx:alpine
 
-# Clean the default nginx content
-RUN rm -rf /usr/share/nginx/html/*
+# Install required tools
+RUN apk add --no-cache gettext
+
+# Create necessary directories and set permissions
+RUN mkdir -p /usr/share/nginx/html && \
+    mkdir -p /tmp/client_temp && \
+    mkdir -p /tmp/proxy_temp && \
+    mkdir -p /tmp/fastcgi_temp && \
+    mkdir -p /tmp/uwsgi_temp && \
+    mkdir -p /tmp/scgi_temp && \
+    chown -R nginx:nginx /usr/share/nginx && \
+    chown -R nginx:nginx /tmp && \
+    chmod -R 755 /tmp
 
 # Copy built Angular app
-COPY --from=builder /app/dist/building-ui/browser/ /usr/share/nginx/html/
+COPY --from=builder /app/dist/building-ui/browser /usr/share/nginx/html/
+RUN chown -R nginx:nginx /usr/share/nginx/html
 
-# Copy nginx configuration (optional if customized)
+# Copy nginx configurations
+COPY nginx.main.conf /etc/nginx/nginx.conf
 COPY nginx.conf /etc/nginx/conf.d/default.conf
 
-# Copy env template and rename to env.js temporarily
-COPY src/assets/env.template.js /usr/share/nginx/html/assets/env.js
+# Copy entrypoint script and ensure it has the correct permissions
+COPY docker-entrypoint.sh /docker-entrypoint.sh
+RUN chmod +x /docker-entrypoint.sh && \
+    sed -i 's/\r$//' /docker-entrypoint.sh
 
-# Replace variables at runtime
-CMD ["/bin/sh", "-c", "envsubst < /usr/share/nginx/html/assets/env.js > /usr/share/nginx/html/assets/env.temp.js && mv /usr/share/nginx/html/assets/env.temp.js /usr/share/nginx/html/assets/env.js && nginx -g 'daemon off;'"]
+# Switch to non-root user
+USER nginx
 
 EXPOSE 80
 
-#RUN rm -rf /usr/share/nginx/html/*
+ENTRYPOINT ["/docker-entrypoint.sh"]

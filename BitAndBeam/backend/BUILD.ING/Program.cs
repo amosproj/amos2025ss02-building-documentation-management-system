@@ -1,19 +1,32 @@
-// ----------------- SETUP -----------------
-// Using directives and configuration setup
-using Microsoft.AspNetCore.Authentication.JwtBearer;
+/*
+ * PROGRAM STRUCTURE:
+ * -----------------------------------------------------
+ * 1. Setup & Logging (Serilog)
+ * 2. CORS Policy
+ * 3. Controllers & Global Authorization
+ * 4. Database Connection & Services
+ * 5. Swagger & API Docs
+ * 6. JWT Authentication Configuration
+ * 7. Middleware (Trace ID, Swagger, Auth)
+ * 8. Routing & Health Checks
+ */
+
+// ================================================== //
+// 🔧 SETUP & LOGGING
+// ================================================== //
+using System.Diagnostics;          // Added: for Activity (trace IDs)
 using BUILD.ING.Data;
+using BUILD.ING.Data.Seed;
 using BUILD.ING.Models;
 using BUILD.ING.Swagger;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.OpenApi.Models;
-
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc.Authorization;
-
 using Serilog;                      // Added: Serilog namespace
 using Serilog.Context;              // Added: for log context enrichment
-using System.Diagnostics;          // Added: for Activity (trace IDs)
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -36,7 +49,9 @@ builder.Host.UseSerilog();
 var conn = builder.Configuration.GetConnectionString("DefaultConnection");
 Console.WriteLine($"⛳ Connection String: {conn ?? "null"}");
 
-// ----------------- CORS POLICY -----------------
+// ================================================== //
+// 🌐 CORS POLICY
+// ================================================== //
 var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
 
 builder.Services.AddCors(options =>
@@ -45,15 +60,17 @@ builder.Services.AddCors(options =>
                       policy =>
                       {
                           //policy.WithOrigins("http://localhost:8080") // <-- Angular dev server
-                                policy.AllowAnyOrigin() // Allow requests from any origin - only for development
-                                .AllowAnyHeader()
-                                .AllowAnyMethod();
+                          policy.AllowAnyOrigin() // Allow requests from any origin - only for development
+                          .AllowAnyHeader()
+                          .AllowAnyMethod();
                       });
 });
 
 
 
-// ----------------- GLOBAL AUTHORIZATION POLICY -----------------
+// ================================================== //
+// 🔒 GLOBAL AUTHORIZATION FOR CONTROLLERS
+// ================================================== //
 builder.Services.AddControllers(options =>
 {
     var policy = new AuthorizationPolicyBuilder()
@@ -62,7 +79,10 @@ builder.Services.AddControllers(options =>
 
     options.Filters.Add(new AuthorizeFilter(policy));
 });
-// ----------------- DATABASE & SERVICES -----------------
+
+// ================================================== //
+// 🗃️ DATABASE & CORE SERVICES
+// ================================================== //
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"))
            .EnableSensitiveDataLogging()
@@ -79,6 +99,7 @@ builder.Services.AddSwaggerGen(options =>
 
     options.SwaggerDoc("v1", new OpenApiInfo { Title = "BUILD.ING API", Version = "v1" });
     options.SchemaFilter<BuildingRequestExampleSchemaFilter>();
+    options.SchemaFilter<DocumentMetadataPatchRequestExampleSchemaFilter>();
 
     // 🔐 Add JWT Authentication to Swagger
     options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
@@ -107,10 +128,29 @@ builder.Services.AddSwaggerGen(options =>
     });
 });
 
+/*
+// Configure Kestrel to use HTTPS with certificate
+var certificatePath = builder.Configuration["ASPNETCORE_Kestrel__Certificates__Default__Path"];
+var certificatePassword = builder.Configuration["ASPNETCORE_Kestrel__Certificates__Default__Password"];
+*/
+
+/*
+builder.WebHost.ConfigureKestrel(options =>
+{
+    options.ListenAnyIP(5001, listenOptions =>
+    {
+        listenOptions.UseHttps(certificatePath, certificatePassword);  // Use the provided certificate and password
+    });
+});
+*/
 
 // Add health check service
-builder.Services.AddHealthChecks();
+builder.Services.AddHealthChecks()
+    .AddCheck<BUILD.ING.HealthChecks.TikaHealthCheck>("tika_health_check", tags: new[] { "tika", "ready" });
+
+// Register HttpClient and TikaService
 builder.Services.AddHttpClient();
+builder.Services.AddScoped<BUILD.ING.Services.TikaService>();
 
 // ---------- JWT AUTHENTICATION CONFIGURATION ----------
 // Configure JWT Bearer Authentication to secure the API endpoints
@@ -129,7 +169,7 @@ builder.Services.AddAuthentication(options =>
 })
 .AddJwtBearer(options =>
 {
-    options.RequireHttpsMetadata = true; // Set to false if testing without HTTPS
+    options.RequireHttpsMetadata = false; // Set to false if testing without HTTPS
     options.SaveToken = true;
     options.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters
     {
@@ -149,8 +189,15 @@ builder.Services.AddAuthentication(options =>
     };
 });
 
-
+builder.WebHost.UseUrls("http://0.0.0.0:5000");
 var app = builder.Build();
+
+/*
+if (!app.Environment.IsDevelopment())
+{
+    app.UseHttpsRedirection();
+}
+*/
 
 // ---------- ADD AUTHENTICATION MIDDLEWARE ----------
 // This middleware will authenticate the JWT token in incoming requests
@@ -161,42 +208,10 @@ var app = builder.Build();
 using (var scope = app.Services.CreateScope())
 {
     var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-    db.Database.Migrate(); // applies any pending migrations
+    db.Database.Migrate(); //führt Migration beim Start automatisch aus
 
-    // 🌱 Seed a default organization if none exists
-    if (!db.Organizations.Any())
-    {
-        var defaultOrg = new Organization
-        {
-            Name = "Default Organization",
-            CreatedAt = DateTime.UtcNow
-        };
-        db.Organizations.Add(defaultOrg);
-        db.SaveChanges();
-        Console.WriteLine("✅ Default organization created.");
-    }
-
-    // ✅ Get the first available organization ID
-    var orgId = db.Organizations.First().OrganizationId;
-
-    // 🌱 Seed a test user if none exists
-    if (!db.Users.Any())
-    {
-        var testUser = new User
-        {
-            Username = "testuser",
-            Email = "test@example.com",
-            PasswordHash = BCrypt.Net.BCrypt.HashPassword("password123"), // plain-text: password123
-            FirstName = "Test",
-            LastName = "User",
-            Role = "admin",
-            CreatedAt = DateTime.UtcNow,
-            OrganizationId = orgId
-        };
-        db.Users.Add(testUser);
-        db.SaveChanges();
-        Console.WriteLine("✅ Test user created.");
-    }
+    var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    await DatabaseSeeder.SeedAsync(context).ConfigureAwait(false);
 }
 
 // ---------- MIDDLEWARE TO ADD TRACE ID TO LOG CONTEXT ----------
@@ -217,7 +232,7 @@ app.Use(async (context, next) =>
     // Push TraceId into Serilog’s LogContext so all logs within this request include it
     using (Serilog.Context.LogContext.PushProperty("TraceId", traceId))
     {
-        await next.Invoke(); // Call the next middleware in the pipeline
+        await next.Invoke().ConfigureAwait(false); // Call the next middleware in the pipeline
     }
 });
 
@@ -230,7 +245,7 @@ if (app.Environment.IsDevelopment())
 
 app.UseCors(MyAllowSpecificOrigins);
 
-app.UseHttpsRedirection();
+//app.UseHttpsRedirection();
 
 app.UseAuthentication();  // must be before Authorization
 
@@ -238,7 +253,9 @@ app.UseAuthorization();
 
 app.MapControllers();
 
-// ----------------- PUBLIC ROUTES -----------------
+// ================================================== //
+// 🌤️ SAMPLE ROUTES & HEALTH ENDPOINTS
+// ================================================== //
 var summaries = new[]
 {
     "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"

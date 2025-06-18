@@ -31,7 +31,7 @@ namespace Build.ING.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("BuildingId"));
 
-                    b.Property<string>("Address")
+                    b.Property<string>("City")
                         .IsRequired()
                         .HasColumnType("text");
 
@@ -40,6 +40,9 @@ namespace Build.ING.Migrations
 
                     b.Property<NpgsqlPoint?>("Coordinates")
                         .HasColumnType("point");
+
+                    b.Property<string>("Country")
+                        .HasColumnType("text");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
@@ -51,12 +54,24 @@ namespace Build.ING.Migrations
                     b.Property<int?>("Floors")
                         .HasColumnType("integer");
 
+                    b.Property<string>("HouseNumber")
+                        .IsRequired()
+                        .HasColumnType("text");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<int>("OrganizationId")
                         .HasColumnType("integer");
+
+                    b.Property<string>("PostalCode")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("StreetName")
+                        .IsRequired()
+                        .HasColumnType("text");
 
                     b.Property<decimal?>("TotalArea")
                         .HasColumnType("numeric");
@@ -181,7 +196,6 @@ namespace Build.ING.Migrations
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("Description")
-                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("Name")

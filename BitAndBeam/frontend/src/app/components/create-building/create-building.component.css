@@ -1,0 +1,35 @@
+.create-building-form {
+  max-width: 400px;
+  margin: 2rem auto;
+  padding: 1rem;
+  background: #fffefb;
+  border-radius: 8px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
+.create-building-form h2 {
+  margin-bottom: 1rem;
+}
+.create-building-form label {
+  display: block;
+  margin-bottom: 0.8rem;
+  font-weight: 500;
+}
+.create-building-form input,
+.create-building-form select,
+.create-building-form textarea {
+  width: 100%;
+  padding: 0.5rem;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+}
+.create-building-form button {
+  margin-top: 1rem;
+  background: #45c3b8;
+  color: white;
+  border: none;
+  padding: 0.6rem 1.2rem;
+  border-radius: 6px;
+  cursor: pointer;
+}
+.error-message { color: red; margin-bottom: 1rem; }
+.success-message { color: green; margin-bottom: 1rem; }

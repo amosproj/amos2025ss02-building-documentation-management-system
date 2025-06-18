@@ -47,7 +47,25 @@ dotnet run
 
 -> Health check endpoint: https://localhost:5001/healthz
 
+-> 🔐 Login endpoint: POST https://localhost:5001/auth/login  
+   - Body: `{ "email": "test@example.com", "password": "password123" }`
+   - Returns a JWT token used for authenticated requests
+
+-> 🔒 Logout endpoint: POST https://localhost:5001/auth/logout  
+   - Requires Authorization header: `Bearer <token>`
+
 ---
+
+## 🔐 Authentication Notes
+
+- The API uses **JWT-based authentication**.
+- To access protected endpoints, you must:
+  - First log in via `/auth/login`
+  - Then include the token in the `Authorization` header of all subsequent requests:  
+    `Authorization: Bearer <your-token>`
+- Sessions expire after 1 hour of inactivity.
+- All endpoints (except `/auth/login` and `/healthz`) require authentication.
+
 
 ## Data Model: Organization Entity
 

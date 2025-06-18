@@ -16,6 +16,7 @@ namespace BUILD.ING.Controllers
         public OllamaController(IHttpClientFactory httpClientFactory)
         {
             _httpClient = httpClientFactory.CreateClient();
+            _httpClient.Timeout = TimeSpan.FromMinutes(5); // ⏳ override default
         }
 
         public class OllamaRequest
@@ -56,7 +57,7 @@ namespace BUILD.ING.Controllers
 
             try
             {
-                var response = await _httpClient.PostAsync("http://ollama:8000/ask", httpContent).ConfigureAwait(false);
+                var response = await _httpClient.PostAsync("http://ollama:8000/api/Ollama/ask", httpContent).ConfigureAwait(false);
 
                 if (!response.IsSuccessStatusCode)
                 {
