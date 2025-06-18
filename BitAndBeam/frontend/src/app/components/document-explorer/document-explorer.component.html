@@ -1,5 +1,5 @@
 <div *ngFor="let group of buildingDocumentGroups" class="building-block">
-  <h3>🏢 {{ group.buildingName }}</h3>
+  <h3>🏢 {{ group.buildingName || 'No Building Assigned' }}</h3>
   <ul>
     <li *ngFor="let doc of group.documents">
       📄 <a [routerLink]="['/documents', doc.documentId]">{{ doc.title }}</a>
