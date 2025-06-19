@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Text.Json.Serialization;
 using NpgsqlTypes;
 
 namespace BUILD.ING.Models
@@ -8,7 +9,11 @@ namespace BUILD.ING.Models
     {
         public int BuildingId { get; set; }
         public string Name { get; set; }
-        public string Address { get; set; }
+        public string StreetName { get; set; }
+        public string HouseNumber { get; set; }
+        public string PostalCode { get; set; }
+        public string City { get; set; }
+        public string? Country { get; set; }
         public int? ConstructionYear { get; set; }
         public decimal? TotalArea { get; set; }
         public int? Floors { get; set; }
@@ -19,8 +24,8 @@ namespace BUILD.ING.Models
 
         public int OrganizationId { get; set; }
         public Organization Organization { get; set; }
-
         public ICollection<Document> Documents { get; set; }
         public ICollection<BuildingDocumentRelation> BuildingDocumentRelations { get; set; }
     }
 }
+

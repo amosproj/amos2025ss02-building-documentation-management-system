@@ -43,49 +43,56 @@ jobs:
           rm -rf BitAndBeam/frontend/src/api/*
           mkdir -p BitAndBeam/frontend/src/api
 
-      - name: Build and start services
+      - name: Build required services
+        working-directory: BitAndBeam
+        run: |
+          # Build only the services we need
+          docker compose build postgres backend openapi-client
+
+      - name: Start services and generate SDK
         working-directory: BitAndBeam
         run: |
           # Ensure the api directory has correct permissions
           sudo chown -R $USER:$USER frontend/src/api
           
-          # Start services
+          # Start postgres and wait for it to be ready
+          docker compose up -d postgres
+          echo "Waiting for postgres to be ready..."
+          sleep 10
+          
+          # Start backend
           docker compose up -d backend
-          docker compose up openapi-client
+          echo "Waiting for backend to be ready..."
+          sleep 10
+          
+          # Run openapi-client with production BACKEND_URL
+          docker compose run --rm \
+            -e BACKEND_URL=http://amos.b-iq.net:5000 \
+            openapi-client
           
           # Fix permissions of generated files
           sudo chown -R $USER:$USER frontend/src/api
 
-      - name: Check for SDK changes
+      - name: Cleanup Docker containers
+        working-directory: BitAndBeam
+        if: always()
+        run: |
+          docker compose down --remove-orphans
+          docker image prune -f
+
+      - name: Check for changes in generated SDK
         id: check_changes
         run: |
           if [[ -n $(git status --porcelain BitAndBeam/frontend/src/api) ]]; then
+            echo "Changes detected in generated SDK"
             echo "sdk_updated=true" >> $GITHUB_OUTPUT
           else
+            echo "No changes in generated SDK"
             echo "sdk_updated=false" >> $GITHUB_OUTPUT
           fi
 
-      - name: Configure Git
-        if: steps.check_changes.outputs.sdk_updated == 'true' && github.event_name == 'push' && github.ref == 'refs/heads/main'
-        run: |
-          git config --global user.name 'github-actions[bot]'
-          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
-
-      - name: Commit and Push Changes
-        if: steps.check_changes.outputs.sdk_updated == 'true' && github.event_name == 'push' && github.ref == 'refs/heads/main'
-        run: |
-          # Create and switch to a new branch
-          git checkout -b chore/update-openapi-client
-          
-          # Stage and commit changes
-          git add BitAndBeam/frontend/src/api/
-          git commit -m "chore: update generated OpenAPI client"
-          
-          # Push to remote
-          git push -f origin chore/update-openapi-client
-
       - name: Create Pull Request
-        if: steps.check_changes.outputs.sdk_updated == 'true' && github.event_name == 'push' && github.ref == 'refs/heads/main'
+        if: steps.check_changes.outputs.sdk_updated == 'true'
         uses: peter-evans/create-pull-request@v5
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
@@ -94,5 +101,5 @@ jobs:
           body: "This PR updates the generated OpenAPI TypeScript client based on backend API changes."
           branch: "chore/update-openapi-client"
           base: "main"
-          labels: "automated,api-client"
-          delete-branch: true 
+          labels: "automated,openapi-client"
+          delete-branch: true

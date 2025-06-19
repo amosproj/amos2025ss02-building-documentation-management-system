@@ -29,6 +29,20 @@
   overflow-y: auto;
   background-color: #ffffff;
 }
+.image-viewer {
+  flex: 3;
+  padding: 0.5rem;
+  overflow: auto;
+  background-color: #ffffff;
+}
+
+.image-viewer img {
+  display: block;
+  width: 100%;
+  height: auto;
+  margin: auto;
+  object-fit: contain;
+}
 
 .simple-pdf-viewer {
   width: 100%;

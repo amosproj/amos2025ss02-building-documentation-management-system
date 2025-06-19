@@ -58,90 +58,193 @@ export interface ApiDocumentsPostRequest {
  * @interface Building
  */
 export interface Building {
-  /**
-   *
-   * @type {number}
-   * @memberof Building
-   */
-  buildingId?: number;
-  /**
-   *
-   * @type {string}
-   * @memberof Building
-   */
-  name?: string | null;
-  /**
-   *
-   * @type {string}
-   * @memberof Building
-   */
-  address?: string | null;
-  /**
-   *
-   * @type {number}
-   * @memberof Building
-   */
-  constructionYear?: number | null;
-  /**
-   *
-   * @type {number}
-   * @memberof Building
-   */
-  totalArea?: number | null;
-  /**
-   *
-   * @type {number}
-   * @memberof Building
-   */
-  floors?: number | null;
-  /**
-   *
-   * @type {string}
-   * @memberof Building
-   */
-  description?: string | null;
-  /**
-   *
-   * @type {NpgsqlPoint}
-   * @memberof Building
-   */
-  coordinates?: NpgsqlPoint;
-  /**
-   *
-   * @type {string}
-   * @memberof Building
-   */
-  createdAt?: string;
-  /**
-   *
-   * @type {string}
-   * @memberof Building
-   */
-  updatedAt?: string;
-  /**
-   *
-   * @type {number}
-   * @memberof Building
-   */
-  organizationId?: number;
-  /**
-   *
-   * @type {Organization}
-   * @memberof Building
-   */
-  organization?: Organization;
-  /**
-   *
-   * @type {Array<Document>}
-   * @memberof Building
-   */
-  documents?: Array<Document> | null;
-  /**
-   *
-   * @type {Array<BuildingDocumentRelation>}
-   * @memberof Building
-   */
-  buildingDocumentRelations?: Array<BuildingDocumentRelation> | null;
+    /**
+     * 
+     * @type {number}
+     * @memberof Building
+     */
+    'buildingId'?: number;
+    /**
+     * 
+     * @type {string}
+     * @memberof Building
+     */
+    'name'?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof Building
+     */
+    'streetName'?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof Building
+     */
+    'houseNumber'?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof Building
+     */
+    'postalCode'?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof Building
+     */
+    'city'?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof Building
+     */
+    'country'?: string | null;
+    /**
+     * 
+     * @type {number}
+     * @memberof Building
+     */
+    'constructionYear'?: number | null;
+    /**
+     * 
+     * @type {number}
+     * @memberof Building
+     */
+    'totalArea'?: number | null;
+    /**
+     * 
+     * @type {number}
+     * @memberof Building
+     */
+    'floors'?: number | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof Building
+     */
+    'description'?: string | null;
+    /**
+     * 
+     * @type {NpgsqlPoint}
+     * @memberof Building
+     */
+    'coordinates'?: NpgsqlPoint;
+    /**
+     * 
+     * @type {string}
+     * @memberof Building
+     */
+    'createdAt'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof Building
+     */
+    'updatedAt'?: string;
+    /**
+     * 
+     * @type {number}
+     * @memberof Building
+     */
+    'organizationId'?: number;
+    /**
+     * 
+     * @type {Organization}
+     * @memberof Building
+     */
+    'organization'?: Organization;
+    /**
+     * 
+     * @type {Array<Document>}
+     * @memberof Building
+     */
+    'documents'?: Array<Document> | null;
+    /**
+     * 
+     * @type {Array<BuildingDocumentRelation>}
+     * @memberof Building
+     */
+    'buildingDocumentRelations'?: Array<BuildingDocumentRelation> | null;
+}
+/**
+ * 
+ * @export
+ * @interface BuildingCreateDto
+ */
+export interface BuildingCreateDto {
+    /**
+     * 
+     * @type {string}
+     * @memberof BuildingCreateDto
+     */
+    'name'?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof BuildingCreateDto
+     */
+    'streetName'?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof BuildingCreateDto
+     */
+    'houseNumber'?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof BuildingCreateDto
+     */
+    'postalCode'?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof BuildingCreateDto
+     */
+    'city'?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof BuildingCreateDto
+     */
+    'country'?: string | null;
+    /**
+     * 
+     * @type {number}
+     * @memberof BuildingCreateDto
+     */
+    'constructionYear'?: number | null;
+    /**
+     * 
+     * @type {number}
+     * @memberof BuildingCreateDto
+     */
+    'totalArea'?: number | null;
+    /**
+     * 
+     * @type {number}
+     * @memberof BuildingCreateDto
+     */
+    'floors'?: number | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof BuildingCreateDto
+     */
+    'description'?: string | null;
+    /**
+     * 
+     * @type {number}
+     * @memberof BuildingCreateDto
+     */
+    'organizationId'?: number;
+    /**
+     * 
+     * @type {NpgsqlPoint}
+     * @memberof BuildingCreateDto
+     */
+    'coordinates'?: NpgsqlPoint;
 }
 /**
  *
@@ -149,36 +252,145 @@ export interface Building {
  * @interface BuildingDocumentRelation
  */
 export interface BuildingDocumentRelation {
-  /**
-   *
-   * @type {number}
-   * @memberof BuildingDocumentRelation
-   */
-  buildingId?: number;
-  /**
-   *
-   * @type {Building}
-   * @memberof BuildingDocumentRelation
-   */
-  building?: Building;
-  /**
-   *
-   * @type {number}
-   * @memberof BuildingDocumentRelation
-   */
-  documentId?: number;
-  /**
-   *
-   * @type {Document}
-   * @memberof BuildingDocumentRelation
-   */
-  document?: Document;
-  /**
-   *
-   * @type {string}
-   * @memberof BuildingDocumentRelation
-   */
-  relationType?: string | null;
+    /**
+     * 
+     * @type {number}
+     * @memberof BuildingDocumentRelation
+     */
+    'buildingId'?: number;
+    /**
+     * 
+     * @type {Building}
+     * @memberof BuildingDocumentRelation
+     */
+    'building'?: Building;
+    /**
+     * 
+     * @type {number}
+     * @memberof BuildingDocumentRelation
+     */
+    'documentId'?: number;
+    /**
+     * 
+     * @type {Document}
+     * @memberof BuildingDocumentRelation
+     */
+    'document'?: Document;
+    /**
+     * 
+     * @type {string}
+     * @memberof BuildingDocumentRelation
+     */
+    'relationType'?: string | null;
+}
+/**
+ * 
+ * @export
+ * @interface BuildingDto
+ */
+export interface BuildingDto {
+    /**
+     * 
+     * @type {number}
+     * @memberof BuildingDto
+     */
+    'buildingId'?: number;
+    /**
+     * 
+     * @type {string}
+     * @memberof BuildingDto
+     */
+    'name'?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof BuildingDto
+     */
+    'streetName'?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof BuildingDto
+     */
+    'houseNumber'?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof BuildingDto
+     */
+    'postalCode'?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof BuildingDto
+     */
+    'city'?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof BuildingDto
+     */
+    'country'?: string | null;
+    /**
+     * 
+     * @type {number}
+     * @memberof BuildingDto
+     */
+    'constructionYear'?: number | null;
+    /**
+     * 
+     * @type {number}
+     * @memberof BuildingDto
+     */
+    'totalArea'?: number | null;
+    /**
+     * 
+     * @type {number}
+     * @memberof BuildingDto
+     */
+    'floors'?: number | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof BuildingDto
+     */
+    'description'?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof BuildingDto
+     */
+    'coordinates'?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof BuildingDto
+     */
+    'createdAt'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof BuildingDto
+     */
+    'updatedAt'?: string;
+    /**
+     * 
+     * @type {number}
+     * @memberof BuildingDto
+     */
+    'organizationId'?: number;
+    /**
+     * 
+     * @type {string}
+     * @memberof BuildingDto
+     */
+    'organizationName'?: string | null;
+    /**
+     * 
+     * @type {Array<Int32StringKeyValuePair>}
+     * @memberof BuildingDto
+     */
+    'documents'?: Array<Int32StringKeyValuePair> | null;
 }
 /**
  *
@@ -337,54 +549,67 @@ export interface Document {
  * @interface DocumentCategory
  */
 export interface DocumentCategory {
-  /**
-   *
-   * @type {number}
-   * @memberof DocumentCategory
-   */
-  categoryId?: number;
-  /**
-   *
-   * @type {string}
-   * @memberof DocumentCategory
-   */
-  name?: string | null;
-  /**
-   *
-   * @type {string}
-   * @memberof DocumentCategory
-   */
-  description?: string | null;
-  /**
-   *
-   * @type {number}
-   * @memberof DocumentCategory
-   */
-  parentCategoryId?: number | null;
-  /**
-   *
-   * @type {string}
-   * @memberof DocumentCategory
-   */
-  createdAt?: string;
-  /**
-   *
-   * @type {DocumentCategory}
-   * @memberof DocumentCategory
-   */
-  parentCategory?: DocumentCategory;
-  /**
-   *
-   * @type {Array<DocumentCategory>}
-   * @memberof DocumentCategory
-   */
-  subCategories?: Array<DocumentCategory> | null;
-  /**
-   *
-   * @type {Array<Document>}
-   * @memberof DocumentCategory
-   */
-  documents?: Array<Document> | null;
+    /**
+     * 
+     * @type {number}
+     * @memberof DocumentCategory
+     */
+    'categoryId'?: number;
+    /**
+     * 
+     * @type {string}
+     * @memberof DocumentCategory
+     */
+    'name'?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof DocumentCategory
+     */
+    'description'?: string | null;
+    /**
+     * 
+     * @type {number}
+     * @memberof DocumentCategory
+     */
+    'parentCategoryId'?: number | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof DocumentCategory
+     */
+    'createdAt'?: string;
+    /**
+     * 
+     * @type {DocumentCategory}
+     * @memberof DocumentCategory
+     */
+    'parentCategory'?: DocumentCategory;
+    /**
+     * 
+     * @type {Array<DocumentCategory>}
+     * @memberof DocumentCategory
+     */
+    'subCategories'?: Array<DocumentCategory> | null;
+}
+/**
+ * 
+ * @export
+ * @interface DocumentMetadataPatchRequest
+ */
+export interface DocumentMetadataPatchRequest {
+    /**
+     * 
+     * @type {number}
+     * @memberof DocumentMetadataPatchRequest
+     */
+    'categoryId'?: number | null;
+    /**
+     * 
+     * @type {number}
+     * @memberof DocumentMetadataPatchRequest
+     */
+    'buildingId'?: number | null;
 }
 /**
  *
@@ -509,12 +734,68 @@ export interface DocumentTagRelation {
  * @interface DocumentUpdateRequest
  */
 export interface DocumentUpdateRequest {
-  /**
-   * New title of the document
-   * @type {string}
-   * @memberof DocumentUpdateRequest
-   */
-  title?: string | null;
+    /**
+     * New title, category and/or building of the document. If a property is null, the original value is kept.
+     * @type {string}
+     * @memberof DocumentUpdateRequest
+     */
+    'title'?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof DocumentUpdateRequest
+     */
+    'description'?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof DocumentUpdateRequest
+     */
+    'category'?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof DocumentUpdateRequest
+     */
+    'building'?: string | null;
+}
+/**
+ * 
+ * @export
+ * @interface Int32StringKeyValuePair
+ */
+export interface Int32StringKeyValuePair {
+    /**
+     * 
+     * @type {number}
+     * @memberof Int32StringKeyValuePair
+     */
+    'key'?: number;
+    /**
+     * 
+     * @type {string}
+     * @memberof Int32StringKeyValuePair
+     */
+    'value'?: string | null;
+}
+/**
+ * Represents the data sent when a user logs in.
+ * @export
+ * @interface LoginRequest
+ */
+export interface LoginRequest {
+    /**
+     * 
+     * @type {string}
+     * @memberof LoginRequest
+     */
+    'email'?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof LoginRequest
+     */
+    'password'?: string | null;
 }
 /**
  *
@@ -560,48 +841,87 @@ export interface OllamaRequest {
  * @interface Organization
  */
 export interface Organization {
-  /**
-   *
-   * @type {number}
-   * @memberof Organization
-   */
-  organizationId?: number;
-  /**
-   *
-   * @type {string}
-   * @memberof Organization
-   */
-  name?: string | null;
-  /**
-   *
-   * @type {string}
-   * @memberof Organization
-   */
-  description?: string | null;
-  /**
-   *
-   * @type {string}
-   * @memberof Organization
-   */
-  createdAt?: string;
-  /**
-   *
-   * @type {boolean}
-   * @memberof Organization
-   */
-  isActive?: boolean;
-  /**
-   *
-   * @type {Array<User>}
-   * @memberof Organization
-   */
-  users?: Array<User> | null;
-  /**
-   *
-   * @type {Array<Building>}
-   * @memberof Organization
-   */
-  buildings?: Array<Building> | null;
+    /**
+     * 
+     * @type {number}
+     * @memberof Organization
+     */
+    'organizationId'?: number;
+    /**
+     * 
+     * @type {string}
+     * @memberof Organization
+     */
+    'name'?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof Organization
+     */
+    'description'?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof Organization
+     */
+    'createdAt'?: string;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof Organization
+     */
+    'isActive'?: boolean;
+    /**
+     * 
+     * @type {Array<User>}
+     * @memberof Organization
+     */
+    'users'?: Array<User> | null;
+    /**
+     * 
+     * @type {Array<Building>}
+     * @memberof Organization
+     */
+    'buildings'?: Array<Building> | null;
+}
+/**
+ * 
+ * @export
+ * @interface ProblemDetails
+ */
+export interface ProblemDetails {
+    [key: string]: any;
+
+    /**
+     * 
+     * @type {string}
+     * @memberof ProblemDetails
+     */
+    'type'?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof ProblemDetails
+     */
+    'title'?: string | null;
+    /**
+     * 
+     * @type {number}
+     * @memberof ProblemDetails
+     */
+    'status'?: number | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof ProblemDetails
+     */
+    'detail'?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof ProblemDetails
+     */
+    'instance'?: string | null;
 }
 /**
  *
@@ -700,31 +1020,207 @@ export interface User {
  * @interface WeatherForecast
  */
 export interface WeatherForecast {
-  /**
-   *
-   * @type {string}
-   * @memberof WeatherForecast
-   */
-  date?: string;
-  /**
-   *
-   * @type {number}
-   * @memberof WeatherForecast
-   */
-  temperatureC?: number;
-  /**
-   *
-   * @type {string}
-   * @memberof WeatherForecast
-   */
-  summary?: string | null;
-  /**
-   *
-   * @type {number}
-   * @memberof WeatherForecast
-   */
-  temperatureF?: number;
+    /**
+     * 
+     * @type {string}
+     * @memberof WeatherForecast
+     */
+    'date'?: string;
+    /**
+     * 
+     * @type {number}
+     * @memberof WeatherForecast
+     */
+    'temperatureC'?: number;
+    /**
+     * 
+     * @type {string}
+     * @memberof WeatherForecast
+     */
+    'summary'?: string | null;
+    /**
+     * 
+     * @type {number}
+     * @memberof WeatherForecast
+     */
+    'temperatureF'?: number;
 }
+
+/**
+ * AuthApi - axios parameter creator
+ * @export
+ */
+export const AuthApiAxiosParamCreator = function (configuration?: Configuration) {
+    return {
+        /**
+         * 
+         * @summary Authenticates a user with email and password.
+         * @param {LoginRequest} [loginRequest] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        authLoginPost: async (loginRequest?: LoginRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/Auth/login`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication Bearer required
+            await setApiKeyToObject(localVarHeaderParameter, "Authorization", configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(loginRequest, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @summary Logs out a user (JWT tokens are stateless, so this is handled on the client).
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        authLogoutPost: async (options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/Auth/logout`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication Bearer required
+            await setApiKeyToObject(localVarHeaderParameter, "Authorization", configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+    }
+};
+
+/**
+ * AuthApi - functional programming interface
+ * @export
+ */
+export const AuthApiFp = function(configuration?: Configuration) {
+    const localVarAxiosParamCreator = AuthApiAxiosParamCreator(configuration)
+    return {
+        /**
+         * 
+         * @summary Authenticates a user with email and password.
+         * @param {LoginRequest} [loginRequest] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async authLoginPost(loginRequest?: LoginRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.authLoginPost(loginRequest, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['AuthApi.authLoginPost']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @summary Logs out a user (JWT tokens are stateless, so this is handled on the client).
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async authLogoutPost(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.authLogoutPost(options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['AuthApi.authLogoutPost']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+    }
+};
+
+/**
+ * AuthApi - factory interface
+ * @export
+ */
+export const AuthApiFactory = function (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) {
+    const localVarFp = AuthApiFp(configuration)
+    return {
+        /**
+         * 
+         * @summary Authenticates a user with email and password.
+         * @param {LoginRequest} [loginRequest] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        authLoginPost(loginRequest?: LoginRequest, options?: any): AxiosPromise<void> {
+            return localVarFp.authLoginPost(loginRequest, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary Logs out a user (JWT tokens are stateless, so this is handled on the client).
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        authLogoutPost(options?: any): AxiosPromise<void> {
+            return localVarFp.authLogoutPost(options).then((request) => request(axios, basePath));
+        },
+    };
+};
+
+/**
+ * AuthApi - object-oriented interface
+ * @export
+ * @class AuthApi
+ * @extends {BaseAPI}
+ */
+export class AuthApi extends BaseAPI {
+    /**
+     * 
+     * @summary Authenticates a user with email and password.
+     * @param {LoginRequest} [loginRequest] 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof AuthApi
+     */
+    public authLoginPost(loginRequest?: LoginRequest, options?: RawAxiosRequestConfig) {
+        return AuthApiFp(this.configuration).authLoginPost(loginRequest, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary Logs out a user (JWT tokens are stateless, so this is handled on the client).
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof AuthApi
+     */
+    public authLogoutPost(options?: RawAxiosRequestConfig) {
+        return AuthApiFp(this.configuration).authLogoutPost(options).then((request) => request(this.axios, this.basePath));
+    }
+}
+
+
 
 /**
  * BuildINGApi - axios parameter creator
@@ -750,22 +1246,18 @@ export const BuildINGApiAxiosParamCreator = function (
         baseOptions = configuration.baseOptions;
       }
 
-      const localVarRequestOptions = {
-        method: 'GET',
-        ...baseOptions,
-        ...options,
-      };
-      const localVarHeaderParameter = {} as any;
-      const localVarQueryParameter = {} as any;
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
 
-      setSearchParams(localVarUrlObj, localVarQueryParameter);
-      let headersFromBaseOptions =
-        baseOptions && baseOptions.headers ? baseOptions.headers : {};
-      localVarRequestOptions.headers = {
-        ...localVarHeaderParameter,
-        ...headersFromBaseOptions,
-        ...options.headers,
-      };
+            // authentication Bearer required
+            await setApiKeyToObject(localVarHeaderParameter, "Authorization", configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
 
       return {
         url: toPathString(localVarUrlObj),
@@ -788,22 +1280,18 @@ export const BuildINGApiAxiosParamCreator = function (
         baseOptions = configuration.baseOptions;
       }
 
-      const localVarRequestOptions = {
-        method: 'GET',
-        ...baseOptions,
-        ...options,
-      };
-      const localVarHeaderParameter = {} as any;
-      const localVarQueryParameter = {} as any;
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
 
-      setSearchParams(localVarUrlObj, localVarQueryParameter);
-      let headersFromBaseOptions =
-        baseOptions && baseOptions.headers ? baseOptions.headers : {};
-      localVarRequestOptions.headers = {
-        ...localVarHeaderParameter,
-        ...headersFromBaseOptions,
-        ...options.headers,
-      };
+            // authentication Bearer required
+            await setApiKeyToObject(localVarHeaderParameter, "Authorization", configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
 
       return {
         url: toPathString(localVarUrlObj),
@@ -966,22 +1454,18 @@ export const BuildingsApiAxiosParamCreator = function (
         baseOptions = configuration.baseOptions;
       }
 
-      const localVarRequestOptions = {
-        method: 'GET',
-        ...baseOptions,
-        ...options,
-      };
-      const localVarHeaderParameter = {} as any;
-      const localVarQueryParameter = {} as any;
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
 
-      setSearchParams(localVarUrlObj, localVarQueryParameter);
-      let headersFromBaseOptions =
-        baseOptions && baseOptions.headers ? baseOptions.headers : {};
-      localVarRequestOptions.headers = {
-        ...localVarHeaderParameter,
-        ...headersFromBaseOptions,
-        ...options.headers,
-      };
+            // authentication Bearer required
+            await setApiKeyToObject(localVarHeaderParameter, "Authorization", configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
 
       return {
         url: toPathString(localVarUrlObj),
@@ -1004,22 +1488,18 @@ export const BuildingsApiAxiosParamCreator = function (
         baseOptions = configuration.baseOptions;
       }
 
-      const localVarRequestOptions = {
-        method: 'GET',
-        ...baseOptions,
-        ...options,
-      };
-      const localVarHeaderParameter = {} as any;
-      const localVarQueryParameter = {} as any;
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
 
-      setSearchParams(localVarUrlObj, localVarQueryParameter);
-      let headersFromBaseOptions =
-        baseOptions && baseOptions.headers ? baseOptions.headers : {};
-      localVarRequestOptions.headers = {
-        ...localVarHeaderParameter,
-        ...headersFromBaseOptions,
-        ...options.headers,
-      };
+            // authentication Bearer required
+            await setApiKeyToObject(localVarHeaderParameter, "Authorization", configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
 
       return {
         url: toPathString(localVarUrlObj),
@@ -1042,22 +1522,18 @@ export const BuildingsApiAxiosParamCreator = function (
         baseOptions = configuration.baseOptions;
       }
 
-      const localVarRequestOptions = {
-        method: 'GET',
-        ...baseOptions,
-        ...options,
-      };
-      const localVarHeaderParameter = {} as any;
-      const localVarQueryParameter = {} as any;
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
 
-      setSearchParams(localVarUrlObj, localVarQueryParameter);
-      let headersFromBaseOptions =
-        baseOptions && baseOptions.headers ? baseOptions.headers : {};
-      localVarRequestOptions.headers = {
-        ...localVarHeaderParameter,
-        ...headersFromBaseOptions,
-        ...options.headers,
-      };
+            // authentication Bearer required
+            await setApiKeyToObject(localVarHeaderParameter, "Authorization", configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
 
       return {
         url: toPathString(localVarUrlObj),
@@ -1087,22 +1563,18 @@ export const BuildingsApiAxiosParamCreator = function (
         baseOptions = configuration.baseOptions;
       }
 
-      const localVarRequestOptions = {
-        method: 'DELETE',
-        ...baseOptions,
-        ...options,
-      };
-      const localVarHeaderParameter = {} as any;
-      const localVarQueryParameter = {} as any;
+            const localVarRequestOptions = { method: 'DELETE', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
 
-      setSearchParams(localVarUrlObj, localVarQueryParameter);
-      let headersFromBaseOptions =
-        baseOptions && baseOptions.headers ? baseOptions.headers : {};
-      localVarRequestOptions.headers = {
-        ...localVarHeaderParameter,
-        ...headersFromBaseOptions,
-        ...options.headers,
-      };
+            // authentication Bearer required
+            await setApiKeyToObject(localVarHeaderParameter, "Authorization", configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
 
       return {
         url: toPathString(localVarUrlObj),
@@ -1132,22 +1604,18 @@ export const BuildingsApiAxiosParamCreator = function (
         baseOptions = configuration.baseOptions;
       }
 
-      const localVarRequestOptions = {
-        method: 'GET',
-        ...baseOptions,
-        ...options,
-      };
-      const localVarHeaderParameter = {} as any;
-      const localVarQueryParameter = {} as any;
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
 
-      setSearchParams(localVarUrlObj, localVarQueryParameter);
-      let headersFromBaseOptions =
-        baseOptions && baseOptions.headers ? baseOptions.headers : {};
-      localVarRequestOptions.headers = {
-        ...localVarHeaderParameter,
-        ...headersFromBaseOptions,
-        ...options.headers,
-      };
+            // authentication Bearer required
+            await setApiKeyToObject(localVarHeaderParameter, "Authorization", configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
 
       return {
         url: toPathString(localVarUrlObj),
@@ -1179,62 +1647,16 @@ export const BuildingsApiAxiosParamCreator = function (
         baseOptions = configuration.baseOptions;
       }
 
-      const localVarRequestOptions = {
-        method: 'PUT',
-        ...baseOptions,
-        ...options,
-      };
-      const localVarHeaderParameter = {} as any;
-      const localVarQueryParameter = {} as any;
+            const localVarRequestOptions = { method: 'PUT', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
 
-      localVarHeaderParameter['Content-Type'] = 'application/json';
+            // authentication Bearer required
+            await setApiKeyToObject(localVarHeaderParameter, "Authorization", configuration)
 
-      setSearchParams(localVarUrlObj, localVarQueryParameter);
-      let headersFromBaseOptions =
-        baseOptions && baseOptions.headers ? baseOptions.headers : {};
-      localVarRequestOptions.headers = {
-        ...localVarHeaderParameter,
-        ...headersFromBaseOptions,
-        ...options.headers,
-      };
-      localVarRequestOptions.data = serializeDataIfNeeded(
-        building,
-        localVarRequestOptions,
-        configuration,
-      );
 
-      return {
-        url: toPathString(localVarUrlObj),
-        options: localVarRequestOptions,
-      };
-    },
-    /**
-     *
-     * @param {Building} [building]
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    apiBuildingsPost: async (
-      building?: Building,
-      options: RawAxiosRequestConfig = {},
-    ): Promise<RequestArgs> => {
-      const localVarPath = `/api/Buildings`;
-      // use dummy base URL string because the URL constructor only accepts absolute URLs.
-      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
-      let baseOptions;
-      if (configuration) {
-        baseOptions = configuration.baseOptions;
-      }
-
-      const localVarRequestOptions = {
-        method: 'POST',
-        ...baseOptions,
-        ...options,
-      };
-      const localVarHeaderParameter = {} as any;
-      const localVarQueryParameter = {} as any;
-
-      localVarHeaderParameter['Content-Type'] = 'application/json';
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
 
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions =
@@ -1249,6 +1671,42 @@ export const BuildingsApiAxiosParamCreator = function (
         localVarRequestOptions,
         configuration,
       );
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {BuildingCreateDto} [buildingCreateDto] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        apiBuildingsPost: async (buildingCreateDto?: BuildingCreateDto, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/api/Buildings`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication Bearer required
+            await setApiKeyToObject(localVarHeaderParameter, "Authorization", configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(buildingCreateDto, localVarRequestOptions, configuration)
 
       return {
         url: toPathString(localVarUrlObj),
@@ -1262,296 +1720,163 @@ export const BuildingsApiAxiosParamCreator = function (
  * BuildingsApi - functional programming interface
  * @export
  */
-export const BuildingsApiFp = function (configuration?: Configuration) {
-  const localVarAxiosParamCreator =
-    BuildingsApiAxiosParamCreator(configuration);
-  return {
-    /**
-     *
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    async apiBuildingsDebugDbGet(
-      options?: RawAxiosRequestConfig,
-    ): Promise<
-      (axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>
-    > {
-      const localVarAxiosArgs =
-        await localVarAxiosParamCreator.apiBuildingsDebugDbGet(options);
-      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
-      const localVarOperationServerBasePath =
-        operationServerMap['BuildingsApi.apiBuildingsDebugDbGet']?.[
-          localVarOperationServerIndex
-        ]?.url;
-      return (axios, basePath) =>
-        createRequestFunction(
-          localVarAxiosArgs,
-          globalAxios,
-          BASE_PATH,
-          configuration,
-        )(axios, localVarOperationServerBasePath || basePath);
-    },
-    /**
-     *
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    async apiBuildingsDebugFullGet(
-      options?: RawAxiosRequestConfig,
-    ): Promise<
-      (axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>
-    > {
-      const localVarAxiosArgs =
-        await localVarAxiosParamCreator.apiBuildingsDebugFullGet(options);
-      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
-      const localVarOperationServerBasePath =
-        operationServerMap['BuildingsApi.apiBuildingsDebugFullGet']?.[
-          localVarOperationServerIndex
-        ]?.url;
-      return (axios, basePath) =>
-        createRequestFunction(
-          localVarAxiosArgs,
-          globalAxios,
-          BASE_PATH,
-          configuration,
-        )(axios, localVarOperationServerBasePath || basePath);
-    },
-    /**
-     *
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    async apiBuildingsGet(
-      options?: RawAxiosRequestConfig,
-    ): Promise<
-      (
-        axios?: AxiosInstance,
-        basePath?: string,
-      ) => AxiosPromise<Array<Building>>
-    > {
-      const localVarAxiosArgs =
-        await localVarAxiosParamCreator.apiBuildingsGet(options);
-      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
-      const localVarOperationServerBasePath =
-        operationServerMap['BuildingsApi.apiBuildingsGet']?.[
-          localVarOperationServerIndex
-        ]?.url;
-      return (axios, basePath) =>
-        createRequestFunction(
-          localVarAxiosArgs,
-          globalAxios,
-          BASE_PATH,
-          configuration,
-        )(axios, localVarOperationServerBasePath || basePath);
-    },
-    /**
-     *
-     * @param {number} id
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    async apiBuildingsIdDelete(
-      id: number,
-      options?: RawAxiosRequestConfig,
-    ): Promise<
-      (axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>
-    > {
-      const localVarAxiosArgs =
-        await localVarAxiosParamCreator.apiBuildingsIdDelete(id, options);
-      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
-      const localVarOperationServerBasePath =
-        operationServerMap['BuildingsApi.apiBuildingsIdDelete']?.[
-          localVarOperationServerIndex
-        ]?.url;
-      return (axios, basePath) =>
-        createRequestFunction(
-          localVarAxiosArgs,
-          globalAxios,
-          BASE_PATH,
-          configuration,
-        )(axios, localVarOperationServerBasePath || basePath);
-    },
-    /**
-     *
-     * @param {number} id
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    async apiBuildingsIdGet(
-      id: number,
-      options?: RawAxiosRequestConfig,
-    ): Promise<
-      (axios?: AxiosInstance, basePath?: string) => AxiosPromise<Building>
-    > {
-      const localVarAxiosArgs =
-        await localVarAxiosParamCreator.apiBuildingsIdGet(id, options);
-      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
-      const localVarOperationServerBasePath =
-        operationServerMap['BuildingsApi.apiBuildingsIdGet']?.[
-          localVarOperationServerIndex
-        ]?.url;
-      return (axios, basePath) =>
-        createRequestFunction(
-          localVarAxiosArgs,
-          globalAxios,
-          BASE_PATH,
-          configuration,
-        )(axios, localVarOperationServerBasePath || basePath);
-    },
-    /**
-     *
-     * @param {number} id
-     * @param {Building} [building]
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    async apiBuildingsIdPut(
-      id: number,
-      building?: Building,
-      options?: RawAxiosRequestConfig,
-    ): Promise<
-      (axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>
-    > {
-      const localVarAxiosArgs =
-        await localVarAxiosParamCreator.apiBuildingsIdPut(
-          id,
-          building,
-          options,
-        );
-      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
-      const localVarOperationServerBasePath =
-        operationServerMap['BuildingsApi.apiBuildingsIdPut']?.[
-          localVarOperationServerIndex
-        ]?.url;
-      return (axios, basePath) =>
-        createRequestFunction(
-          localVarAxiosArgs,
-          globalAxios,
-          BASE_PATH,
-          configuration,
-        )(axios, localVarOperationServerBasePath || basePath);
-    },
-    /**
-     *
-     * @param {Building} [building]
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    async apiBuildingsPost(
-      building?: Building,
-      options?: RawAxiosRequestConfig,
-    ): Promise<
-      (axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>
-    > {
-      const localVarAxiosArgs =
-        await localVarAxiosParamCreator.apiBuildingsPost(building, options);
-      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
-      const localVarOperationServerBasePath =
-        operationServerMap['BuildingsApi.apiBuildingsPost']?.[
-          localVarOperationServerIndex
-        ]?.url;
-      return (axios, basePath) =>
-        createRequestFunction(
-          localVarAxiosArgs,
-          globalAxios,
-          BASE_PATH,
-          configuration,
-        )(axios, localVarOperationServerBasePath || basePath);
-    },
-  };
+export const BuildingsApiFp = function(configuration?: Configuration) {
+    const localVarAxiosParamCreator = BuildingsApiAxiosParamCreator(configuration)
+    return {
+        /**
+         * 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async apiBuildingsDebugDbGet(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.apiBuildingsDebugDbGet(options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['BuildingsApi.apiBuildingsDebugDbGet']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async apiBuildingsDebugFullGet(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.apiBuildingsDebugFullGet(options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['BuildingsApi.apiBuildingsDebugFullGet']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async apiBuildingsGet(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<BuildingDto>>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.apiBuildingsGet(options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['BuildingsApi.apiBuildingsGet']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @param {number} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async apiBuildingsIdDelete(id: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.apiBuildingsIdDelete(id, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['BuildingsApi.apiBuildingsIdDelete']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @param {number} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async apiBuildingsIdGet(id: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<BuildingDto>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.apiBuildingsIdGet(id, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['BuildingsApi.apiBuildingsIdGet']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @param {number} id 
+         * @param {Building} [building] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async apiBuildingsIdPut(id: number, building?: Building, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.apiBuildingsIdPut(id, building, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['BuildingsApi.apiBuildingsIdPut']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @param {BuildingCreateDto} [buildingCreateDto] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async apiBuildingsPost(buildingCreateDto?: BuildingCreateDto, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.apiBuildingsPost(buildingCreateDto, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['BuildingsApi.apiBuildingsPost']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+    }
 };
 
 /**
  * BuildingsApi - factory interface
  * @export
  */
-export const BuildingsApiFactory = function (
-  configuration?: Configuration,
-  basePath?: string,
-  axios?: AxiosInstance,
-) {
-  const localVarFp = BuildingsApiFp(configuration);
-  return {
-    /**
-     *
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    apiBuildingsDebugDbGet(options?: any): AxiosPromise<void> {
-      return localVarFp
-        .apiBuildingsDebugDbGet(options)
-        .then((request) => request(axios, basePath));
-    },
-    /**
-     *
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    apiBuildingsDebugFullGet(options?: any): AxiosPromise<void> {
-      return localVarFp
-        .apiBuildingsDebugFullGet(options)
-        .then((request) => request(axios, basePath));
-    },
-    /**
-     *
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    apiBuildingsGet(options?: any): AxiosPromise<Array<Building>> {
-      return localVarFp
-        .apiBuildingsGet(options)
-        .then((request) => request(axios, basePath));
-    },
-    /**
-     *
-     * @param {number} id
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    apiBuildingsIdDelete(id: number, options?: any): AxiosPromise<void> {
-      return localVarFp
-        .apiBuildingsIdDelete(id, options)
-        .then((request) => request(axios, basePath));
-    },
-    /**
-     *
-     * @param {number} id
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    apiBuildingsIdGet(id: number, options?: any): AxiosPromise<Building> {
-      return localVarFp
-        .apiBuildingsIdGet(id, options)
-        .then((request) => request(axios, basePath));
-    },
-    /**
-     *
-     * @param {number} id
-     * @param {Building} [building]
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    apiBuildingsIdPut(
-      id: number,
-      building?: Building,
-      options?: any,
-    ): AxiosPromise<void> {
-      return localVarFp
-        .apiBuildingsIdPut(id, building, options)
-        .then((request) => request(axios, basePath));
-    },
-    /**
-     *
-     * @param {Building} [building]
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    apiBuildingsPost(building?: Building, options?: any): AxiosPromise<void> {
-      return localVarFp
-        .apiBuildingsPost(building, options)
-        .then((request) => request(axios, basePath));
-    },
-  };
+export const BuildingsApiFactory = function (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) {
+    const localVarFp = BuildingsApiFp(configuration)
+    return {
+        /**
+         * 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        apiBuildingsDebugDbGet(options?: any): AxiosPromise<void> {
+            return localVarFp.apiBuildingsDebugDbGet(options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        apiBuildingsDebugFullGet(options?: any): AxiosPromise<void> {
+            return localVarFp.apiBuildingsDebugFullGet(options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        apiBuildingsGet(options?: any): AxiosPromise<Array<BuildingDto>> {
+            return localVarFp.apiBuildingsGet(options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {number} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        apiBuildingsIdDelete(id: number, options?: any): AxiosPromise<void> {
+            return localVarFp.apiBuildingsIdDelete(id, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {number} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        apiBuildingsIdGet(id: number, options?: any): AxiosPromise<BuildingDto> {
+            return localVarFp.apiBuildingsIdGet(id, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {number} id 
+         * @param {Building} [building] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        apiBuildingsIdPut(id: number, building?: Building, options?: any): AxiosPromise<void> {
+            return localVarFp.apiBuildingsIdPut(id, building, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {BuildingCreateDto} [buildingCreateDto] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        apiBuildingsPost(buildingCreateDto?: BuildingCreateDto, options?: any): AxiosPromise<void> {
+            return localVarFp.apiBuildingsPost(buildingCreateDto, options).then((request) => request(axios, basePath));
+        },
+    };
 };
 
 /**
@@ -1641,21 +1966,16 @@ export class BuildingsApi extends BaseAPI {
       .then((request) => request(this.axios, this.basePath));
   }
 
-  /**
-   *
-   * @param {Building} [building]
-   * @param {*} [options] Override http request option.
-   * @throws {RequiredError}
-   * @memberof BuildingsApi
-   */
-  public apiBuildingsPost(
-    building?: Building,
-    options?: RawAxiosRequestConfig,
-  ) {
-    return BuildingsApiFp(this.configuration)
-      .apiBuildingsPost(building, options)
-      .then((request) => request(this.axios, this.basePath));
-  }
+    /**
+     * 
+     * @param {BuildingCreateDto} [buildingCreateDto] 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof BuildingsApi
+     */
+    public apiBuildingsPost(buildingCreateDto?: BuildingCreateDto, options?: RawAxiosRequestConfig) {
+        return BuildingsApiFp(this.configuration).apiBuildingsPost(buildingCreateDto, options).then((request) => request(this.axios, this.basePath));
+    }
 }
 
 /**
@@ -1682,22 +2002,18 @@ export const DocumentsApiAxiosParamCreator = function (
         baseOptions = configuration.baseOptions;
       }
 
-      const localVarRequestOptions = {
-        method: 'GET',
-        ...baseOptions,
-        ...options,
-      };
-      const localVarHeaderParameter = {} as any;
-      const localVarQueryParameter = {} as any;
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
 
-      setSearchParams(localVarUrlObj, localVarQueryParameter);
-      let headersFromBaseOptions =
-        baseOptions && baseOptions.headers ? baseOptions.headers : {};
-      localVarRequestOptions.headers = {
-        ...localVarHeaderParameter,
-        ...headersFromBaseOptions,
-        ...options.headers,
-      };
+            // authentication Bearer required
+            await setApiKeyToObject(localVarHeaderParameter, "Authorization", configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
 
       return {
         url: toPathString(localVarUrlObj),
@@ -1727,22 +2043,18 @@ export const DocumentsApiAxiosParamCreator = function (
         baseOptions = configuration.baseOptions;
       }
 
-      const localVarRequestOptions = {
-        method: 'DELETE',
-        ...baseOptions,
-        ...options,
-      };
-      const localVarHeaderParameter = {} as any;
-      const localVarQueryParameter = {} as any;
+            const localVarRequestOptions = { method: 'DELETE', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
 
-      setSearchParams(localVarUrlObj, localVarQueryParameter);
-      let headersFromBaseOptions =
-        baseOptions && baseOptions.headers ? baseOptions.headers : {};
-      localVarRequestOptions.headers = {
-        ...localVarHeaderParameter,
-        ...headersFromBaseOptions,
-        ...options.headers,
-      };
+            // authentication Bearer required
+            await setApiKeyToObject(localVarHeaderParameter, "Authorization", configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
 
       return {
         url: toPathString(localVarUrlObj),
@@ -1772,22 +2084,18 @@ export const DocumentsApiAxiosParamCreator = function (
         baseOptions = configuration.baseOptions;
       }
 
-      const localVarRequestOptions = {
-        method: 'GET',
-        ...baseOptions,
-        ...options,
-      };
-      const localVarHeaderParameter = {} as any;
-      const localVarQueryParameter = {} as any;
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
 
-      setSearchParams(localVarUrlObj, localVarQueryParameter);
-      let headersFromBaseOptions =
-        baseOptions && baseOptions.headers ? baseOptions.headers : {};
-      localVarRequestOptions.headers = {
-        ...localVarHeaderParameter,
-        ...headersFromBaseOptions,
-        ...options.headers,
-      };
+            // authentication Bearer required
+            await setApiKeyToObject(localVarHeaderParameter, "Authorization", configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
 
       return {
         url: toPathString(localVarUrlObj),
@@ -1817,22 +2125,58 @@ export const DocumentsApiAxiosParamCreator = function (
         baseOptions = configuration.baseOptions;
       }
 
-      const localVarRequestOptions = {
-        method: 'GET',
-        ...baseOptions,
-        ...options,
-      };
-      const localVarHeaderParameter = {} as any;
-      const localVarQueryParameter = {} as any;
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
 
-      setSearchParams(localVarUrlObj, localVarQueryParameter);
-      let headersFromBaseOptions =
-        baseOptions && baseOptions.headers ? baseOptions.headers : {};
-      localVarRequestOptions.headers = {
-        ...localVarHeaderParameter,
-        ...headersFromBaseOptions,
-        ...options.headers,
-      };
+            // authentication Bearer required
+            await setApiKeyToObject(localVarHeaderParameter, "Authorization", configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {number} id 
+         * @param {DocumentMetadataPatchRequest} [documentMetadataPatchRequest] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        apiDocumentsIdPatch: async (id: number, documentMetadataPatchRequest?: DocumentMetadataPatchRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('apiDocumentsIdPatch', 'id', id)
+            const localVarPath = `/api/Documents/{id}`
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'PATCH', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication Bearer required
+            await setApiKeyToObject(localVarHeaderParameter, "Authorization", configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(documentMetadataPatchRequest, localVarRequestOptions, configuration)
 
       return {
         url: toPathString(localVarUrlObj),
@@ -1862,22 +2206,18 @@ export const DocumentsApiAxiosParamCreator = function (
         baseOptions = configuration.baseOptions;
       }
 
-      const localVarRequestOptions = {
-        method: 'GET',
-        ...baseOptions,
-        ...options,
-      };
-      const localVarHeaderParameter = {} as any;
-      const localVarQueryParameter = {} as any;
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
 
-      setSearchParams(localVarUrlObj, localVarQueryParameter);
-      let headersFromBaseOptions =
-        baseOptions && baseOptions.headers ? baseOptions.headers : {};
-      localVarRequestOptions.headers = {
-        ...localVarHeaderParameter,
-        ...headersFromBaseOptions,
-        ...options.headers,
-      };
+            // authentication Bearer required
+            await setApiKeyToObject(localVarHeaderParameter, "Authorization", configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
 
       return {
         url: toPathString(localVarUrlObj),
@@ -1909,15 +2249,16 @@ export const DocumentsApiAxiosParamCreator = function (
         baseOptions = configuration.baseOptions;
       }
 
-      const localVarRequestOptions = {
-        method: 'PUT',
-        ...baseOptions,
-        ...options,
-      };
-      const localVarHeaderParameter = {} as any;
-      const localVarQueryParameter = {} as any;
+            const localVarRequestOptions = { method: 'PUT', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
 
-      localVarHeaderParameter['Content-Type'] = 'application/json';
+            // authentication Bearer required
+            await setApiKeyToObject(localVarHeaderParameter, "Authorization", configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
 
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions =
@@ -1956,16 +2297,14 @@ export const DocumentsApiAxiosParamCreator = function (
         baseOptions = configuration.baseOptions;
       }
 
-      const localVarRequestOptions = {
-        method: 'POST',
-        ...baseOptions,
-        ...options,
-      };
-      const localVarHeaderParameter = {} as any;
-      const localVarQueryParameter = {} as any;
-      const localVarFormParams = new ((configuration &&
-        configuration.formDataCtor) ||
-        FormData)();
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+            const localVarFormParams = new ((configuration && configuration.formDataCtor) || FormData)();
+
+            // authentication Bearer required
+            await setApiKeyToObject(localVarHeaderParameter, "Authorization", configuration)
+
 
       if (file !== undefined) {
         localVarFormParams.append('file', file as any);
@@ -1995,299 +2334,190 @@ export const DocumentsApiAxiosParamCreator = function (
  * DocumentsApi - functional programming interface
  * @export
  */
-export const DocumentsApiFp = function (configuration?: Configuration) {
-  const localVarAxiosParamCreator =
-    DocumentsApiAxiosParamCreator(configuration);
-  return {
-    /**
-     *
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    async apiDocumentsGet(
-      options?: RawAxiosRequestConfig,
-    ): Promise<
-      (axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>
-    > {
-      const localVarAxiosArgs =
-        await localVarAxiosParamCreator.apiDocumentsGet(options);
-      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
-      const localVarOperationServerBasePath =
-        operationServerMap['DocumentsApi.apiDocumentsGet']?.[
-          localVarOperationServerIndex
-        ]?.url;
-      return (axios, basePath) =>
-        createRequestFunction(
-          localVarAxiosArgs,
-          globalAxios,
-          BASE_PATH,
-          configuration,
-        )(axios, localVarOperationServerBasePath || basePath);
-    },
-    /**
-     *
-     * @param {number} id
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    async apiDocumentsIdDelete(
-      id: number,
-      options?: RawAxiosRequestConfig,
-    ): Promise<
-      (axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>
-    > {
-      const localVarAxiosArgs =
-        await localVarAxiosParamCreator.apiDocumentsIdDelete(id, options);
-      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
-      const localVarOperationServerBasePath =
-        operationServerMap['DocumentsApi.apiDocumentsIdDelete']?.[
-          localVarOperationServerIndex
-        ]?.url;
-      return (axios, basePath) =>
-        createRequestFunction(
-          localVarAxiosArgs,
-          globalAxios,
-          BASE_PATH,
-          configuration,
-        )(axios, localVarOperationServerBasePath || basePath);
-    },
-    /**
-     *
-     * @param {number} id
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    async apiDocumentsIdDownloadGet(
-      id: number,
-      options?: RawAxiosRequestConfig,
-    ): Promise<
-      (axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>
-    > {
-      const localVarAxiosArgs =
-        await localVarAxiosParamCreator.apiDocumentsIdDownloadGet(id, options);
-      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
-      const localVarOperationServerBasePath =
-        operationServerMap['DocumentsApi.apiDocumentsIdDownloadGet']?.[
-          localVarOperationServerIndex
-        ]?.url;
-      return (axios, basePath) =>
-        createRequestFunction(
-          localVarAxiosArgs,
-          globalAxios,
-          BASE_PATH,
-          configuration,
-        )(axios, localVarOperationServerBasePath || basePath);
-    },
-    /**
-     *
-     * @param {number} id
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    async apiDocumentsIdGet(
-      id: number,
-      options?: RawAxiosRequestConfig,
-    ): Promise<
-      (axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>
-    > {
-      const localVarAxiosArgs =
-        await localVarAxiosParamCreator.apiDocumentsIdGet(id, options);
-      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
-      const localVarOperationServerBasePath =
-        operationServerMap['DocumentsApi.apiDocumentsIdGet']?.[
-          localVarOperationServerIndex
-        ]?.url;
-      return (axios, basePath) =>
-        createRequestFunction(
-          localVarAxiosArgs,
-          globalAxios,
-          BASE_PATH,
-          configuration,
-        )(axios, localVarOperationServerBasePath || basePath);
-    },
-    /**
-     *
-     * @param {number} id
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    async apiDocumentsIdPreviewGet(
-      id: number,
-      options?: RawAxiosRequestConfig,
-    ): Promise<
-      (axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>
-    > {
-      const localVarAxiosArgs =
-        await localVarAxiosParamCreator.apiDocumentsIdPreviewGet(id, options);
-      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
-      const localVarOperationServerBasePath =
-        operationServerMap['DocumentsApi.apiDocumentsIdPreviewGet']?.[
-          localVarOperationServerIndex
-        ]?.url;
-      return (axios, basePath) =>
-        createRequestFunction(
-          localVarAxiosArgs,
-          globalAxios,
-          BASE_PATH,
-          configuration,
-        )(axios, localVarOperationServerBasePath || basePath);
-    },
-    /**
-     *
-     * @param {number} id
-     * @param {DocumentUpdateRequest} [documentUpdateRequest]
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    async apiDocumentsIdPut(
-      id: number,
-      documentUpdateRequest?: DocumentUpdateRequest,
-      options?: RawAxiosRequestConfig,
-    ): Promise<
-      (axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>
-    > {
-      const localVarAxiosArgs =
-        await localVarAxiosParamCreator.apiDocumentsIdPut(
-          id,
-          documentUpdateRequest,
-          options,
-        );
-      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
-      const localVarOperationServerBasePath =
-        operationServerMap['DocumentsApi.apiDocumentsIdPut']?.[
-          localVarOperationServerIndex
-        ]?.url;
-      return (axios, basePath) =>
-        createRequestFunction(
-          localVarAxiosArgs,
-          globalAxios,
-          BASE_PATH,
-          configuration,
-        )(axios, localVarOperationServerBasePath || basePath);
-    },
-    /**
-     *
-     * @param {File} [file]
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    async apiDocumentsPost(
-      file?: File,
-      options?: RawAxiosRequestConfig,
-    ): Promise<
-      (axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>
-    > {
-      const localVarAxiosArgs =
-        await localVarAxiosParamCreator.apiDocumentsPost(file, options);
-      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
-      const localVarOperationServerBasePath =
-        operationServerMap['DocumentsApi.apiDocumentsPost']?.[
-          localVarOperationServerIndex
-        ]?.url;
-      return (axios, basePath) =>
-        createRequestFunction(
-          localVarAxiosArgs,
-          globalAxios,
-          BASE_PATH,
-          configuration,
-        )(axios, localVarOperationServerBasePath || basePath);
-    },
-  };
+export const DocumentsApiFp = function(configuration?: Configuration) {
+    const localVarAxiosParamCreator = DocumentsApiAxiosParamCreator(configuration)
+    return {
+        /**
+         * 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async apiDocumentsGet(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.apiDocumentsGet(options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['DocumentsApi.apiDocumentsGet']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @param {number} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async apiDocumentsIdDelete(id: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.apiDocumentsIdDelete(id, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['DocumentsApi.apiDocumentsIdDelete']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @param {number} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async apiDocumentsIdDownloadGet(id: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.apiDocumentsIdDownloadGet(id, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['DocumentsApi.apiDocumentsIdDownloadGet']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @param {number} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async apiDocumentsIdGet(id: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.apiDocumentsIdGet(id, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['DocumentsApi.apiDocumentsIdGet']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @param {number} id 
+         * @param {DocumentMetadataPatchRequest} [documentMetadataPatchRequest] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async apiDocumentsIdPatch(id: number, documentMetadataPatchRequest?: DocumentMetadataPatchRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.apiDocumentsIdPatch(id, documentMetadataPatchRequest, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['DocumentsApi.apiDocumentsIdPatch']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @param {number} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async apiDocumentsIdPreviewGet(id: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.apiDocumentsIdPreviewGet(id, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['DocumentsApi.apiDocumentsIdPreviewGet']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @param {number} id 
+         * @param {DocumentUpdateRequest} [documentUpdateRequest] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async apiDocumentsIdPut(id: number, documentUpdateRequest?: DocumentUpdateRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.apiDocumentsIdPut(id, documentUpdateRequest, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['DocumentsApi.apiDocumentsIdPut']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @param {File} [file] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async apiDocumentsPost(file?: File, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.apiDocumentsPost(file, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['DocumentsApi.apiDocumentsPost']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+    }
 };
 
 /**
  * DocumentsApi - factory interface
  * @export
  */
-export const DocumentsApiFactory = function (
-  configuration?: Configuration,
-  basePath?: string,
-  axios?: AxiosInstance,
-) {
-  const localVarFp = DocumentsApiFp(configuration);
-  return {
-    /**
-     *
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    apiDocumentsGet(options?: any): AxiosPromise<void> {
-      return localVarFp
-        .apiDocumentsGet(options)
-        .then((request) => request(axios, basePath));
-    },
-    /**
-     *
-     * @param {number} id
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    apiDocumentsIdDelete(id: number, options?: any): AxiosPromise<void> {
-      return localVarFp
-        .apiDocumentsIdDelete(id, options)
-        .then((request) => request(axios, basePath));
-    },
-    /**
-     *
-     * @param {number} id
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    apiDocumentsIdDownloadGet(id: number, options?: any): AxiosPromise<void> {
-      return localVarFp
-        .apiDocumentsIdDownloadGet(id, options)
-        .then((request) => request(axios, basePath));
-    },
-    /**
-     *
-     * @param {number} id
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    apiDocumentsIdGet(id: number, options?: any): AxiosPromise<void> {
-      return localVarFp
-        .apiDocumentsIdGet(id, options)
-        .then((request) => request(axios, basePath));
-    },
-    /**
-     *
-     * @param {number} id
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    apiDocumentsIdPreviewGet(id: number, options?: any): AxiosPromise<void> {
-      return localVarFp
-        .apiDocumentsIdPreviewGet(id, options)
-        .then((request) => request(axios, basePath));
-    },
-    /**
-     *
-     * @param {number} id
-     * @param {DocumentUpdateRequest} [documentUpdateRequest]
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    apiDocumentsIdPut(
-      id: number,
-      documentUpdateRequest?: DocumentUpdateRequest,
-      options?: any,
-    ): AxiosPromise<void> {
-      return localVarFp
-        .apiDocumentsIdPut(id, documentUpdateRequest, options)
-        .then((request) => request(axios, basePath));
-    },
-    /**
-     *
-     * @param {File} [file]
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    apiDocumentsPost(file?: File, options?: any): AxiosPromise<void> {
-      return localVarFp
-        .apiDocumentsPost(file, options)
-        .then((request) => request(axios, basePath));
-    },
-  };
+export const DocumentsApiFactory = function (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) {
+    const localVarFp = DocumentsApiFp(configuration)
+    return {
+        /**
+         * 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        apiDocumentsGet(options?: any): AxiosPromise<void> {
+            return localVarFp.apiDocumentsGet(options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {number} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        apiDocumentsIdDelete(id: number, options?: any): AxiosPromise<void> {
+            return localVarFp.apiDocumentsIdDelete(id, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {number} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        apiDocumentsIdDownloadGet(id: number, options?: any): AxiosPromise<void> {
+            return localVarFp.apiDocumentsIdDownloadGet(id, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {number} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        apiDocumentsIdGet(id: number, options?: any): AxiosPromise<void> {
+            return localVarFp.apiDocumentsIdGet(id, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {number} id 
+         * @param {DocumentMetadataPatchRequest} [documentMetadataPatchRequest] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        apiDocumentsIdPatch(id: number, documentMetadataPatchRequest?: DocumentMetadataPatchRequest, options?: any): AxiosPromise<void> {
+            return localVarFp.apiDocumentsIdPatch(id, documentMetadataPatchRequest, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {number} id 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        apiDocumentsIdPreviewGet(id: number, options?: any): AxiosPromise<void> {
+            return localVarFp.apiDocumentsIdPreviewGet(id, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {number} id 
+         * @param {DocumentUpdateRequest} [documentUpdateRequest] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        apiDocumentsIdPut(id: number, documentUpdateRequest?: DocumentUpdateRequest, options?: any): AxiosPromise<void> {
+            return localVarFp.apiDocumentsIdPut(id, documentUpdateRequest, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {File} [file] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        apiDocumentsPost(file?: File, options?: any): AxiosPromise<void> {
+            return localVarFp.apiDocumentsPost(file, options).then((request) => request(axios, basePath));
+        },
+    };
 };
 
 /**
@@ -2338,18 +2568,28 @@ export class DocumentsApi extends BaseAPI {
       .then((request) => request(this.axios, this.basePath));
   }
 
-  /**
-   *
-   * @param {number} id
-   * @param {*} [options] Override http request option.
-   * @throws {RequiredError}
-   * @memberof DocumentsApi
-   */
-  public apiDocumentsIdGet(id: number, options?: RawAxiosRequestConfig) {
-    return DocumentsApiFp(this.configuration)
-      .apiDocumentsIdGet(id, options)
-      .then((request) => request(this.axios, this.basePath));
-  }
+    /**
+     * 
+     * @param {number} id 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof DocumentsApi
+     */
+    public apiDocumentsIdGet(id: number, options?: RawAxiosRequestConfig) {
+        return DocumentsApiFp(this.configuration).apiDocumentsIdGet(id, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {number} id 
+     * @param {DocumentMetadataPatchRequest} [documentMetadataPatchRequest] 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof DocumentsApi
+     */
+    public apiDocumentsIdPatch(id: number, documentMetadataPatchRequest?: DocumentMetadataPatchRequest, options?: RawAxiosRequestConfig) {
+        return DocumentsApiFp(this.configuration).apiDocumentsIdPatch(id, documentMetadataPatchRequest, options).then((request) => request(this.axios, this.basePath));
+    }
 
   /**
    *
@@ -2423,15 +2663,16 @@ export const OllamaApiAxiosParamCreator = function (
         baseOptions = configuration.baseOptions;
       }
 
-      const localVarRequestOptions = {
-        method: 'POST',
-        ...baseOptions,
-        ...options,
-      };
-      const localVarHeaderParameter = {} as any;
-      const localVarQueryParameter = {} as any;
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
 
-      localVarHeaderParameter['Content-Type'] = 'application/json';
+            // authentication Bearer required
+            await setApiKeyToObject(localVarHeaderParameter, "Authorization", configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
 
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions =
@@ -2549,3 +2790,187 @@ export class OllamaApi extends BaseAPI {
       .then((request) => request(this.axios, this.basePath));
   }
 }
+
+
+
+/**
+ * TikaApi - axios parameter creator
+ * @export
+ */
+export const TikaApiAxiosParamCreator = function (configuration?: Configuration) {
+    return {
+        /**
+         * 
+         * @summary Checks if the Tika server is available and responding
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        apiTikaHealthGet: async (options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/api/tika/health`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication Bearer required
+            await setApiKeyToObject(localVarHeaderParameter, "Authorization", configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @summary Receives a document file and returns both extracted text content and structured metadata in a single response.
+         * @param {File} [file] The file being uploaded
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        apiTikaProcessPost: async (file?: File, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/api/tika/process`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+            const localVarFormParams = new ((configuration && configuration.formDataCtor) || FormData)();
+
+            // authentication Bearer required
+            await setApiKeyToObject(localVarHeaderParameter, "Authorization", configuration)
+
+
+            if (file !== undefined) { 
+                localVarFormParams.append('File', file as any);
+            }
+    
+    
+            localVarHeaderParameter['Content-Type'] = 'multipart/form-data';
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = localVarFormParams;
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+    }
+};
+
+/**
+ * TikaApi - functional programming interface
+ * @export
+ */
+export const TikaApiFp = function(configuration?: Configuration) {
+    const localVarAxiosParamCreator = TikaApiAxiosParamCreator(configuration)
+    return {
+        /**
+         * 
+         * @summary Checks if the Tika server is available and responding
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async apiTikaHealthGet(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.apiTikaHealthGet(options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['TikaApi.apiTikaHealthGet']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @summary Receives a document file and returns both extracted text content and structured metadata in a single response.
+         * @param {File} [file] The file being uploaded
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async apiTikaProcessPost(file?: File, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.apiTikaProcessPost(file, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['TikaApi.apiTikaProcessPost']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+    }
+};
+
+/**
+ * TikaApi - factory interface
+ * @export
+ */
+export const TikaApiFactory = function (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) {
+    const localVarFp = TikaApiFp(configuration)
+    return {
+        /**
+         * 
+         * @summary Checks if the Tika server is available and responding
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        apiTikaHealthGet(options?: any): AxiosPromise<void> {
+            return localVarFp.apiTikaHealthGet(options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary Receives a document file and returns both extracted text content and structured metadata in a single response.
+         * @param {File} [file] The file being uploaded
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        apiTikaProcessPost(file?: File, options?: any): AxiosPromise<void> {
+            return localVarFp.apiTikaProcessPost(file, options).then((request) => request(axios, basePath));
+        },
+    };
+};
+
+/**
+ * TikaApi - object-oriented interface
+ * @export
+ * @class TikaApi
+ * @extends {BaseAPI}
+ */
+export class TikaApi extends BaseAPI {
+    /**
+     * 
+     * @summary Checks if the Tika server is available and responding
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof TikaApi
+     */
+    public apiTikaHealthGet(options?: RawAxiosRequestConfig) {
+        return TikaApiFp(this.configuration).apiTikaHealthGet(options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary Receives a document file and returns both extracted text content and structured metadata in a single response.
+     * @param {File} [file] The file being uploaded
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof TikaApi
+     */
+    public apiTikaProcessPost(file?: File, options?: RawAxiosRequestConfig) {
+        return TikaApiFp(this.configuration).apiTikaProcessPost(file, options).then((request) => request(this.axios, this.basePath));
+    }
+}
+
+
+

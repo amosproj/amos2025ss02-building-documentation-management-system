@@ -19,10 +19,13 @@ export class LoginComponent implements OnInit {
   constructor(
     private authService: AuthService,
     private router: Router,
-    private route: ActivatedRoute,
-  ) {}
+    private route: ActivatedRoute
+  ) {
+    console.log('LoginComponent constructed');
+  }
 
   ngOnInit(): void {
+    console.log('LoginComponent initialized');
     // Redirect logged-in user away from login page
     if (this.authService.isAuthenticated()) {
       this.router.navigate(['/upload'], { replaceUrl: true });
@@ -30,13 +33,16 @@ export class LoginComponent implements OnInit {
   }
 
   login(): void {
+    console.log('Login attempted with:', { username: this.username, password: this.password });
     if (this.authService.login(this.username, this.password)) {
+      console.log('Login successful');
       const returnUrl =
         this.route.snapshot.queryParamMap.get('returnUrl') || '/upload';
 
       // ✅ Replace current history entry
       this.router.navigate([returnUrl], { replaceUrl: true });
     } else {
+      console.log('Login failed');
       this.error = true;
     }
   }

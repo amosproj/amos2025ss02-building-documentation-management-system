@@ -16,6 +16,7 @@ namespace BUILD.ING.Controllers
         public OllamaController(IHttpClientFactory httpClientFactory)
         {
             _httpClient = httpClientFactory.CreateClient();
+            _httpClient.Timeout = TimeSpan.FromMinutes(5); // ⏳ override default
         }
 
         public class OllamaRequest

@@ -6,26 +6,16 @@ import { FormsModule } from '@angular/forms';
 import { RouterModule, Router } from '@angular/router';
 import { HttpClientModule } from '@angular/common/http';
 import type { AxiosResponse } from 'axios';
-import {
-  DocumentsApi,
-  OllamaApi,
-  Configuration,
-  OllamaRequest,
-} from '../../../api';
+import { DocumentsApi, Building as ApiBuilding,  OllamaApi, Configuration, OllamaRequest } from '../../../api'; 
 import { BuildingService } from '../../services/building.service';
+import { CategoryService } from '../../services/category.service';
 import { MarkdownBoldPipe } from '../../pipes/markdown-bold.pipe';
+import { DocumentMetadataPopupComponent } from '../document-metadata-popup/document-metadata-popup.component';
 
 @Component({
   selector: 'app-upload-file',
   standalone: true,
-  imports: [
-    CommonModule,
-    RouterModule,
-    SidebarComponent,
-    FormsModule,
-    HttpClientModule,
-    MarkdownBoldPipe,
-  ],
+  imports: [CommonModule, RouterModule, SidebarComponent, FormsModule, HttpClientModule, MarkdownBoldPipe, DocumentMetadataPopupComponent],
   templateUrl: './upload-file.component.html',
   styleUrls: ['./upload-file.component.css'],
 })
@@ -36,6 +26,10 @@ export class UploadFileComponent implements OnInit {
   uploadedFile: File | null = null;
   selectedBuildingId: number | null = null;
   buildings: any[] = [];
+  
+  // Metadata popup properties
+  showMetadataPopup = false;
+  uploadedDocumentId: number | null = null;
 
   // AI Chat Properties
   showHistory: boolean = true;
@@ -50,6 +44,7 @@ export class UploadFileComponent implements OnInit {
     private config: ConfigService,
     private router: Router,
     public buildingService: BuildingService,
+    private categoryService: CategoryService
   ) {
     this.documentsApi = new DocumentsApi(
       new Configuration({ basePath: this.config.apiUrl }),
@@ -100,7 +95,10 @@ export class UploadFileComponent implements OnInit {
         }
 
         this.uploadSuccess = true;
-        this.router.navigate(['/documents', documentId]);
+        this.uploadedDocumentId = documentId;
+        
+        // Show the metadata popup instead of navigating directly
+        this.showMetadataPopup = true;
       })
       .catch((error) => {
         this.uploading = false;
@@ -118,14 +116,16 @@ export class UploadFileComponent implements OnInit {
     const name = prompt('New building name:');
     if (!name?.trim() || !this.uploadedFile) return;
 
-    this.buildingService.addBuilding(name).subscribe({
+    const building: Partial<ApiBuilding> = { name }; // Only the name for now
+
+    this.buildingService.addBuilding(building).subscribe({
       next: (building) => {
-        // this.selectedBuildingId = building.id;
         this.uploadDocumentToServer(this.uploadedFile!);
       },
       error: (err) => console.error('Failed to create building', err),
     });
   }
+
 
   // ✅ AI Chat Message Sender
   sendMessage() {
@@ -164,4 +164,49 @@ export class UploadFileComponent implements OnInit {
   toggleHistory() {
     this.showHistory = !this.showHistory;
   }
+  
+  // Metadata popup handlers
+  closeMetadataPopup(): void {
+    this.showMetadataPopup = false;
+    
+    // If user closes the popup without saving, navigate to the document view
+    if (this.uploadedDocumentId) {
+      this.router.navigate(['/documents', this.uploadedDocumentId]);
+    }
+  }
+  
+  saveDocumentMetadata(metadata: {categoryId: number | null, buildingId: number | null}): void {
+    if (this.uploadedDocumentId) {
+      this.categoryService.assignDocumentCategory(
+        this.uploadedDocumentId, 
+        metadata.categoryId,
+        metadata.buildingId
+      ).subscribe({
+        next: () => {
+          this.showMetadataPopup = false;
+          this.refreshDocuments(); // Refresh the document/building list after update
+        },
+        error: (err) => {
+          console.error('Failed to assign document metadata', err);
+          this.showMetadataPopup = false;
+          this.refreshDocuments();
+        }
+      });
+    }
+  }
+
+  // Refresh the building and document list after update
+  refreshDocuments(): void {
+    // Reload buildings (which include documents)
+    this.buildingService.getBuildings().subscribe({
+      next: (data) => this.buildings = data,
+      error: (err) => console.error('Failed to refresh buildings', err)
+    });
+    // Optionally, reset upload state
+    this.uploadedFile = null;
+    this.uploadSuccess = false;
+    this.uploadError = '';
+    this.uploadedDocumentId = null;
+  }
+
 }

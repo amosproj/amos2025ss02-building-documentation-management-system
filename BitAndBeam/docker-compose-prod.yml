@@ -59,6 +59,7 @@ services:
       - tika
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_ENVIRONMENT=Development
       - ConnectionStrings__DefaultConnection=Host=postgres;Port=5432;Database=bitandbeam;Username=postgres;Password=postgres
       - Tika__ServerUrl=http://tika:9998
     volumes:
@@ -120,7 +121,10 @@ services:
     restart: always
     ports:
       - "5432:5432"
+    ports:
+      - "5432:5432"
     volumes:
+      - .:/app
       - .:/app
       - pgdata:/var/lib/postgresql/data
       - ./database/schema.sql:/docker-entrypoint-initdb.d/init.sql

@@ -18,7 +18,11 @@ CREATE TABLE "users" (
 CREATE TABLE "buildings" (
     "building_id" SERIAL PRIMARY KEY,
     "name" VARCHAR(100) NOT NULL,
-    "address" TEXT,
+    "StreetName" TEXT NOT NULL,
+    "HouseNumber" TEXT NOT NULL,
+    "PostalCode" TEXT NOT NULL,
+    "City" TEXT NOT NULL,
+    "Country" TEXT,
     "construction_year" INTEGER,
     "total_area" DECIMAL(10, 2),
     "floors" INTEGER,
@@ -32,7 +36,7 @@ CREATE TABLE "buildings" (
 CREATE TABLE "document_categories" (
     "category_id" SERIAL PRIMARY KEY,
     "name" VARCHAR(50) NOT NULL,
-    "description" TEXT,
+    "description" TEXT DEFAULT NULL,
     "parent_category_id" INTEGER REFERENCES "document_categories" ("category_id") ON DELETE SET NULL,
     "created_at" TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );

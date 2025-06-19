@@ -1,18 +1,15 @@
-using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Http;
 
 namespace BUILD.ING.Models
 {
     /// <summary>
-    /// Model for file upload operations
+    /// Model for handling file uploads
     /// </summary>
     public class FileUploadModel
     {
         /// <summary>
-        /// The file to be uploaded
+        /// The file being uploaded
         /// </summary>
-        [Required]
         public IFormFile File { get; set; }
     }
 }
-
