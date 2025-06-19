@@ -35,9 +35,12 @@ export class LoginComponent implements OnInit {
   login(): void {
     this.authService.login(this.email, this.password).subscribe({
       next: () => {
-        const returnUrl =
-          this.route.snapshot.queryParamMap.get('returnUrl') || '/upload';
-        this.router.navigate([returnUrl], { replaceUrl: true });
+        const token = response.token;
+        if (token) {
+          localStorage.setItem('jwt', token); // ✅ Store token securely
+          console.log('✅ Token saved:', token);
+          this.router.navigate(['/document-explorer']); // redirect after login
+        }
       },
       error: (err) => {
         console.error('Login failed', err);
