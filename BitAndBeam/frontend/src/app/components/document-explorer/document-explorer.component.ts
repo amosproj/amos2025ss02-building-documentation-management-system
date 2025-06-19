@@ -26,7 +26,7 @@ export class DocumentExplorerComponent implements OnInit {
         Authorization: `Bearer ${token}`
       }
     };
-    this.http.get<any[]>('/api/buildings/with-documents').subscribe({
+    this.http.get<any[]>('/api/buildings/with-documents', headers).subscribe({
       next: (data) => {
         console.log('📦 Building data:', data);
         this.buildingDocumentGroups = data;
