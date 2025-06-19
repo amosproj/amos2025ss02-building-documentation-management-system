@@ -60,4 +60,8 @@ export class DocumentExplorerComponent implements OnInit {
       documents: docs
     }));
   }
+  viewDocument(documentId: number): void {
+    this.router.navigate(['/file-view', documentId]);
+  }
+
 }
