@@ -34,7 +34,7 @@ export class LoginComponent implements OnInit {
 
   login(): void {
     this.authService.login(this.email, this.password).subscribe({
-      next: () => {
+      next: (response) => {
         const token = response.token;
         if (token) {
           localStorage.setItem('jwt', token); // ✅ Store token securely
