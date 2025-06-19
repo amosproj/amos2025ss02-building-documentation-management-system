@@ -20,6 +20,12 @@ export class DocumentExplorerComponent implements OnInit {
   constructor(private http: HttpClient) {}
 
   ngOnInit(): void {
+    const token = localStorage.getItem('jwt');
+    const headers = {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    };
     this.http.get<any[]>('/api/buildings/with-documents').subscribe({
       next: (data) => {
         console.log('📦 Building data:', data);
