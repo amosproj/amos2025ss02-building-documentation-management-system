@@ -48,7 +48,7 @@ export class DocumentExplorerComponent implements OnInit {
     const groups: { [building: string]: any[] } = {};
 
     for (const doc of documents) {
-      const name = doc.buildingName || 'Unassigned Building';
+      const name = doc.buildingName?.trim() || 'Unassigned Building'; // fallback for null/empty
       if (!groups[name]) {
         groups[name] = [];
       }
