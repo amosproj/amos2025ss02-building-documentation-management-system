@@ -1,3 +1,4 @@
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Component } from '@angular/core';
 import { Router ,ActivatedRoute} from '@angular/router';
 import { CommonModule } from '@angular/common';
@@ -17,53 +18,52 @@ import { NgxExtendedPdfViewerModule } from 'ngx-extended-pdf-viewer'; // Switche
 export class FileViewComponent {
   
   loadPdfBlob(documentId: number): void {
-  const token = localStorage.getItem('authToken');
-  if (!token) {
-    console.error('❌ No JWT token found');
-    this.notFound = true;
-    return;
-  }
+    const apiUrl = `${this.config.apiUrl}/api/Documents/${documentId}/preview`;
 
-  const apiUrl = `${this.config.apiUrl}/api/Documents/${documentId}/preview`;
-  // ✅ Log everything clearly before making the request
-  console.log('📤 Fetching PDF blob from:', apiUrl);
-  console.log('🔐 Token in header:', token);
-
-  fetch(apiUrl, {
-    method: 'GET',
-    headers: {
+    const token = localStorage.getItem('authToken');
+    const headers = new HttpHeaders({
       Authorization: `Bearer ${token}`
-    }
-  })
-    .then(res => {
-      if (!res.ok) {
-        throw new Error('Failed to fetch PDF blob');
-      }
-      return res.blob();
-    })
-    .then(blob => {
-      const blobUrl = URL.createObjectURL(blob);
-      this.selectedFile!.url = blobUrl;
-      console.log('🧾 PDF loaded as Blob URL:', blobUrl);
-    })
-    .catch(err => {
-      console.error('❌ Error loading PDF blob:', err);
-      this.notFound = true;
     });
-}
 
+    console.log('📤 Fetching PDF blob from:', apiUrl);
+    console.log('🔐 Token in header:', token);
+
+    this.http.get(apiUrl, {
+      headers: new HttpHeaders().set('Authorization', `Bearer ${token}`),
+      responseType: 'blob'
+    }).subscribe({
+      next: (blob) => {
+        const blobUrl = URL.createObjectURL(blob);
+        this.selectedFile!.url = blobUrl;
+        console.log('✅ Blob loaded:', blobUrl);
+      },
+      error: (err) => {
+        console.error('❌ Failed to fetch PDF blob:', err);
+        this.notFound = true;
+      }
+    });
+  }
 
   selectedFile: DocumentItem | null = null;
   notFound = false;
   isPdf = false;
   isImage = false;
 
-  constructor(private config: ConfigService,private route: ActivatedRoute,private router: Router, private buildingService: BuildingService) {}
+  constructor(
+    private http: HttpClient,
+    private config: ConfigService,
+    private route: ActivatedRoute,
+    private router: Router,
+    private buildingService: BuildingService
+  ) {}
   ngOnInit(): void {
     const idParam = this.route.snapshot.paramMap.get('id');
     const id = Number(idParam);
 
-    if (!idParam || isNaN(id)) {
+    console.log('📌 Route document ID:', id);
+
+
+    if (!id || isNaN(id)) {
       console.error('❌ Invalid document ID in route:', idParam);
       this.notFound = true;
       return;
@@ -87,9 +87,9 @@ export class FileViewComponent {
             { label: 'Type', value: doc.fileType ?? 'unknown' },
           ],
         };
-        console.log('🧾 Document ID before loading blob:', doc.documentId);
+        console.log('🧾 Document ID before loading blob:', id);
           if (doc.documentId) {
-            this.loadPdfBlob(doc.documentId);
+            this.loadPdfBlob(id);
           } else {
             console.error('❌ Document ID is undefined!');
             this.notFound = true;
