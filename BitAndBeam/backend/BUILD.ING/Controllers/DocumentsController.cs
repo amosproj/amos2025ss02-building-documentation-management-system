@@ -7,6 +7,7 @@ using BUILD.ING.Models;
 using BUILD.ING.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Microsoft.AspNetCore.Authorization;
 
 namespace BUILD.ING.Controllers
 {
@@ -438,9 +439,14 @@ public IActionResult GetDocumentById(int id)
             return File(fileBytes, "application/octet-stream", document.FileName);
         }
 
+        [AllowAnonymous]
         [HttpGet("{id}/preview")]
         public IActionResult PreviewDocument(int id)
         {
+            var user = HttpContext.User;
+            Console.WriteLine($"🔐 Is Authenticated: {user.Identity.IsAuthenticated}");
+            Console.WriteLine($"👤 User: {user.Identity.Name}");
+
             var groupId = GetCurrentUserGroupId();
             var document = _context.Documents.FirstOrDefault(d => d.DocumentId == id && d.GroupId == groupId);
             if (document == null)
