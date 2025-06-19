@@ -39,7 +39,7 @@ export class LoginComponent implements OnInit {
       next: (response) => {
         const token = response.token;
         if (token) {
-          localStorage.setItem('jwt', token);
+          localStorage.setItem('authToken', token); // ✅ match service + interceptor
           console.log('✅ Token saved:', token);
 
           console.log('🎉 Login successful!');
@@ -56,5 +56,4 @@ export class LoginComponent implements OnInit {
       }
     });
   }
-
 }
