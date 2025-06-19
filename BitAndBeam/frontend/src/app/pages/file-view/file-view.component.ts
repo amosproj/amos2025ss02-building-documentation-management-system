@@ -74,7 +74,7 @@ export class FileViewComponent {
         this.selectedFile = {
           id: doc.documentId!,
           name: doc.fileName ?? '',
-          url: `${this.config.apiUrl}/api/Documents/${doc.documentId}/preview`,
+          url: '',
           metadata: [
             { label: 'Uploaded', value: doc.uploadDate ?? '' },
             {
@@ -84,6 +84,7 @@ export class FileViewComponent {
             { label: 'Type', value: doc.fileType ?? 'unknown' },
           ],
         };
+        this.loadPdfBlob(doc.documentId!);
         console.log('📂 Preview URL:', this.selectedFile.url);
         // Determine file type for viewer
         const fileType = (doc.fileType ?? '').toLowerCase();
