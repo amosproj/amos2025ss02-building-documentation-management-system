@@ -5,8 +5,10 @@
     <div *ngFor="let group of buildingDocumentGroups">
       <h3>{{ group.buildingName }}</h3>
       <ul>
-        <li *ngFor="let doc of group.documents" (click)="viewDocument(doc.documentId)">
-          📄 {{ doc.title || doc.fileName }}
+        <li *ngFor="let doc of group.documents">
+          <a [routerLink]="['/documents', doc.documentId]" style="cursor: pointer;">
+            📄 {{ doc.title || doc.fileName }}
+          </a>
         </li>
       </ul>
     </div>
