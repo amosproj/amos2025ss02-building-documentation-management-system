@@ -16,7 +16,7 @@
          <!-- Updated PDF viewer to ngx-extended-pdf-viewer (ng2 version broke under Vite) -->
         <section class="pdf-viewer">
             <ngx-extended-pdf-viewer
-              *ngIf="selectedFile?.url"
+              *ngIf="selectedFile?.url && isPdf"
               [src]="selectedFile.url"
               useBrowserLocale="true"
               height="100%"
