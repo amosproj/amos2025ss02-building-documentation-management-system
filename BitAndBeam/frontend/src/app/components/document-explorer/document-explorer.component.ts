@@ -17,10 +17,16 @@ import { CommonModule } from '@angular/common';
 export class DocumentExplorerComponent implements OnInit {
   buildingDocumentGroups: any[] = [];
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient, private router: Router) {}
 
   ngOnInit(): void {
     const token = localStorage.getItem('jwt');
+    if (!token) {
+      console.warn('⚠️ No JWT token found — redirecting to login');
+    // Optionally inject Router via constructor to use:
+      this.router.navigate(['/login']);
+      return;
+    }
     const headers = {
       headers: {
         Authorization: `Bearer ${token}`
