@@ -1,17 +1,14 @@
 <div class="document-explorer">
   <h2>📂 Document Explorer</h2>
 
-  <div *ngIf="groupedDocuments.length === 0">
-    <p>No documents found.</p>
-  </div>
-
-  <div *ngFor="let group of groupedDocuments" class="building-group">
-    <h3>{{ group.buildingName }}</h3>
-
-    <ul>
-      <li *ngFor="let doc of group.documents" (click)="viewDocument(doc.documentId)">
-        📄 {{ doc.fileName }}
-      </li>
-    </ul>
-  </div>
+  <div *ngIf="buildingDocumentGroups">
+    <div *ngFor="let group of buildingDocumentGroups">
+      <h3>{{ group.buildingName }}</h3>
+      <ul>
+        <li *ngFor="let doc of group.documents" (click)="viewDocument(doc.documentId)">
+          📄 {{ doc.title || doc.fileName }}
+        </li>
+      </ul>
+    </div>
+  </div>>
 </div>
