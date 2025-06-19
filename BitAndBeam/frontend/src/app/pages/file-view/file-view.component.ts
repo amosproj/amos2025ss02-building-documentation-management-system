@@ -15,6 +15,40 @@ import { NgxExtendedPdfViewerModule } from 'ngx-extended-pdf-viewer'; // Switche
   imports: [CommonModule, NgxExtendedPdfViewerModule, SidebarComponent]
 })
 export class FileViewComponent {
+  
+  loadPdfBlob(documentId: number): void {
+  const token = localStorage.getItem('jwt');
+  if (!token) {
+    console.error('❌ No JWT token found');
+    this.notFound = true;
+    return;
+  }
+
+  const apiUrl = `${this.config.apiUrl}/api/Documents/${documentId}/preview`;
+
+  fetch(apiUrl, {
+    method: 'GET',
+    headers: {
+      Authorization: `Bearer ${token}`
+    }
+  })
+    .then(res => {
+      if (!res.ok) {
+        throw new Error('Failed to fetch PDF blob');
+      }
+      return res.blob();
+    })
+    .then(blob => {
+      const blobUrl = URL.createObjectURL(blob);
+      this.selectedFile!.url = blobUrl;
+      console.log('🧾 PDF loaded as Blob URL:', blobUrl);
+    })
+    .catch(err => {
+      console.error('❌ Error loading PDF blob:', err);
+      this.notFound = true;
+    });
+}
+
 
   selectedFile: DocumentItem | null = null;
   notFound = false;
