@@ -33,31 +33,28 @@ export class LoginComponent implements OnInit {
   }
 
   login(): void {
+    console.log('Login attempted with:', { username: this.email, password: this.password });
+
     this.authService.login(this.email, this.password).subscribe({
       next: (response) => {
         const token = response.token;
         if (token) {
-          localStorage.setItem('jwt', token); // ✅ Store token securely
+          localStorage.setItem('jwt', token);
           console.log('✅ Token saved:', token);
-          this.router.navigate(['/document-explorer']); // redirect after login
+
+          console.log('🎉 Login successful!');
+
+          const returnUrl = this.route.snapshot.queryParamMap.get('returnUrl') || '/upload';
+          this.router.navigate([returnUrl], { replaceUrl: true });
+        } else {
+          console.warn('⚠️ Login response did not include a token.');
         }
       },
       error: (err) => {
-        console.error('Login failed', err);
+        console.error('❌ Login failed', err);
         this.error = true;
       }
     });
-    console.log('Login attempted with:', { username: this.email, password: this.password });
-    if (this.authService.login(this.email, this.password)) {
-      console.log('Login successful');
-      const returnUrl =
-        this.route.snapshot.queryParamMap.get('returnUrl') || '/upload';
-
-      // ✅ Replace current history entry
-      this.router.navigate([returnUrl], {replaceUrl: true});
-    } else {
-      console.log('Login failed');
-      this.error = true;
-    }
   }
+
 }
