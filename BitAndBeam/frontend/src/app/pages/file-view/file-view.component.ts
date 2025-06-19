@@ -17,7 +17,7 @@ import { NgxExtendedPdfViewerModule } from 'ngx-extended-pdf-viewer'; // Switche
 export class FileViewComponent {
   
   loadPdfBlob(documentId: number): void {
-  const token = localStorage.getItem('jwt');
+  const token = localStorage.getItem('authToken');
   if (!token) {
     console.error('❌ No JWT token found');
     this.notFound = true;
@@ -25,6 +25,9 @@ export class FileViewComponent {
   }
 
   const apiUrl = `${this.config.apiUrl}/api/Documents/${documentId}/preview`;
+  // ✅ Log everything clearly before making the request
+  console.log('📤 Fetching PDF blob from:', apiUrl);
+  console.log('🔐 Token in header:', token);
 
   fetch(apiUrl, {
     method: 'GET',
@@ -84,8 +87,14 @@ export class FileViewComponent {
             { label: 'Type', value: doc.fileType ?? 'unknown' },
           ],
         };
-        this.loadPdfBlob(doc.documentId!);
-        console.log('📂 Preview URL:', this.selectedFile.url);
+        console.log('🧾 Document ID before loading blob:', doc.documentId);
+          if (doc.documentId) {
+            this.loadPdfBlob(doc.documentId);
+          } else {
+            console.error('❌ Document ID is undefined!');
+            this.notFound = true;
+          }
+
         // Determine file type for viewer
         const fileType = (doc.fileType ?? '').toLowerCase();
         this.isPdf = fileType === 'pdf';
