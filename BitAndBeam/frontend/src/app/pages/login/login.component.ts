@@ -33,15 +33,17 @@ export class LoginComponent implements OnInit {
   }
 
   login(): void {
-    console.log('Login attempted with:', { username: this.email, password: this.password });
+    console.log('Login attempted with:', {
+      email: this.email,
+      password: this.password
+    });
 
     this.authService.login(this.email, this.password).subscribe({
       next: (response) => {
         const token = response.token;
         if (token) {
-          localStorage.setItem('authToken', token); // ✅ match service + interceptor
+          localStorage.setItem('authToken', token);
           console.log('✅ Token saved:', token);
-
           console.log('🎉 Login successful!');
 
           const returnUrl = this.route.snapshot.queryParamMap.get('returnUrl') || '/upload';
