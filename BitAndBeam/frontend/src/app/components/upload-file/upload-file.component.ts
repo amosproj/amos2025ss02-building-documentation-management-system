@@ -100,26 +100,16 @@ export class UploadFileComponent implements OnInit {
     event.preventDefault();
   }
 
-  uploadDocumentToServer(file: File): void {
-    this.documentsApi.apiDocumentsPost(file)
-      .then((axiosResponse: AxiosResponse<any>) => {
-        const documentId = axiosResponse.data?.documentId;
+  uploadDocumentToServer(file: File): Observable<any> {
+    const formData = new FormData();
+    formData.append('file', file);
 
-        if (!documentId) {
-          this.uploadError = 'Upload succeeded but no document ID found in response body.';
-          return;
-        }
+    // 👇 Add this to send the selected building with the file
+    if (this.selectedBuildingId !== null) {
+      formData.append('buildingId', this.selectedBuildingId.toString());
+    }
 
-        this.uploadSuccess = true;
-        this.uploadedDocumentId = documentId;
-        
-        // Show the metadata popup instead of navigating directly
-        this.showMetadataPopup = true;
-      })
-      .catch(error => {
-        this.uploading = false;
-        this.uploadError = 'Upload failed: ' + error.message;
-      });
+    return this.http.post('/api/documents', formData);
   }
 
   extractDocumentIdFromLocation(location: string | undefined): number | null {
