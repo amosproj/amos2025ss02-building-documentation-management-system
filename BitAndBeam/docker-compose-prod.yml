@@ -58,8 +58,7 @@ services:
       - ollama
       - tika
     environment:
-      - ASPNETCORE_ENVIRONMENT=Development
-      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_ENVIRONMENT=Production
       - ConnectionStrings__DefaultConnection=Host=postgres;Port=5432;Database=bitandbeam;Username=postgres;Password=postgres
       - Tika__ServerUrl=http://tika:9998
     volumes:
