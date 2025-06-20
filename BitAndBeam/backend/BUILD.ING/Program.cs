@@ -244,11 +244,14 @@ app.Use(async (context, next) =>
 });
 
 // ----------------- MIDDLEWARE PIPELINE -----------------
-if (app.Environment.IsDevelopment())
+/*if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
-}
+}*/
+
+app.UseSwagger();
+app.UseSwaggerUI();
 
 app.UseCors(MyAllowSpecificOrigins);
 
