@@ -83,7 +83,16 @@ export class UploadFileComponent implements OnInit {
     if (event.dataTransfer?.files?.length) {
       const file = event.dataTransfer.files[0];
       this.uploadedFile = file;
-      this.uploadDocumentToServer(file);
+      // Subscribe here, so it actually makes the request:
+      this.uploadDocumentToServer(file).subscribe({
+        next: (response) => {
+          this.uploadSuccess = true;
+          // handle response, update uploadedDocumentId if needed
+        },
+        error: (err) => {
+          this.uploadError = 'Upload failed: ' + err.message;
+        }
+      });
     }
   }
 
