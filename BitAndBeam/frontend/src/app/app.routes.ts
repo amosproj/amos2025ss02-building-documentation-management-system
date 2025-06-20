@@ -12,9 +12,9 @@ export const routes: Routes = [
   { path: '', component: HomeComponent },
   { path: 'login', component: LoginComponent },
   { path: 'upload', component: UploadFileComponent, canActivate: [AuthGuard] },
-  { path: 'file-view', component: FileViewComponent },
+  { path: 'file-view', component: FileViewComponent, canActivate: [AuthGuard] },
   { path: 'documents/:id', component: FileViewComponent, canActivate: [AuthGuard] },
-  { path: 'document-explorer', component: DocumentExplorerComponent },
+  { path: 'document-explorer', component: DocumentExplorerComponent, canActivate: [AuthGuard]},
   { path: 'create-building', component: CreateBuildingComponent, canActivate: [AuthGuard] },
   { path: '**', redirectTo: 'upload' }
 ];
