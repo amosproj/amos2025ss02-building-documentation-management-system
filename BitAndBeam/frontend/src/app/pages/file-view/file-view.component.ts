@@ -7,6 +7,7 @@ import { SidebarComponent} from '../../components/sidebar/sidebar.component';
 import { BuildingService, DocumentItem, DocumentResponse } from '../../services/building.service';
 import { Configuration, DocumentsApi, Document as ApiDocument } from '../../../api';
 import { NgxExtendedPdfViewerModule } from 'ngx-extended-pdf-viewer'; // Switched to NgxExtendedPdfViewerModule due to ng2-pdf-viewer incompatibility with Vite
+import { ChangeDetectorRef } from '@angular/core';
 
 @Component({
   standalone: true,
@@ -18,31 +19,26 @@ import { NgxExtendedPdfViewerModule } from 'ngx-extended-pdf-viewer'; // Switche
 export class FileViewComponent {
   
   loadPdfBlob(documentId: number): void {
-    const apiUrl = `${this.config.apiUrl}/api/Documents/${documentId}/preview`;
+  // Make sure the URL uses the same case as your backend expects!
+  const apiUrl = `/api/Documents/${documentId}/preview`; // or '/api/documents/...'
+  console.log('About to call:', apiUrl);
+  console.log('HttpClient instance:', this.http);
 
-    const token = localStorage.getItem('authToken');
-    const headers = new HttpHeaders({
-      Authorization: `Bearer ${token}`
-    });
+  this.http.get(apiUrl, { responseType: 'blob' }).subscribe({
+    next: (blob) => {
+      // Handle the blob, e.g.:
+      const blobUrl = URL.createObjectURL(blob);
+      this.selectedFile!.url = blobUrl;
+      this.cdr.detectChanges();
+      console.log('✅ Blob loaded:', blobUrl);
+    },
+    error: (err) => {
+      console.error('❌ Failed to fetch PDF blob:', err);
+      this.notFound = true;
+    }
+  });
+}
 
-    console.log('📤 Fetching PDF blob from:', apiUrl);
-    console.log('🔐 Token in header:', token);
-
-    this.http.get(apiUrl, {
-      headers: new HttpHeaders().set('Authorization', `Bearer ${token}`),
-      responseType: 'blob'
-    }).subscribe({
-      next: (blob) => {
-        const blobUrl = URL.createObjectURL(blob);
-        this.selectedFile!.url = blobUrl;
-        console.log('✅ Blob loaded:', blobUrl);
-      },
-      error: (err) => {
-        console.error('❌ Failed to fetch PDF blob:', err);
-        this.notFound = true;
-      }
-    });
-  }
 
   selectedFile: DocumentItem | null = null;
   notFound = false;
@@ -51,6 +47,7 @@ export class FileViewComponent {
 
   constructor(
     private http: HttpClient,
+    private cdr: ChangeDetectorRef,
     private config: ConfigService,
     private route: ActivatedRoute,
     private router: Router,
