@@ -38,7 +38,10 @@ export class BuildingService {
   private buildingsSubject = new BehaviorSubject<ApiBuilding[]>([]);
   buildings$ = this.buildingsSubject.asObservable();
 
-  constructor(private config: ConfigService) {
+  constructor(
+    private config: ConfigService,
+    private http: HttpClient,
+  ) {
     const configuration = new Configuration({ basePath: this.config.apiUrl });
     this.documentsApi = new DocumentsApi(configuration);
     this.buildingsApi = new BuildingsApi(configuration);
@@ -120,10 +123,7 @@ export class BuildingService {
 
   //Docs
   getDocumentById(id: number): Observable<ApiDocument> {
-    return from(
-        this.documentsApi.apiDocumentsIdGet(id)
-            .then(res => (res as unknown as AxiosResponse<ApiDocument>).data)
-    );
+    return this.http.get<ApiDocument>(`/api/documents/${id}`);
   }
   deleteDocument(id: number): Observable<void> {
     return from(this.documentsApi.apiDocumentsIdDelete(id).then(() => {}));
