@@ -61,12 +61,21 @@ export class UploadFileComponent implements OnInit {
     });
   }
 
-  onFileSelected(event: any) {
-    const file = event.target.files[0];
-    if (!file) return;
-
-    this.uploadedFile = file;
-    this.uploadDocumentToServer(file);
+  onFileSelected(event: any): void {
+    const file: File = event.target.files[0];
+    if (file) {
+      this.uploadedFile = file;
+      this.uploadDocumentToServer(file).subscribe({
+        next: (response) => {
+          this.uploadSuccess = true;
+          // If backend returns documentId, save it:
+          this.uploadedDocumentId = response.documentId;
+        },
+        error: (err) => {
+          this.uploadError = 'Upload failed: ' + err.message;
+        }
+      });
+    }
   }
 
   onDrop(event: DragEvent) {
