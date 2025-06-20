@@ -44,6 +44,7 @@ export class UploadFileComponent implements OnInit {
 
 
   constructor(
+    private http: HttpClient,
     private config: ConfigService,
     private router: Router,
     public buildingService: BuildingService,
