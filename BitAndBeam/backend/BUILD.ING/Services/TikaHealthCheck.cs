@@ -1,7 +1,6 @@
 using System;
 using System.Threading;
 using System.Threading.Tasks;
-using BitAndBeam.Tika;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Logging;
 
@@ -34,7 +33,7 @@ namespace BUILD.ING.Services
             try
             {
                 // Delegate to the TikaService's health check method
-                var result = await _tikaService.CheckHealthAsync(cancellationToken);
+                var result = await _tikaService.CheckHealthAsync().ConfigureAwait(false);
 
                 // Add additional data to the health check result
                 var data = new System.Collections.Generic.Dictionary<string, object>
