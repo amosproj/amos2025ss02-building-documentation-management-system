@@ -122,11 +122,25 @@ export class BuildingService {
   }
 
   //Docs
+  /**
+   * Loads a document by its ID using Angular's HttpClient.
+   * This ensures the authentication token (JWT) is automatically added
+   * by the Angular HTTP interceptor for secure access.
+   * Switched from OpenAPI-generated (Axios-based) client to HttpClient
+   * to fix missing Authorization header issue.
+   */
   getDocumentById(id: number): Observable<ApiDocument> {
     return this.http.get<ApiDocument>(`/api/documents/${id}`);
   }
+  /**
+   * Deletes a document by its ID using Angular's HttpClient.
+   * This allows the Angular HTTP interceptor to attach the authentication token.
+   * Using HttpClient instead of OpenAPI-generated client to avoid
+   * issues with missing headers and to keep everything consistent.
+   */
   deleteDocument(id: number): Observable<void> {
-    return from(this.documentsApi.apiDocumentsIdDelete(id).then(() => {}));
+    // This will hit the backend via the Angular proxy, and interceptor will add the token
+    return this.http.delete<void>(`/api/documents/${id}`);
   }
 
   downloadDocument(id: number): void {
