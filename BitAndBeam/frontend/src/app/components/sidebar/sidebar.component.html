@@ -39,13 +39,13 @@
 
   <!-- Bottom: User Info & Logout -->
   <div class="sidebar-bottom">
-    <div *ngIf="authService.isAuthenticated()" class="user-welcome">
+    <div *ngIf="session.isAuthenticated()" class="user-welcome">
       <div class="avatar">👤</div>
       <div class="welcome-text">
         <div class="greeting">Welcome,</div>
-        <div class="username">{{ authService.getUsername() }}</div>
+        <div class="username">{{ session.currentUser()?.email }}</div>
       </div>
     </div>
-    <button class="logout-btn" (click)="logout()">Logout</button>
+    <button class="logout-btn" (click)="logout()" *ngIf="session.isAuthenticated()">Logout</button>
   </div>
 </aside>

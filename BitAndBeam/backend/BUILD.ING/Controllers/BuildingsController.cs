@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using BUILD.ING.Data;
 using BUILD.ING.Dto;
 using BUILD.ING.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging; //
@@ -11,6 +12,7 @@ using NpgsqlTypes;
 
 namespace BUILD.ING.Controllers
 {
+    [Authorize] // 🔐 Require valid Bearer token
     [ApiController]
     [Route("api/[controller]")]
     public class BuildingsController : ControllerBase

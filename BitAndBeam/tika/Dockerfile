@@ -1,14 +1,27 @@
 FROM apache/tika:latest
-
+# Switch to root to install extra packages
 USER root
-RUN apt-get update && \
-    apt-get install -y tesseract-ocr && \
-    apt-get clean && \
-    rm -rf /var/lib/apt/lists/*
 
-EXPOSE 9998
+# Install tesseract and language packs (English, German, French)
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends \
+       tesseract-ocr \
+       tesseract-ocr-eng \
+       tesseract-ocr-deu \
+       tesseract-ocr-fra \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
 
-ENV TIKA_JAVA_OPTS="-Xms512m -Xmx2g"
+# Copy custom Tika configuration enabling OCR
+COPY tika-config.xml /tika-config.xml
 
-HEALTHCHECK --interval=30s --timeout=5s --start-period=15s --retries=3 \
-  CMD curl -f http://localhost:9998/healthcheck || exit 1
+# Expose the configuration path as env variable (Tika reads this automatically)
+ENV TIKA_CONFIG=file:///tika-config.xml
+
+# Run as root (apache/tika:latest may not define a 'tika' user)
+# If non-root execution is required, create a user with `useradd` and adjust permissions.
+# USER tika
+
+# Default command provided by base image (no change)
+CMD ["/docker-entrypoint.sh"]
+

@@ -10,6 +10,9 @@ namespace BUILD.ING.Services
 {
     public class TikaService
     {
+        private const int DefaultOcrTimeoutMillis = 20000; // 20s
+        private const int DefaultMaxExtractLength = 1000000; // 1 MB of text
+
         private readonly HttpClient _client;
         private readonly ILogger<TikaService> _logger;
 
@@ -25,14 +28,33 @@ namespace BUILD.ING.Services
         /// <param name="fileBytes">The file contents as a byte array.</param>
         /// <param name="fileName">The file name (for logging).</param>
         /// <returns>Extracted text or a fallback message in case of error.</returns>
-        public async Task<string> ExtractTextAsync(byte[] fileBytes, string fileName)
+        /// <summary>
+        /// Backwards-compatible overload that assumes OCR when needed (performOcr=true)
+        /// </summary>
+        public Task<string> ExtractTextAsync(byte[] fileBytes, string fileName)
+        {
+            // default behaviour: allow OCR for maximum accuracy
+            return ExtractTextAsync(fileBytes, fileName, true);
+        }
+
+        public async Task<string> ExtractTextAsync(byte[] fileBytes, string fileName, bool performOcr)
         {
             try
             {
                 using var content = new ByteArrayContent(fileBytes);
                 content.Headers.Add("Content-Disposition", $"attachment; filename={fileName}");
 
-                var response = await _client.PutAsync("http://tika:9998/tika", content).ConfigureAwait(false);
+                // For Tika 3.x, most tuning can be done via server-side config.
+                // Remove legacy headers that are no longer supported to avoid 400/500 errors.
+                // If specific tuning is required in the future, update to the new header names.
+
+
+                var request = new HttpRequestMessage(HttpMethod.Put, "http://tika:9998/tika")
+                {
+                    Content = content
+                };
+
+                var response = await _client.SendAsync(request).ConfigureAwait(false);
 
                 if (response.IsSuccessStatusCode)
                 {
