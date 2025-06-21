@@ -14,7 +14,7 @@ export class CategoryService {
   private documentsApi: DocumentsApi;
   private categoriesSubject = new BehaviorSubject<Category[]>([]);
   categories$ = this.categoriesSubject.asObservable();
-  
+
   // Default categories - in a real application, these would come from the backend
   private defaultCategories: Category[] = [
     { id: 1, name: 'Architecture' },
@@ -30,7 +30,7 @@ export class CategoryService {
   constructor(private config: ConfigService, private http: HttpClient) {
     const configuration = new Configuration({ basePath: this.config.apiUrl });
     this.documentsApi = new DocumentsApi(configuration);
-    
+
     // Initialize with default categories
     this.categoriesSubject.next(this.defaultCategories);
   }
@@ -41,14 +41,20 @@ export class CategoryService {
 
   // In a real application, this would send the document category to the backend
   assignDocumentCategory(documentId: number, categoryId: number | null, buildingId: number | null): Observable<any> {
-    // Fallback: Use HttpClient to send a PATCH request to update categoryId and buildingId
-    // Adjust the URL and payload as per your backend API
+    const token = sessionStorage.getItem('jwt_token');
+
+    const headers = {
+      Authorization: `Bearer ${token}`,
+      'Content-Type': 'application/json'
+    };
+
     return this.http.patch<any>(
       `${this.config.apiUrl}/api/Documents/${documentId}`,
-      { categoryId, buildingId }
+      { categoryId, buildingId },
+      { headers }
     );
   }
-  
+
   // Create a new category
   createCategory(category: { name: string }): Observable<Category> {
     // In a real application, this would send the new category to the backend
@@ -58,10 +64,10 @@ export class CategoryService {
       id: newCategoryId,
       name: category.name
     };
-    
+
     this.defaultCategories.push(newCategory);
     this.categoriesSubject.next([...this.defaultCategories]);
-    
+
     return from(Promise.resolve(newCategory));
   }
 }

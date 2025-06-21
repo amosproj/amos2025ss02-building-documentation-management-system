@@ -1,15 +1,18 @@
 using System.Net.Http;
 using System.Net.Http.Headers;
+using System.Security.Claims;
 using System.Text;
 using System.Text.Json;
 using BUILD.ING.Data;
 using BUILD.ING.Models;
 using BUILD.ING.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
 namespace BUILD.ING.Controllers
 {
+    [Authorize]
     [ApiController]
     [Route("api/[controller]")]
     public class DocumentsController : ControllerBase
@@ -167,7 +170,7 @@ namespace BUILD.ING.Controllers
                 Status = "draft",
                 IsPublic = false,
                 Description = "No description provided",
-                Metadata = metadata,
+                Metadata = metadata, // Store the extracted metadata
                 UploadedAt = DateTime.UtcNow,
                 UploadedBy = null,
                 GroupId = GetCurrentUserGroupId()

@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Output } from '@angular/core';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import { AuthService } from '../../services/auth.service';
+import { SessionService } from '../../services/session.service';
 import { FormsModule } from '@angular/forms';
 import {
   BuildingService,
@@ -21,9 +21,9 @@ export class SidebarComponent {
   buildings: Building[] = [];
 
   constructor(
-    public authService: AuthService,
+    public session: SessionService,
     private router: Router,
-    public buildingService: BuildingService,
+    public buildingService: BuildingService
   ) {}
   ngOnInit(): void {
     this.buildingService.getBuildings().subscribe({
@@ -60,7 +60,7 @@ export class SidebarComponent {
   }
 
   logout() {
-    this.authService.logout();
-    this.router.navigate(['/']); // redirect to home/landing
+    this.session.logout();
+    this.router.navigate(['/']);
   }
 }

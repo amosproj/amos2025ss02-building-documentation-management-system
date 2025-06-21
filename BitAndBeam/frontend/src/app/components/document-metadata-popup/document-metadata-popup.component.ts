@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { BuildingService, Building, DocumentResponse } from '../../services/building.service';
 import { CategoryService, Category } from '../../services/category.service';
 import { DocumentsApi, DocumentMetadataPatchRequest } from '../../../api/api';
+import { ApiClientFactory } from '../../services/api-client.factory';
 
 
 @Component({
@@ -19,7 +20,7 @@ export class DocumentMetadataPopupComponent implements OnInit {
   @Input() documentData: DocumentResponse | null = null;
   @Output() closePopup = new EventEmitter<void>();
   @Output() saveMetadata = new EventEmitter<{categoryId: number | null, buildingId: number | null}>();
-  
+
   buildings: Building[] = [];
   categories: Category[] = [];
   selectedBuildingId: number | null = null;
@@ -27,25 +28,26 @@ export class DocumentMetadataPopupComponent implements OnInit {
   isOtherCategory: boolean = false;
   otherCategoryName: string = '';
   readonly OTHER_CATEGORY_OPTION = 'other';
-  documentsApi = new DocumentsApi();
 
   // Notification properties
   showNotification: boolean = false;
   notificationMessage: string = '';
   notificationType: 'success' | 'error' = 'success';
   notificationTimeout: any = null;
-  
+
   constructor(
     private buildingService: BuildingService,
-    private categoryService: CategoryService
-  ) {}
-  
+    private categoryService: CategoryService,
+    private apiFactory: ApiClientFactory
+) {
+  }
+
   ngOnInit(): void {
     this.loadBuildings();
     this.loadCategories();
     this.setInitialValues();
   }
-  
+
   setInitialValues(): void {
     // If documentData is provided and has a buildingId, preselect that building
     if (this.documentData && this.documentData.buildingId !== undefined) {
@@ -54,27 +56,27 @@ export class DocumentMetadataPopupComponent implements OnInit {
       // Otherwise preselect "No Building"
       this.selectedBuildingId = null;
     }
-    
+
     // If documentData has a categoryId, preselect that category
     if (this.documentData && this.documentData.categoryId !== undefined) {
       this.selectedCategoryId = this.documentData.categoryId;
     }
   }
-  
+
   loadBuildings(): void {
     this.buildingService.getBuildings().subscribe({
       next: (data) => this.buildings = data,
       error: (err) => console.error('Failed to fetch buildings', err)
     });
   }
-  
+
   loadCategories(): void {
     this.categoryService.getCategories().subscribe({
       next: (data) => this.categories = data,
       error: (err) => console.error('Failed to fetch categories', err)
     });
   }
-  
+
   onCategoryChange(value: string | null): void {
     if (value === this.OTHER_CATEGORY_OPTION) {
       this.isOtherCategory = true;
@@ -83,13 +85,13 @@ export class DocumentMetadataPopupComponent implements OnInit {
       this.isOtherCategory = false;
     }
   }
-  
+
   createNewCategory(): void {
     if (!this.otherCategoryName.trim()) {
       alert('Please enter a category name');
       return;
     }
-    
+
     this.categoryService.createCategory({ name: this.otherCategoryName }).subscribe({
       next: (newCategory: Category) => {
         this.categories.push(newCategory);
@@ -104,11 +106,11 @@ export class DocumentMetadataPopupComponent implements OnInit {
       }
     });
   }
-  
+
   onClose(): void {
     this.closePopup.emit();
   }
-  
+
   onSave(): void {
     if (!this.documentId) {
       alert('No document ID available');
@@ -125,38 +127,29 @@ export class DocumentMetadataPopupComponent implements OnInit {
 
 
   private updateDocumentMetadata(documentId: number, categoryId: number | null, buildingId: number | null): void {
-    // Use OpenAPI client to update document metadata
-    this.categoryService.assignDocumentCategory(documentId, categoryId, buildingId).subscribe({
-      next: () => {
-        // Emit event for parent components that may need to know about the update
-        this.saveMetadata.emit({
-          categoryId: categoryId,
-          buildingId: buildingId
-        });
-        const patchRequest: DocumentMetadataPatchRequest = {
-          categoryId: categoryId, // number or undefined
-          buildingId: buildingId  // number or undefined
-        };
-        this.documentsApi.apiDocumentsIdPatch(documentId, patchRequest).then(response => {
-            // handle success, e.g. response.data
-            console.log('Document metadata updated:', response.data);
-            // Show success notification
-            this.showSuccessNotification('Metadata updated successfully');
-            
-            // Close the popup after a short delay to allow user to see the message
-            setTimeout(() => this.onClose(), 1500);
-          })
-          .catch(error => {
-              console.error('Failed to update document metadata', error);
-          });
-      },
-      error: (err) => {
-        console.error(err);
-        this.showErrorNotification('Failed to update document metadata');
-      }
+    // ✅ Rewritten: use only the OpenAPI client for PATCH (removed categoryService.assignDocumentCategory)
+    const patchRequest: DocumentMetadataPatchRequest = {
+      categoryId,
+      buildingId
+    };
+
+    const documentsApi = this.apiFactory.create(DocumentsApi);
+
+    documentsApi.apiDocumentsIdPatch(documentId, patchRequest).then(response => {
+      // ✅ Emit metadata saved event
+      this.saveMetadata.emit({ categoryId, buildingId });
+      console.log('✅ Document metadata updated:', response.data);
+
+      // ✅ Show success and auto-close
+      this.showSuccessNotification('Metadata updated successfully');
+      setTimeout(() => this.onClose(), 1500);
+    }).catch(error => {
+      console.error('❌ Failed to update document metadata', error);
+      this.showErrorNotification('Failed to update document metadata');
     });
   }
-  
+
+
   /**
    * Show a success notification
    */

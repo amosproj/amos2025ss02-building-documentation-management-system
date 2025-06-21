@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<properties>
+    <!-- Simple configuration with just OCR enabled -->
+    <parsers>
+        <parser class="org.apache.tika.parser.DefaultParser">
+            <!-- Include all default parsers, including OCR -->
+        </parser>
+        
+        <!-- Explicitly configure OCR for PDF files -->
+        <parser class="org.apache.tika.parser.pdf.PDFParser">
+            <params>
+                <param name="extractInlineImages" type="bool">true</param>
+                <param name="ocrStrategy" type="string">auto</param>
+            </params>
+        </parser>
+        
+        <!-- Configure OCR with minimal settings -->
+        <parser class="org.apache.tika.parser.ocr.TesseractOCRParser">
+            <params>
+                <param name="language" type="string">deu+eng</param>
+            </params>
+        </parser>
+    </parsers>
+    
+    <detectors>
+        <detector class="org.apache.tika.detect.DefaultDetector"/>
+    </detectors>
+</properties>
