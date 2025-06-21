@@ -88,19 +88,7 @@ services:
       POSTGRES_PASSWORD: postgres
       POSTGRES_DB: bitandbeam
 
-  tika:
-    build:
-      context: ./tika
-      dockerfile: Dockerfile
-    container_name: bitandbeam_tika
-    restart: always
-    ports:
-      - "9998:9998"
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:9998/version"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
+
 
 volumes:
   documentdata:
