@@ -1,4 +1,6 @@
 using System;
+using BitAndBeam.Services;
+using System.Threading;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
@@ -15,6 +17,21 @@ namespace BitAndBeam.Tika
             _client = client;
             _logger = logger;
         }
+
+        public async Task<bool> CheckHealthAsync(CancellationToken cancellationToken = default)
+        {
+            try
+            {
+                var response = await _client.GetAsync("http://tika:9998/tika", cancellationToken);
+                return response.IsSuccessStatusCode;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Tika health check failed.");
+                return false;
+            }
+        }
+
 
         /// <summary>
         /// Extracts text from a file using the Tika server. Handles errors and logs them appropriately.

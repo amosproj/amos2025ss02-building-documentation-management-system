@@ -68,7 +68,7 @@ services:
     volumes:
       - ./frontend/src/api:/local/generated-sdk
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://backend:5000/swagger/v1/swagger.json"]
+      test: ["CMD", "curl", "-f", "http://backend:5001/swagger/v1/swagger.json"]
       interval: 10s
       timeout: 5s
       retries: 5
