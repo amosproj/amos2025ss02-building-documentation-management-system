@@ -381,82 +381,82 @@ namespace BUILD.ING.Controllers
         }
 
         [HttpPatch("{id}")]
-public IActionResult UpdateDocumentMetadata(int id, [FromBody] DocumentMetadataPatchRequest request)
-{
-    var document = _context.Documents.FirstOrDefault(d => d.DocumentId == id && d.GroupId == GetCurrentUserGroupId());
-    if (document == null)
-        return NotFound();
+        public IActionResult UpdateDocumentMetadata(int id, [FromBody] DocumentMetadataPatchRequest request)
+        {
+            var document = _context.Documents.FirstOrDefault(d => d.DocumentId == id && d.GroupId == GetCurrentUserGroupId());
+            if (document == null)
+                return NotFound();
 
-    // Handle CategoryName or CategoryId logic
-    if (request.CategoryId.HasValue)
-    {
-        var category = _context.DocumentCategories.FirstOrDefault(c => c.CategoryId == request.CategoryId.Value);
-        if (category == null)
-            return BadRequest($"Category with ID {request.CategoryId} not found.");
-        document.Category = category;
-        document.CategoryId = request.CategoryId.Value;
-        if (category.Documents == null)
-            category.Documents = new List<Document>();
-        if (!category.Documents.Contains(document))
-            category.Documents.Add(document);
-    }
-    else if (!string.IsNullOrEmpty(request.CategoryName))
-    {
-        document.CategoryName = request.CategoryName;
-    }
-    else
-    {
-        document.CategoryName = null;
-        document.Category = null;
-        document.CategoryId = null;
-    }
+            // Handle CategoryName or CategoryId logic
+            if (request.CategoryId.HasValue)
+            {
+                var category = _context.DocumentCategories.FirstOrDefault(c => c.CategoryId == request.CategoryId.Value);
+                if (category == null)
+                    return BadRequest($"Category with ID {request.CategoryId} not found.");
+                document.Category = category;
+                document.CategoryId = request.CategoryId.Value;
+                if (category.Documents == null)
+                    category.Documents = new List<Document>();
+                if (!category.Documents.Contains(document))
+                    category.Documents.Add(document);
+            }
+            else if (!string.IsNullOrEmpty(request.CategoryName))
+            {
+                document.CategoryName = request.CategoryName;
+            }
+            else
+            {
+                document.CategoryName = null;
+                document.Category = null;
+                document.CategoryId = null;
+            }
 
-    // Handle BuildingId logic
-    if (request.BuildingId.HasValue)
-    {
-        var building = _context.Buildings.FirstOrDefault(b => b.BuildingId == request.BuildingId.Value);
-        if (building == null)
-            return BadRequest($"Building with ID {request.BuildingId} not found.");
-        document.Building = building;
-        document.BuildingId = request.BuildingId.Value;
+            // Handle BuildingId logic
+            if (request.BuildingId.HasValue)
+            {
+                var building = _context.Buildings.FirstOrDefault(b => b.BuildingId == request.BuildingId.Value);
+                if (building == null)
+                    return BadRequest($"Building with ID {request.BuildingId} not found.");
+                document.Building = building;
+                document.BuildingId = request.BuildingId.Value;
 
-        if (building.Documents == null)
-            building.Documents = new List<Document>();
-        if (!building.Documents.Contains(document))
-            building.Documents.Add(document);
-    }
-    else
-    {
-        document.Building = null;
-        document.BuildingId = null;
-    }
+                if (building.Documents == null)
+                    building.Documents = new List<Document>();
+                if (!building.Documents.Contains(document))
+                    building.Documents.Add(document);
+            }
+            else
+            {
+                document.Building = null;
+                document.BuildingId = null;
+            }
 
-    _context.SaveChanges();
+            _context.SaveChanges();
 
-    var dto = new BUILD.ING.Dto.DocumentDto
-    {
-        DocumentId = document.DocumentId,
-        Title = document.Title,
-        FilePath = document.FilePath,
-        FileType = document.FileType,
-        FileSize = document.FileSize,
-        CategoryName = document.CategoryName,
-        BuildingId = document.BuildingId,
-        UploadedBy = document.UploadedBy,
-        UploadDate = document.UploadDate,
-        LastModified = document.LastModified,
-        Version = document.Version,
-        Status = document.Status,
-        Description = document.Description,
-        IsPublic = document.IsPublic,
-        Metadata = document.Metadata,
-        FileName = document.FileName,
-        UploadedAt = document.UploadedAt,
-        GroupId = document.GroupId
-    };
+            var dto = new BUILD.ING.Dto.DocumentDto
+            {
+                DocumentId = document.DocumentId,
+                Title = document.Title,
+                FilePath = document.FilePath,
+                FileType = document.FileType,
+                FileSize = document.FileSize,
+                CategoryName = document.CategoryName,
+                BuildingId = document.BuildingId,
+                UploadedBy = document.UploadedBy,
+                UploadDate = document.UploadDate,
+                LastModified = document.LastModified,
+                Version = document.Version,
+                Status = document.Status,
+                Description = document.Description,
+                IsPublic = document.IsPublic,
+                Metadata = document.Metadata,
+                FileName = document.FileName,
+                UploadedAt = document.UploadedAt,
+                GroupId = document.GroupId
+            };
 
-    return Ok(dto);
-}
+            return Ok(dto);
+        }
 
 
         [HttpDelete("{id}")]
