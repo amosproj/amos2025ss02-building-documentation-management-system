@@ -13,26 +13,26 @@ namespace Build.ING.Migrations
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.CreateTable(
-                name: "DocumentCategories",
-                columns: table => new
-                {
-                    CategoryId = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    Name = table.Column<string>(type: "text", nullable: false),
-                    Description = table.Column<string>(type: "text", nullable: true),
-                    ParentCategoryId = table.Column<int>(type: "integer", nullable: true),
-                    CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_DocumentCategories", x => x.CategoryId);
-                    table.ForeignKey(
-                        name: "FK_DocumentCategories_DocumentCategories_ParentCategoryId",
-                        column: x => x.ParentCategoryId,
-                        principalTable: "DocumentCategories",
-                        principalColumn: "CategoryId");
-                });
+            // migrationBuilder.CreateTable(
+            //     name: "DocumentCategories",
+            //     columns: table => new
+            //     {
+            //         CategoryId = table.Column<int>(type: "integer", nullable: false)
+            //             .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+            //         Name = table.Column<string>(type: "text", nullable: false),
+            //         Description = table.Column<string>(type: "text", nullable: true),
+            //         ParentCategoryId = table.Column<int>(type: "integer", nullable: true),
+            //         CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
+            //     },
+            //     constraints: table =>
+            //     {
+            //         table.PrimaryKey("PK_DocumentCategories", x => x.CategoryId);
+            //         table.ForeignKey(
+            //             name: "FK_DocumentCategories_DocumentCategories_ParentCategoryId",
+            //             column: x => x.ParentCategoryId,
+            //             principalTable: "DocumentCategories",
+            //             principalColumn: "CategoryId");
+            //     });
 
             migrationBuilder.CreateTable(
                 name: "DocumentTags",
@@ -130,7 +130,7 @@ namespace Build.ING.Migrations
                     FilePath = table.Column<string>(type: "text", nullable: false),
                     FileType = table.Column<string>(type: "text", nullable: false),
                     FileSize = table.Column<int>(type: "integer", nullable: false),
-                    CategoryId = table.Column<int>(type: "integer", nullable: true),
+                    CategoryName = table.Column<string>(type: "text", nullable: true),
                     BuildingId = table.Column<int>(type: "integer", nullable: true),
                     UploadedBy = table.Column<int>(type: "integer", nullable: true),
                     UploadDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
@@ -153,12 +153,12 @@ namespace Build.ING.Migrations
                         principalTable: "Buildings",
                         principalColumn: "BuildingId",
                         onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_Documents_DocumentCategories_CategoryId",
-                        column: x => x.CategoryId,
-                        principalTable: "DocumentCategories",
-                        principalColumn: "CategoryId",
-                        onDelete: ReferentialAction.SetNull);
+                    // table.ForeignKey(
+                    //     name: "FK_Documents_DocumentCategories_CategoryId",
+                    //     column: x => x.CategoryId,
+                    //     principalTable: "DocumentCategories",
+                    //     principalColumn: "CategoryId",
+                    //     onDelete: ReferentialAction.SetNull);
                     table.ForeignKey(
                         name: "FK_Documents_Users_UploadedBy",
                         column: x => x.UploadedBy,
@@ -259,10 +259,10 @@ namespace Build.ING.Migrations
                 table: "Buildings",
                 column: "OrganizationId");
 
-            migrationBuilder.CreateIndex(
-                name: "IX_DocumentCategories_ParentCategoryId",
-                table: "DocumentCategories",
-                column: "ParentCategoryId");
+            // migrationBuilder.CreateIndex(
+            //     name: "IX_DocumentCategories_ParentCategoryId",
+            //     table: "DocumentCategories",
+            //     column: "ParentCategoryId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_DocumentPermissions_GrantedBy",
@@ -284,10 +284,10 @@ namespace Build.ING.Migrations
                 table: "Documents",
                 column: "BuildingId");
 
-            migrationBuilder.CreateIndex(
-                name: "IX_Documents_CategoryId",
-                table: "Documents",
-                column: "CategoryId");
+            // migrationBuilder.CreateIndex(
+            //     name: "IX_Documents_CategoryId",
+            //     table: "Documents",
+            //     column: "CategoryId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Documents_UploadedBy",
@@ -339,8 +339,8 @@ namespace Build.ING.Migrations
             migrationBuilder.DropTable(
                 name: "Buildings");
 
-            migrationBuilder.DropTable(
-                name: "DocumentCategories");
+            // migrationBuilder.DropTable(
+            //     name: "DocumentCategories");
 
             migrationBuilder.DropTable(
                 name: "Users");

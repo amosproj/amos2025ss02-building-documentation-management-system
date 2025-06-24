@@ -119,8 +119,8 @@ namespace Build.ING.Migrations
                     b.Property<int?>("BuildingId")
                         .HasColumnType("integer");
 
-                    b.Property<int?>("CategoryId")
-                        .HasColumnType("integer");
+                    b.Property<string?>("CategoryName")
+                        .HasColumnType("text");
 
                     b.Property<string>("Description")
                         .IsRequired()
@@ -180,41 +180,39 @@ namespace Build.ING.Migrations
 
                     b.HasIndex("BuildingId");
 
-                    b.HasIndex("CategoryId");
-
                     b.HasIndex("UploadedBy");
 
                     b.ToTable("Documents");
                 });
 
-            modelBuilder.Entity("BUILD.ING.Models.DocumentCategory", b =>
-                {
-                    b.Property<int>("CategoryId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
+            // modelBuilder.Entity("BUILD.ING.Models.DocumentCategory", b =>
+            //     {
+            //         b.Property<int>("CategoryId")
+            //             .ValueGeneratedOnAdd()
+            //             .HasColumnType("integer");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("CategoryId"));
+            //         NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("CategoryId"));
 
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp with time zone");
+            //         b.Property<DateTime>("CreatedAt")
+            //             .HasColumnType("timestamp with time zone");
 
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasColumnType("text");
+            //         b.Property<string>("Description")
+            //             .IsRequired()
+            //             .HasColumnType("text");
 
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("text");
+            //         b.Property<string>("Name")
+            //             .IsRequired()
+            //             .HasColumnType("text");
 
-                    b.Property<int?>("ParentCategoryId")
-                        .HasColumnType("integer");
+            //         b.Property<int?>("ParentCategoryId")
+            //             .HasColumnType("integer");
 
-                    b.HasKey("CategoryId");
+            //         b.HasKey("CategoryId");
 
-                    b.HasIndex("ParentCategoryId");
+            //         b.HasIndex("ParentCategoryId");
 
-                    b.ToTable("DocumentCategories");
-                });
+            //         b.ToTable("DocumentCategories");
+            //     });
 
             modelBuilder.Entity("BUILD.ING.Models.DocumentPermission", b =>
                 {
@@ -404,10 +402,10 @@ namespace Build.ING.Migrations
                         .HasForeignKey("BuildingId")
                         .OnDelete(DeleteBehavior.Cascade);
 
-                    b.HasOne("BUILD.ING.Models.DocumentCategory", "Category")
-                        .WithMany("Documents")
-                        .HasForeignKey("CategoryId")
-                        .OnDelete(DeleteBehavior.SetNull);
+                    // b.HasOne("BUILD.ING.Models.DocumentCategory", "Category")
+                    //     .WithMany("Documents")
+                    //     .HasForeignKey("CategoryId")
+                    //     .OnDelete(DeleteBehavior.SetNull);
 
                     b.HasOne("BUILD.ING.Models.User", "Uploader")
                         .WithMany("UploadedDocuments")
@@ -416,19 +414,17 @@ namespace Build.ING.Migrations
 
                     b.Navigation("Building");
 
-                    b.Navigation("Category");
-
                     b.Navigation("Uploader");
                 });
 
-            modelBuilder.Entity("BUILD.ING.Models.DocumentCategory", b =>
-                {
-                    b.HasOne("BUILD.ING.Models.DocumentCategory", "ParentCategory")
-                        .WithMany("SubCategories")
-                        .HasForeignKey("ParentCategoryId");
+            // modelBuilder.Entity("BUILD.ING.Models.DocumentCategory", b =>
+            //     {
+            //         b.HasOne("BUILD.ING.Models.DocumentCategory", "ParentCategory")
+            //             .WithMany("SubCategories")
+            //             .HasForeignKey("ParentCategoryId");
 
-                    b.Navigation("ParentCategory");
-                });
+            //         b.Navigation("ParentCategory");
+            //     });
 
             modelBuilder.Entity("BUILD.ING.Models.DocumentPermission", b =>
                 {
@@ -502,12 +498,12 @@ namespace Build.ING.Migrations
                     b.Navigation("DocumentTagRelations");
                 });
 
-            modelBuilder.Entity("BUILD.ING.Models.DocumentCategory", b =>
-                {
-                    b.Navigation("Documents");
+            // modelBuilder.Entity("BUILD.ING.Models.DocumentCategory", b =>
+            //     {
+            //         b.Navigation("Documents");
 
-                    b.Navigation("SubCategories");
-                });
+            //         b.Navigation("SubCategories");
+            //     });
 
             modelBuilder.Entity("BUILD.ING.Models.DocumentTag", b =>
                 {

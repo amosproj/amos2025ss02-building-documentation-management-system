@@ -10,7 +10,7 @@ namespace BUILD.ING.Data
 
         public DbSet<User> Users { get; set; }
         public DbSet<Building> Buildings { get; set; }
-        public DbSet<DocumentCategory> DocumentCategories { get; set; }
+        // public DbSet<DocumentCategory> DocumentCategories { get; set; }
         public DbSet<Document> Documents { get; set; }
         public DbSet<DocumentTag> DocumentTags { get; set; }
         public DbSet<DocumentTagRelation> DocumentTagRelations { get; set; }
@@ -20,6 +20,8 @@ namespace BUILD.ING.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            ArgumentNullException.ThrowIfNull(modelBuilder);
+
             // Organization
             modelBuilder.Entity<Organization>(entity =>
             {
@@ -34,17 +36,6 @@ namespace BUILD.ING.Data
                 .HasIndex(u => u.Username).IsUnique();
             modelBuilder.Entity<User>()
                 .HasIndex(u => u.Email).IsUnique();
-
-            // DocumentCategory self-reference
-            modelBuilder.Entity<DocumentCategory>(entity =>
-            {
-                entity.HasKey(dc => dc.CategoryId);
-
-                entity.HasOne(dc => dc.ParentCategory)
-                      .WithMany(dc => dc.SubCategories)
-                      .HasForeignKey(dc => dc.ParentCategoryId);
-
-            });
 
             // DocumentTagRelation (many-to-many)
             modelBuilder.Entity<DocumentTagRelation>()
@@ -88,10 +79,10 @@ namespace BUILD.ING.Data
                 .WithMany(d => d.BuildingDocumentRelations)
                 .HasForeignKey(bdr => bdr.DocumentId);
 
-            // Document - Building (optional)
+            // Document - Building: When a building is deleted, delete all its documents
             modelBuilder.Entity<Document>()
-                .HasOne(d => d.Building)
-                .WithMany(b => b.Documents)
+                .HasOne<Building>()
+                .WithMany()
                 .HasForeignKey(d => d.BuildingId)
                 .OnDelete(DeleteBehavior.Cascade);
 
@@ -100,13 +91,6 @@ namespace BUILD.ING.Data
                 .HasOne(d => d.Uploader)
                 .WithMany(u => u.UploadedDocuments)
                 .HasForeignKey(d => d.UploadedBy)
-                .OnDelete(DeleteBehavior.SetNull);
-
-            // Document - Category (optional)
-            modelBuilder.Entity<Document>()
-                .HasOne(d => d.Category)
-                .WithMany(c => c.Documents)
-                .HasForeignKey(d => d.CategoryId)
                 .OnDelete(DeleteBehavior.SetNull);
 
             modelBuilder.Entity<Building>().ToTable("Buildings");

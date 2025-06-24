@@ -10,9 +10,6 @@ namespace BUILD.ING.Services
 {
     public class TikaService
     {
-        private const int DefaultOcrTimeoutMillis = 20000; // 20s
-        private const int DefaultMaxExtractLength = 1000000; // 1 MB of text
-
         private readonly HttpClient _client;
         private readonly ILogger<TikaService> _logger;
 

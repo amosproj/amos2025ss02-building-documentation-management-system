@@ -1,215 +1,215 @@
 {
-  "version": 2,
+  "version": 3,
   "generated_at": "2025-06-16T19:21:19+02:00",
   "categories": [
     {
       "name": "Architectural Drawings",
       "description": "2D/3D drawings defining the building architecture including floor plans, elevations, and sections.",
       "fields": [
-        {"name": "drawing_number", "description": "Unique identifier for the drawing sheet (e.g., A-101)."},
-        {"name": "revision", "description": "Revision code or version of the drawing."},
-        {"name": "scale", "description": "Drawing scale (e.g., 1:100)."},
-        {"name": "sheet_size", "description": "Physical paper size or sheet format (e.g., A1)."},
-        {"name": "author", "description": "Architect / drafter responsible for the drawing."},
-        {"name": "issue_date", "description": "Date when the drawing was issued."}
+        {"name": "drawing_number", "description": "Unique identifier for the drawing sheet (e.g., A-101).", "mandatory": true},
+        {"name": "revision", "description": "Revision code or version of the drawing.", "mandatory": true},
+        {"name": "scale", "description": "Drawing scale (e.g., 1:100).", "mandatory": true},
+        {"name": "sheet_size", "description": "Physical paper size or sheet format (e.g., A1).", "mandatory": false},
+        {"name": "author", "description": "Architect / drafter responsible for the drawing.", "mandatory": true},
+        {"name": "issue_date", "description": "Date when the drawing was issued.", "mandatory": true}
       ]
     },
     {
       "name": "Structural Drawings",
       "description": "Drawings and calculations describing the structural system of the building.",
       "fields": [
-        {"name": "drawing_number", "description": "Unique identifier for the structural drawing."},
-        {"name": "revision", "description": "Revision code or version."},
-        {"name": "structural_system", "description": "Type of structural system (e.g., steel, reinforced concrete)."},
-        {"name": "scale", "description": "Drawing scale."},
-        {"name": "engineer", "description": "Responsible structural engineer."},
-        {"name": "issue_date", "description": "Date of issue."}
+        {"name": "drawing_number", "description": "Unique identifier for the structural drawing.", "mandatory": true},
+        {"name": "revision", "description": "Revision code or version.", "mandatory": true},
+        {"name": "structural_system", "description": "Type of structural system (e.g., steel, reinforced concrete).", "mandatory": true},
+        {"name": "scale", "description": "Drawing scale.", "mandatory": true},
+        {"name": "engineer", "description": "Responsible structural engineer.", "mandatory": true},
+        {"name": "issue_date", "description": "Date of issue.", "mandatory": true}
       ]
     },
     {
       "name": "Mechanical (HVAC) Documents",
       "description": "Plans and specifications related to heating, ventilation, and air conditioning systems.",
       "fields": [
-        {"name": "system_id", "description": "Identifier for the HVAC system."},
-        {"name": "equipment", "description": "HVAC equipment covered in the document."},
-        {"name": "capacity", "description": "Rated capacity of the system (e.g., kW, CFM)."},
-        {"name": "drawing_number", "description": "Reference drawing number if applicable."},
-        {"name": "revision", "description": "Revision code or version."},
-        {"name": "issue_date", "description": "Date of issue."}
+        {"name": "system_id", "description": "Identifier for the HVAC system.", "mandatory": true},
+        {"name": "equipment", "description": "HVAC equipment covered in the document.", "mandatory": true},
+        {"name": "capacity", "description": "Rated capacity of the system (e.g., kW, CFM).", "mandatory": true},
+        {"name": "drawing_number", "description": "Reference drawing number if applicable.", "mandatory": false},
+        {"name": "revision", "description": "Revision code or version.", "mandatory": true},
+        {"name": "issue_date", "description": "Date of issue.", "mandatory": true}
       ]
     },
     {
       "name": "Electrical Plans",
       "description": "Plans, schematics, and schedules for electrical distribution and devices.",
       "fields": [
-        {"name": "drawing_number", "description": "Unique identifier for the electrical drawing."},
-        {"name": "revision", "description": "Revision code or version."},
-        {"name": "voltage", "description": "Operating voltage levels of circuits."},
-        {"name": "panel_id", "description": "Identifier of related panel boards or distribution boards."},
-        {"name": "engineer", "description": "Responsible electrical engineer."},
-        {"name": "issue_date", "description": "Date of issue."}
+        {"name": "drawing_number", "description": "Unique identifier for the electrical drawing.", "mandatory": true},
+        {"name": "revision", "description": "Revision code or version.", "mandatory": true},
+        {"name": "voltage", "description": "Operating voltage levels of circuits.", "mandatory": true},
+        {"name": "panel_id", "description": "Identifier of related panel boards or distribution boards.", "mandatory": false},
+        {"name": "engineer", "description": "Responsible electrical engineer.", "mandatory": true},
+        {"name": "issue_date", "description": "Date of issue.", "mandatory": true}
       ]
     },
     {
       "name": "Plumbing Plans",
       "description": "Piping layouts and details for water supply, drainage, and sanitary systems.",
       "fields": [
-        {"name": "drawing_number", "description": "Unique identifier for the plumbing drawing."},
-        {"name": "revision", "description": "Revision code or version."},
-        {"name": "system_type", "description": "Type of plumbing system (water supply, drainage, etc.)."},
-        {"name": "engineer", "description": "Responsible plumbing engineer."},
-        {"name": "issue_date", "description": "Date of issue."}
+        {"name": "drawing_number", "description": "Unique identifier for the plumbing drawing.", "mandatory": true},
+        {"name": "revision", "description": "Revision code or version.", "mandatory": true},
+        {"name": "system_type", "description": "Type of plumbing system (water supply, drainage, etc.).", "mandatory": true},
+        {"name": "engineer", "description": "Responsible plumbing engineer.", "mandatory": true},
+        {"name": "issue_date", "description": "Date of issue.", "mandatory": true}
       ]
     },
     {
       "name": "Fire Safety Documents",
       "description": "Drawings, certificates, and reports related to fire detection and suppression systems.",
       "fields": [
-        {"name": "document_number", "description": "Identifier for the fire safety document."},
-        {"name": "revision", "description": "Revision code or version."},
-        {"name": "system_type", "description": "Fire protection system type (alarm, sprinkler, extinguisher)."},
-        {"name": "certifying_agency", "description": "Agency or authority certifying the system."},
-        {"name": "inspection_date", "description": "Date of last inspection."}
+        {"name": "document_number", "description": "Identifier for the fire safety document.", "mandatory": true},
+        {"name": "revision", "description": "Revision code or version.", "mandatory": true},
+        {"name": "system_type", "description": "Fire protection system type (alarm, sprinkler, extinguisher).", "mandatory": true},
+        {"name": "certifying_agency", "description": "Agency or authority certifying the system.", "mandatory": true},
+        {"name": "inspection_date", "description": "Date of last inspection.", "mandatory": true}
       ]
     },
     {
       "name": "Operation & Maintenance Manuals",
       "description": "Manuals containing instructions for operation and maintenance of equipment.",
       "fields": [
-        {"name": "document_title", "description": "Title of the manual."},
-        {"name": "equipment_name", "description": "Equipment covered by the manual."},
-        {"name": "model_number", "description": "Manufacturer model number."},
-        {"name": "manufacturer", "description": "Equipment manufacturer."},
-        {"name": "maintenance_interval", "description": "Recommended maintenance interval."},
-        {"name": "warranty_expiry", "description": "Warranty expiry date."}
+        {"name": "document_title", "description": "Title of the manual.", "mandatory": true},
+        {"name": "equipment_name", "description": "Equipment covered by the manual.", "mandatory": true},
+        {"name": "model_number", "description": "Manufacturer model number.", "mandatory": true},
+        {"name": "manufacturer", "description": "Equipment manufacturer.", "mandatory": true},
+        {"name": "maintenance_interval", "description": "Recommended maintenance interval.", "mandatory": false},
+        {"name": "warranty_expiry", "description": "Warranty expiry date.", "mandatory": false}
       ]
     },
     {
       "name": "Contracts & Permits",
       "description": "Legal documents including construction contracts, building permits, and approvals.",
       "fields": [
-        {"name": "document_title", "description": "Title of the contract or permit."},
-        {"name": "contract_or_permit_number", "description": "Official contract or permit number."},
-        {"name": "issuing_authority", "description": "Authority that issued the document."},
-        {"name": "issue_date", "description": "Date of issue."},
-        {"name": "expiry_date", "description": "Expiry date if applicable."},
-        {"name": "parties_involved", "description": "Main parties involved in the contract or permit."}
+        {"name": "document_title", "description": "Title of the contract or permit.", "mandatory": true},
+        {"name": "contract_or_permit_number", "description": "Official contract or permit number.", "mandatory": true},
+        {"name": "issuing_authority", "description": "Authority that issued the document.", "mandatory": true},
+        {"name": "issue_date", "description": "Date of issue.", "mandatory": true},
+        {"name": "expiry_date", "description": "Expiry date if applicable.", "mandatory": false},
+        {"name": "parties_involved", "description": "Main parties involved in the contract or permit.", "mandatory": true}
       ]
     },
     {
       "name": "Inspection Reports",
       "description": "Reports produced after on-site inspections or quality checks.",
       "fields": [
-        {"name": "report_id", "description": "Identifier for the report."},
-        {"name": "inspection_type", "description": "Type of inspection performed."},
-        {"name": "inspector", "description": "Person or organization performing the inspection."},
-        {"name": "date", "description": "Date of inspection."},
-        {"name": "findings_summary", "description": "Brief summary of findings."}
+        {"name": "report_id", "description": "Identifier for the report.", "mandatory": true},
+        {"name": "inspection_type", "description": "Type of inspection performed.", "mandatory": true},
+        {"name": "inspector", "description": "Person or organization performing the inspection.", "mandatory": true},
+        {"name": "date", "description": "Date of inspection.", "mandatory": true},
+        {"name": "findings_summary", "description": "Brief summary of findings.", "mandatory": false}
       ]
     },
     {
       "name": "Material Safety Data Sheets (MSDS)",
       "description": "Safety data sheets detailing hazards and handling of chemical products.",
       "fields": [
-        {"name": "product_name", "description": "Name of the chemical product."},
-        {"name": "manufacturer", "description": "Product manufacturer."},
-        {"name": "hazard_class", "description": "Hazard classification of the product."},
-        {"name": "issue_date", "description": "Date of issue of the SDS."},
-        {"name": "sds_version", "description": "Version number of the SDS."}
+        {"name": "product_name", "description": "Name of the chemical product.", "mandatory": true},
+        {"name": "manufacturer", "description": "Product manufacturer.", "mandatory": true},
+        {"name": "hazard_class", "description": "Hazard classification of the product.", "mandatory": true},
+        {"name": "issue_date", "description": "Date of issue of the SDS.", "mandatory": true},
+        {"name": "sds_version", "description": "Version number of the SDS.", "mandatory": true}
       ]
     },
     {
       "name": "Blueprints",
       "description": "Detailed architectural or structural blueprints of the building.",
       "fields": [
-        {"name": "blueprint_id", "description": "Identifier for the blueprint file."},
-        {"name": "drawing_number", "description": "Reference drawing number if applicable."},
-        {"name": "scale", "description": "Drawing scale."},
-        {"name": "author", "description": "Designer or drafter responsible."},
-        {"name": "issue_date", "description": "Date of issue."}
+        {"name": "blueprint_id", "description": "Identifier for the blueprint file.", "mandatory": true},
+        {"name": "drawing_number", "description": "Reference drawing number if applicable.", "mandatory": false},
+        {"name": "scale", "description": "Drawing scale.", "mandatory": true},
+        {"name": "author", "description": "Designer or drafter responsible.", "mandatory": true},
+        {"name": "issue_date", "description": "Date of issue.", "mandatory": true}
       ]
     },
     {
       "name": "Energy Consumption Reports",
       "description": "Periodic reports detailing building energy usage and efficiency metrics.",
       "fields": [
-        {"name": "report_period", "description": "Time period covered by the report (e.g., 2025-Q1)."},
-        {"name": "total_energy_kwh", "description": "Total energy consumed in kWh."},
-        {"name": "energy_source", "description": "Primary energy source (electricity, gas, etc.)."},
-        {"name": "benchmark", "description": "Benchmark comparison or KPI (e.g., kWh/m²)."},
-        {"name": "author", "description": "Person or system that generated the report."},
-        {"name": "issue_date", "description": "Date of issue."}
+        {"name": "report_period", "description": "Time period covered by the report (e.g., 2025-Q1).", "mandatory": true},
+        {"name": "total_energy_kwh", "description": "Total energy consumed in kWh.", "mandatory": true},
+        {"name": "energy_source", "description": "Primary energy source (electricity, gas, etc.).", "mandatory": true},
+        {"name": "benchmark", "description": "Benchmark comparison or KPI (e.g., kWh/m²).", "mandatory": false},
+        {"name": "author", "description": "Person or system that generated the report.", "mandatory": true},
+        {"name": "issue_date", "description": "Date of issue.", "mandatory": true}
       ]
     },
     {
       "name": "Maintenance Logs",
       "description": "Records of routine and corrective maintenance activities.",
       "fields": [
-        {"name": "log_id", "description": "Identifier for the maintenance log entry."},
-        {"name": "maintenance_type", "description": "Type of maintenance (preventive, corrective)."},
-        {"name": "description", "description": "Brief description of maintenance performed."},
-        {"name": "performed_by", "description": "Technician or contractor who performed the task."},
-        {"name": "date", "description": "Date maintenance was performed."},
-        {"name": "next_due_date", "description": "Date of next scheduled maintenance."}
+        {"name": "log_id", "description": "Identifier for the maintenance log entry.", "mandatory": true},
+        {"name": "maintenance_type", "description": "Type of maintenance (preventive, corrective).", "mandatory": true},
+        {"name": "description", "description": "Brief description of maintenance performed.", "mandatory": true},
+        {"name": "performed_by", "description": "Technician or contractor who performed the task.", "mandatory": true},
+        {"name": "date", "description": "Date maintenance was performed.", "mandatory": true},
+        {"name": "next_due_date", "description": "Date of next scheduled maintenance.", "mandatory": false}
       ]
     },
     {
       "name": "Renovation Records",
       "description": "Documents and drawings related to renovation or retrofit projects.",
       "fields": [
-        {"name": "project_id", "description": "Identifier for the renovation project."},
-        {"name": "description", "description": "Summary of renovation scope."},
-        {"name": "start_date", "description": "Renovation start date."},
-        {"name": "completion_date", "description": "Renovation completion date."},
-        {"name": "contractor", "description": "Contractor responsible for the work."},
-        {"name": "permits_reference", "description": "Reference to related permits."}
+        {"name": "project_id", "description": "Identifier for the renovation project.", "mandatory": true},
+        {"name": "description", "description": "Summary of renovation scope.", "mandatory": true},
+        {"name": "start_date", "description": "Renovation start date.", "mandatory": true},
+        {"name": "completion_date", "description": "Renovation completion date.", "mandatory": false},
+        {"name": "contractor", "description": "Contractor responsible for the work.", "mandatory": true},
+        {"name": "permits_reference", "description": "Reference to related permits.", "mandatory": false}
       ]
     },
     {
       "name": "Permit Documents",
       "description": "Official permits issued by authorities for construction, renovation, or occupancy.",
       "fields": [
-        {"name": "permit_number", "description": "Official permit number."},
-        {"name": "authority", "description": "Issuing authority."},
-        {"name": "issue_date", "description": "Date of issue."},
-        {"name": "expiry_date", "description": "Expiry date of permit."},
-        {"name": "permit_type", "description": "Type of permit (building, occupancy, etc.)."},
-        {"name": "status", "description": "Current status of the permit (active, expired)."}
+        {"name": "permit_number", "description": "Official permit number.", "mandatory": true},
+        {"name": "authority", "description": "Issuing authority.", "mandatory": true},
+        {"name": "issue_date", "description": "Date of issue.", "mandatory": true},
+        {"name": "expiry_date", "description": "Expiry date of permit.", "mandatory": false},
+        {"name": "permit_type", "description": "Type of permit (building, occupancy, etc.).", "mandatory": true},
+        {"name": "status", "description": "Current status of the permit (active, expired).", "mandatory": true}
       ]
     },
     {
       "name": "Utility Bills",
       "description": "Invoices for utilities consumed by the building (electricity, water, etc.).",
       "fields": [
-        {"name": "service_type", "description": "Utility service type."},
-        {"name": "billing_period", "description": "Billing period covered."},
-        {"name": "amount", "description": "Invoice amount."},
-        {"name": "provider", "description": "Utility service provider."},
-        {"name": "due_date", "description": "Payment due date."},
-        {"name": "account_number", "description": "Provider account number."}
+        {"name": "service_type", "description": "Utility service type.", "mandatory": true},
+        {"name": "billing_period", "description": "Billing period covered.", "mandatory": true},
+        {"name": "amount", "description": "Invoice amount.", "mandatory": true},
+        {"name": "provider", "description": "Utility service provider.", "mandatory": true},
+        {"name": "due_date", "description": "Payment due date.", "mandatory": true},
+        {"name": "account_number", "description": "Provider account number.", "mandatory": false}
       ]
     },
     {
       "name": "Sustainability Certifications",
       "description": "Certificates and documentation of sustainability or green building ratings (e.g., LEED, BREEAM).",
       "fields": [
-        {"name": "certification_name", "description": "Name of the certification (LEED, DGNB, etc.)."},
-        {"name": "rating_level", "description": "Level achieved (Gold, Silver, etc.)."},
-        {"name": "certifying_body", "description": "Organization granting the certification."},
-        {"name": "certificate_id", "description": "Identifier of the certificate."},
-        {"name": "issue_date", "description": "Date of issue."},
-        {"name": "expiry_date", "description": "Expiry date if applicable."}
+        {"name": "certification_name", "description": "Name of the certification (LEED, DGNB, etc.).", "mandatory": true},
+        {"name": "rating_level", "description": "Level achieved (Gold, Silver, etc.).", "mandatory": true},
+        {"name": "certifying_body", "description": "Organization granting the certification.", "mandatory": true},
+        {"name": "certificate_id", "description": "Identifier of the certificate.", "mandatory": true},
+        {"name": "issue_date", "description": "Date of issue.", "mandatory": true},
+        {"name": "expiry_date", "description": "Expiry date of certification.", "mandatory": false}
       ]
     },
     {
       "name": "Building Automation System Logs",
       "description": "Logs generated by building automation and management systems.",
       "fields": [
-        {"name": "system_id", "description": "Identifier of the BAS/BMS generating the log."},
-        {"name": "log_period", "description": "Time period covered by the log."},
-        {"name": "event_count", "description": "Total number of events recorded."},
-        {"name": "critical_events", "description": "Number of critical events in the log."},
-        {"name": "generated_at", "description": "Timestamp when the log was generated."}
+        {"name": "system_id", "description": "Identifier of the BAS/BMS generating the log.", "mandatory": true},
+        {"name": "log_period", "description": "Time period covered by the log.", "mandatory": true},
+        {"name": "event_count", "description": "Total number of events recorded.", "mandatory": true},
+        {"name": "critical_events", "description": "Number of critical events in the log.", "mandatory": true},
+        {"name": "generated_at", "description": "Timestamp when the log was generated.", "mandatory": true}
       ]
     }
   ],

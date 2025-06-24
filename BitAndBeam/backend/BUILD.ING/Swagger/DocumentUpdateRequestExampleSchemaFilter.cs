@@ -1,4 +1,4 @@
-using BUILD.ING.Controllers; // For DocumentMetadataPatchRequest
+using BUILD.ING.Controllers; // For DocumentUpdateRequest
 using Microsoft.OpenApi.Any;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.SwaggerGen;
@@ -9,18 +9,18 @@ namespace BUILD.ING.Swagger
     /// Adds an example for the DocumentUpdateRequest schema so that Swagger UI shows
     /// a request payload with typical fields. This helps demonstrate the expected structure.
     /// </summary>
-    public class DocumentMetadataPatchRequestExampleSchemaFilter : ISchemaFilter
+    public class DocumentUpdateRequestExampleSchemaFilter : ISchemaFilter
     {
         public void Apply(OpenApiSchema schema, SchemaFilterContext context)
         {
             ArgumentNullException.ThrowIfNull(schema);
             ArgumentNullException.ThrowIfNull(context);
-            if (context.Type == typeof(DocumentMetadataPatchRequest))
+            if (context.Type == typeof(DocumentUpdateRequest))
             {
                 schema.Example = new OpenApiObject
                 {
-                    ["categoryName"] = new OpenApiNull(),
-                    ["buildingId"] = new OpenApiNull(),
+                    ["title"] = new OpenApiNull(),
+                    ["description"] = new OpenApiNull()
                 };
             }
         }

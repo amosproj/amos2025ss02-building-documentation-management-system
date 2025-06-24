@@ -3,6 +3,7 @@ import { Injectable, computed, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthApi, Configuration } from '../../api';
 import jwt_decode from 'jwt-decode';
+import { ConfigService } from '../config.service';
 
 interface User {
   id: number;
@@ -30,9 +31,10 @@ export class SessionService {
 
   private authApi: AuthApi;
 
-  constructor(private router: Router) {
-    const config = new Configuration({ basePath: 'http://localhost:5001' });
-    this.authApi = new AuthApi(config);
+  constructor(private router: Router, private configService: ConfigService) {
+    const apiUrl = this.configService.apiUrl;
+    const apiConfig = new Configuration({ basePath: apiUrl });
+    this.authApi = new AuthApi(apiConfig);
     this.restoreSession();
   }
 
