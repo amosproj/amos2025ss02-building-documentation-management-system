@@ -2583,7 +2583,7 @@ export const DocumentsApiFactory = function (configuration?: Configuration, base
       .apiDocumentsPost(file, options)
       .then((request) => request(this.axios, this.basePath));
   }
-}
+
 
 /**
  * OllamaApi - axios parameter creator
