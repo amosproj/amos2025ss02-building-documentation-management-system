@@ -21,6 +21,6 @@ namespace BUILD.ING.Dto
         public DateTime UpdatedAt { get; set; }
         public int OrganizationId { get; set; }
         public string? OrganizationName { get; set; }
-        public List<KeyValuePair<int, string>> Documents { get; set; } = new List<KeyValuePair<int, string>>();
+        public List<int> Documents { get; set; } = new List<int>();
     }
 }

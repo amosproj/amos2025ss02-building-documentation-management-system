@@ -99,6 +99,7 @@ builder.Services.AddSwaggerGen(options =>
 
     options.SwaggerDoc("v1", new OpenApiInfo { Title = "BUILD.ING API", Version = "v1" });
     options.SchemaFilter<BuildingRequestExampleSchemaFilter>();
+    options.SchemaFilter<DocumentUpdateRequestExampleSchemaFilter>();
     options.SchemaFilter<DocumentMetadataPatchRequestExampleSchemaFilter>();
 
     // 🔐 Add JWT Authentication to Swagger
@@ -148,9 +149,11 @@ builder.WebHost.ConfigureKestrel(options =>
 builder.Services.AddHealthChecks()
     .AddCheck<BUILD.ING.HealthChecks.TikaHealthCheck>("tika_health_check", tags: new[] { "tika", "ready" });
 
-// Register HttpClient and TikaService
-builder.Services.AddHttpClient();
-builder.Services.AddScoped<BUILD.ING.Services.TikaService>();
+// Register HttpClient for TikaService with extended timeout (5 minutes)
+builder.Services.AddHttpClient<BUILD.ING.Services.TikaService>(client =>
+{
+    client.Timeout = TimeSpan.FromMinutes(5);
+});
 
 // ---------- JWT AUTHENTICATION CONFIGURATION ----------
 // Configure JWT Bearer Authentication to secure the API endpoints

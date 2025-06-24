@@ -75,7 +75,9 @@ services:
       POSTGRES_DB: bitandbeam
 
   tika:
-    image: apache/tika
+    build:
+      context: ./tika
+      dockerfile: Dockerfile
     container_name: bitandbeam_tika
     restart: always
     ports:

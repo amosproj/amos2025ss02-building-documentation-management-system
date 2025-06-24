@@ -33,13 +33,13 @@ CREATE TABLE "buildings" (
 );
 
 -- Document Categories Table
-CREATE TABLE "document_categories" (
-    "category_id" SERIAL PRIMARY KEY,
-    "name" VARCHAR(50) NOT NULL,
-    "description" TEXT DEFAULT NULL,
-    "parent_category_id" INTEGER REFERENCES "document_categories" ("category_id") ON DELETE SET NULL,
-    "created_at" TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
-);
+-- CREATE TABLE "document_categories" (
+--     "category_id" SERIAL PRIMARY KEY,
+--     "name" VARCHAR(50) NOT NULL,
+--     "description" TEXT DEFAULT NULL,
+--     "parent_category_id" INTEGER REFERENCES "document_categories" ("category_id") ON DELETE SET NULL,
+--     "created_at" TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+-- );
 
 -- Documents Table
 CREATE TABLE "documents" (
@@ -48,7 +48,7 @@ CREATE TABLE "documents" (
     "file_path" VARCHAR(255) NOT NULL,
     "file_type" VARCHAR(20) NOT NULL,
     "file_size" INTEGER NOT NULL, -- Size in bytes
-    "category_id" INTEGER REFERENCES "document_categories" ("category_id") ON DELETE SET NULL,
+    "category_id" INTEGER,
     "building_id" INTEGER REFERENCES "buildings" ("building_id") ON DELETE CASCADE,
     "uploaded_by" INTEGER REFERENCES "users" ("user_id") ON DELETE SET NULL,
     "upload_date" TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,

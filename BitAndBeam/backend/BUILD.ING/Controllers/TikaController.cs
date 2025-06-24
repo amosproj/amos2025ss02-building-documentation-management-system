@@ -60,8 +60,26 @@ namespace BUILD.ING.Controllers
                     fileBytes = ms.ToArray();
                 }
 
-                // Extract text
-                var textResult = await _tikaService.ExtractTextAsync(fileBytes, model.File.FileName).ConfigureAwait(false);
+                // 1) Fast path: try extraction without forcing OCR
+                var textResult = await _tikaService.ExtractTextAsync(fileBytes, model.File.FileName, false).ConfigureAwait(false);
+
+                bool ocrApplied = false;
+
+                // 2) If not enough text, do a second pass with OCR enabled
+                if (string.IsNullOrWhiteSpace(textResult) || textResult.Trim().Length < 50)
+                {
+                    textResult = await _tikaService.ExtractTextAsync(fileBytes, model.File.FileName, true).ConfigureAwait(false);
+                    ocrApplied = true; // we explicitly triggered OCR
+                }
+                else
+                {
+                    // 3) Heuristic: if Tika already applied OCR, the XHTML usually contains a div with class="ocr" or "page"
+                    if (textResult.Contains("class=\"ocr\"", StringComparison.OrdinalIgnoreCase) ||
+                        textResult.Contains("class=\"page\"", StringComparison.OrdinalIgnoreCase))
+                    {
+                        ocrApplied = true;
+                    }
+                }
 
                 // Extract metadata
                 var metadataResult = await _tikaService.ExtractMetadataAsync(fileBytes, model.File.FileName).ConfigureAwait(false);
@@ -99,6 +117,7 @@ namespace BUILD.ING.Controllers
                         text = new
                         {
                             success = textSuccess,
+                            ocrApplied,
                             content = textSuccess ? textResult : null,
                             error = !textSuccess ? textResult : null
                         },

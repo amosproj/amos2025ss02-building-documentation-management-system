@@ -123,14 +123,14 @@ export class DocumentMetadataPopupComponent implements OnInit {
 
 
 
-    this.updateDocumentMetadata(this.documentId!, categoryId, this.selectedBuildingId);
+    this.updateDocumentMetadata(this.documentId!, null, this.selectedBuildingId);
   }
 
 
   private updateDocumentMetadata(documentId: number, categoryId: number | null, buildingId: number | null): void {
     // ✅ Rewritten: use only the OpenAPI client for PATCH (removed categoryService.assignDocumentCategory)
     const patchRequest: DocumentMetadataPatchRequest = {
-      categoryId,
+      categoryName: this.isOtherCategory ? this.otherCategoryName : null,
       buildingId
     };
 

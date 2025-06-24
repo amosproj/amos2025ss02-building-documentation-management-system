@@ -68,7 +68,6 @@ export class CreateBuildingComponent {
       description: this.building.description,
       organizationId: this.building.organizationId,
       buildingDocumentRelations: [],
-      documents: [],
       coordinates: coordinates
     };
 

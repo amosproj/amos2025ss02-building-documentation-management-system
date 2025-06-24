@@ -127,12 +127,6 @@ export interface Building {
     'organization'?: Organization;
     /**
      * 
-     * @type {Array<Document>}
-     * @memberof Building
-     */
-    'documents'?: Array<Document> | null;
-    /**
-     * 
      * @type {Array<BuildingDocumentRelation>}
      * @memberof Building
      */
@@ -358,10 +352,10 @@ export interface BuildingDto {
     'organizationName'?: string | null;
     /**
      * 
-     * @type {Array<Int32StringKeyValuePair>}
+     * @type {Array<number>}
      * @memberof BuildingDto
      */
-    'documents'?: Array<Int32StringKeyValuePair> | null;
+    'documents'?: Array<number> | null;
 }
 /**
  * 
@@ -401,10 +395,10 @@ export interface Document {
     'fileSize'?: number;
     /**
      * 
-     * @type {number}
+     * @type {string}
      * @memberof Document
      */
-    'categoryId'?: number | null;
+    'categoryName'?: string | null;
     /**
      * 
      * @type {number}
@@ -479,22 +473,10 @@ export interface Document {
     'groupId'?: string | null;
     /**
      * 
-     * @type {Building}
-     * @memberof Document
-     */
-    'building'?: Building;
-    /**
-     * 
      * @type {User}
      * @memberof Document
      */
     'uploader'?: User;
-    /**
-     * 
-     * @type {DocumentCategory}
-     * @memberof Document
-     */
-    'category'?: DocumentCategory;
     /**
      * 
      * @type {Array<DocumentTagRelation>}
@@ -517,64 +499,15 @@ export interface Document {
 /**
  * 
  * @export
- * @interface DocumentCategory
- */
-export interface DocumentCategory {
-    /**
-     * 
-     * @type {number}
-     * @memberof DocumentCategory
-     */
-    'categoryId'?: number;
-    /**
-     * 
-     * @type {string}
-     * @memberof DocumentCategory
-     */
-    'name'?: string | null;
-    /**
-     * 
-     * @type {string}
-     * @memberof DocumentCategory
-     */
-    'description'?: string | null;
-    /**
-     * 
-     * @type {number}
-     * @memberof DocumentCategory
-     */
-    'parentCategoryId'?: number | null;
-    /**
-     * 
-     * @type {string}
-     * @memberof DocumentCategory
-     */
-    'createdAt'?: string;
-    /**
-     * 
-     * @type {DocumentCategory}
-     * @memberof DocumentCategory
-     */
-    'parentCategory'?: DocumentCategory;
-    /**
-     * 
-     * @type {Array<DocumentCategory>}
-     * @memberof DocumentCategory
-     */
-    'subCategories'?: Array<DocumentCategory> | null;
-}
-/**
- * 
- * @export
  * @interface DocumentMetadataPatchRequest
  */
 export interface DocumentMetadataPatchRequest {
     /**
      * 
-     * @type {number}
+     * @type {string}
      * @memberof DocumentMetadataPatchRequest
      */
-    'categoryId'?: number | null;
+    'categoryName'?: string | null;
     /**
      * 
      * @type {number}
@@ -700,13 +633,13 @@ export interface DocumentTagRelation {
     'tag'?: DocumentTag;
 }
 /**
- * Request model for updating document metadata
+ * 
  * @export
  * @interface DocumentUpdateRequest
  */
 export interface DocumentUpdateRequest {
     /**
-     * New title, category and/or building of the document. If a property is null, the original value is kept.
+     * 
      * @type {string}
      * @memberof DocumentUpdateRequest
      */
@@ -717,37 +650,6 @@ export interface DocumentUpdateRequest {
      * @memberof DocumentUpdateRequest
      */
     'description'?: string | null;
-    /**
-     * 
-     * @type {string}
-     * @memberof DocumentUpdateRequest
-     */
-    'category'?: string | null;
-    /**
-     * 
-     * @type {string}
-     * @memberof DocumentUpdateRequest
-     */
-    'building'?: string | null;
-}
-/**
- * 
- * @export
- * @interface Int32StringKeyValuePair
- */
-export interface Int32StringKeyValuePair {
-    /**
-     * 
-     * @type {number}
-     * @memberof Int32StringKeyValuePair
-     */
-    'key'?: number;
-    /**
-     * 
-     * @type {string}
-     * @memberof Int32StringKeyValuePair
-     */
-    'value'?: string | null;
 }
 /**
  * Represents the data sent when a user logs in.
@@ -1866,6 +1768,38 @@ export const DocumentsApiAxiosParamCreator = function (configuration?: Configura
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
+        apiDocumentsCategoriesGet: async (options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/api/Documents/categories`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication Bearer required
+            await setApiKeyToObject(localVarHeaderParameter, "Authorization", configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
         apiDocumentsGet: async (options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             const localVarPath = `/api/Documents`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -2173,6 +2107,17 @@ export const DocumentsApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
+        async apiDocumentsCategoriesGet(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.apiDocumentsCategoriesGet(options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['DocumentsApi.apiDocumentsCategoriesGet']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
         async apiDocumentsGet(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.apiDocumentsGet(options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
@@ -2280,6 +2225,14 @@ export const DocumentsApiFactory = function (configuration?: Configuration, base
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
+        apiDocumentsCategoriesGet(options?: any): AxiosPromise<void> {
+            return localVarFp.apiDocumentsCategoriesGet(options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
         apiDocumentsGet(options?: any): AxiosPromise<void> {
             return localVarFp.apiDocumentsGet(options).then((request) => request(axios, basePath));
         },
@@ -2358,6 +2311,16 @@ export const DocumentsApiFactory = function (configuration?: Configuration, base
  * @extends {BaseAPI}
  */
 export class DocumentsApi extends BaseAPI {
+    /**
+     * 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof DocumentsApi
+     */
+    public apiDocumentsCategoriesGet(options?: RawAxiosRequestConfig) {
+        return DocumentsApiFp(this.configuration).apiDocumentsCategoriesGet(options).then((request) => request(this.axios, this.basePath));
+    }
+
     /**
      * 
      * @param {*} [options] Override http request option.
