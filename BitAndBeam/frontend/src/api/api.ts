@@ -2516,7 +2516,7 @@ export const DocumentsApiFactory = function (configuration?: Configuration, base
          */
         apiDocumentsPost(file?: File, options?: any): AxiosPromise<void> {
             return localVarFp.apiDocumentsPost(file, options).then((request) => request(axios, basePath));
-        },
+        }
     };
 };
 
