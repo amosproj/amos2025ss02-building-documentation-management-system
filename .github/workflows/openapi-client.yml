@@ -19,10 +19,6 @@ on:
         description: "Whether the SDK was updated"
         value: ${{ jobs.generate-client.outputs.sdk_updated }}
 
-permissions:
-  contents: write
-  pull-requests: write
-
 jobs:
   generate-client:
     runs-on: ubuntu-latest
@@ -32,8 +28,6 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
@@ -95,7 +89,6 @@ jobs:
         if: steps.check_changes.outputs.sdk_updated == 'true'
         uses: peter-evans/create-pull-request@v5
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
           commit-message: "chore: update generated OpenAPI client"
           title: "chore: update generated OpenAPI client"
           body: "This PR updates the generated OpenAPI TypeScript client based on backend API changes."

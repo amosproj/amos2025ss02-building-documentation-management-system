@@ -67,8 +67,11 @@ services:
         condition: service_started
     volumes:
       - ./frontend/src/api:/local/generated-sdk
+    environment:
+      - SWAGGER_URL=http://backend:5000
+      - BACKEND_URL=http://localhost:5001
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://backend:5001/swagger/v1/swagger.json"]
+      test: ["CMD", "curl", "-f", "http://backend:5000/swagger/v1/swagger.json"]
       interval: 10s
       timeout: 5s
       retries: 5

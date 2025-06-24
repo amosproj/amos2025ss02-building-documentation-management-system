@@ -120,8 +120,6 @@ services:
     restart: always
     ports:
       - "5432:5432"
-    ports:
-      - "5432:5432"
     volumes:
       - .:/app
       - .:/app
