@@ -7,10 +7,8 @@ namespace BUILD.ING.Dto
         public string FilePath { get; set; }
         public string FileType { get; set; }
         public int FileSize { get; set; }
-        public int? CategoryId { get; set; }
         public string? CategoryName { get; set; }
         public int? BuildingId { get; set; }
-        public string? BuildingName { get; set; }
         public int? UploadedBy { get; set; }
         public DateTime UploadDate { get; set; }
         public DateTime LastModified { get; set; }

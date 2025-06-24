@@ -3,9 +3,6 @@
 MAX_RETRIES=10
 RETRY_COUNT=0
 
-# Use provided SWAGGER_URL or fallback to localhost:5000
-SWAGGER_URL=${SWAGGER_URL:-http://localhost:5001}
-
 echo "Waiting for backend Swagger spec at ${SWAGGER_URL}/swagger/v1/swagger.json..."
 
 until wget -qO /tmp/swagger.json "${SWAGGER_URL}/swagger/v1/swagger.json"; do
