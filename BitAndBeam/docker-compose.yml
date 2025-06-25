@@ -18,7 +18,20 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5  
-  # Uncomment the following lines if you want to set up CORS for the backen      
+  tika:
+    build:
+      context: ./tika
+      dockerfile: Dockerfile
+    container_name: bitandbeam_tika
+    restart: always
+    ports:
+      - "9998:9998"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9998/version"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+        
   ollama:
     build:
       context: ./ollama
@@ -28,7 +41,7 @@ services:
       - "11434:11434"   # Ollama internal API
       - "8000:8000"    # FastAPI external endpoint
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]  # or some endpoint that signals Ollama is ready
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]  # Check Ollama's FastAPI health endpoint
       interval: 10s
       timeout: 5s
       retries: 5
@@ -48,6 +61,11 @@ services:
       - Tika__ServerUrl=http://tika:9998
     volumes:
       - documentdata:/app/documents
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5000/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   frontend:
     build:
@@ -80,19 +98,7 @@ services:
       retries: 5 
 
 
-  tika:
-    build:
-      context: ./tika
-      dockerfile: Dockerfile
-    container_name: bitandbeam_tika
-    restart: always
-    ports:
-      - "9998:9998"
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:9998/version"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
+  
 
 volumes:
   documentdata:
