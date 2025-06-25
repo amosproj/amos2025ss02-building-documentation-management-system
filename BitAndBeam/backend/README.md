@@ -113,4 +113,79 @@ dotnet format
 
 -> Set LF end-of-line sequence for Dockerfile and .sh files, especially in backend directory
 
+# BitandBeam: Secure Deployment with HTTPS
 
+This describes how to configure, deploy, and test HTTPS support for the BitandBeam system using Traefik, Let's Encrypt, Docker, and DuckDNS.
+
+---
+
+## 🔐 HTTPS Deployment Overview
+
+- ✅ Reverse proxy: **Traefik v2**
+- ✅ Free SSL/TLS: **Let's Encrypt (ACME)**
+- ✅ Domain: **amos.b-iq.net**
+- ✅ Automatic HTTP → HTTPS redirection
+- ✅ Services routed via path-based routing (e.g. /, /api, /ollama)
+- ✅ Port 80/443 exposed via Docker & router
+
+---
+
+## ⚙️Setup Overview
+- Docker Compose used to define services
+
+- Traefik handles HTTPS termination and routing based on path
+
+- Let's Encrypt provides valid, auto-renewed certificates
+
+- DNS A-record for amos.b-iq.net points to the public server IP
+
+---
+✅ Global Functionality Testing
+
+🔹 Test 1: HTTPS and Certificate Validity
+
+curl -v https://amos.b-iq.net
+
+✅ Expect:
+
+SSL certificate verify ok.
+
+Response from your frontend or landing page
+
+Or simply open https://amos.b-iq.net in a browser
+
+You should see a 🔒 padlock icon
+
+Certificate should be issued by Let's Encrypt
+
+🔹 Test 2: HTTP Redirects to HTTPS
+
+curl -I http://amos.b-iq.net
+
+✅ Expect:
+
+HTTP/1.1 308 Permanent Redirect
+Location: https://amos.b-iq.net
+
+🔹 Test 3: Path-Based Routing for Services
+
+Functionality                 Path                    How to Test
+
+Frontend UI                     /                     Open in browser
+ 
+Backend API                   /api/...                Use curl or your app
+
+Ollama Service                /ollama/...             Use HTTP client or test endpoint
+ 
+Example:
+
+curl -X GET https://amos.b-iq.net/api/health
+curl -X GET https://amos.b-iq.net/ollama/health
+
+✅ Expect 200 OK responses
+
+🔹 Test 4: Automatic Certificate Storage
+
+docker exec traefik cat /letsencrypt/acme.json
+
+✅ You should see JSON entries showing that Let's Encrypt certs have been saved.

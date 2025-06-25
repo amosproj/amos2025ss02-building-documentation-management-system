@@ -39,6 +39,6 @@ RUN chmod +x /docker-entrypoint.sh && \
 # Switch to non-root user
 USER nginx
 
-EXPOSE 80
+#EXPOSE 80
 
 ENTRYPOINT ["/docker-entrypoint.sh"]

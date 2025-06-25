@@ -61,3 +61,6 @@ BitAndBeam/backend/BUILD.ING/.vs/
 
 # PostgreSQL
 /postgres/data/
+
+# Traefik certificates
+letsencrypt/acme.json

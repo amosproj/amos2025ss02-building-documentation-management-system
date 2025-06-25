@@ -58,3 +58,4 @@ The container exposes the same **port 9998** as the upstream image, so no other 
 ---
 
 > Need help debugging OCR or extending the pipeline? Ping the backend team in `#bitandbeam-backend`. 🚀
+

@@ -3,7 +3,7 @@ import {
   CanActivate,
   ActivatedRouteSnapshot,
   RouterStateSnapshot,
-  Router
+  Router,
 } from '@angular/router';
 import { SessionService } from '../services/session.service';
 import { BuildingService } from '../services/building.service';
@@ -13,9 +13,8 @@ export class AuthGuard implements CanActivate {
   constructor(
     private session: SessionService,
     private router: Router,
-    private buildingService: BuildingService
+    private buildingService: BuildingService,
   ) {}
-
   canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean {
     const isLoggedIn = this.session.isAuthenticated();
 
@@ -32,7 +31,7 @@ export class AuthGuard implements CanActivate {
 
     const returnUrl = state.url !== '/file-view' ? state.url : '/upload';
     this.router.navigate(['/login'], {
-      queryParams: { returnUrl }
+      queryParams: { returnUrl },
     });
 
     return false;

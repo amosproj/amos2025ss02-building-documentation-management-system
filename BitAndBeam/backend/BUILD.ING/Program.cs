@@ -18,11 +18,14 @@ using System.Diagnostics;          // Added: for Activity (trace IDs)
 using BUILD.ING.Data;
 using BUILD.ING.Data.Seed;
 using BUILD.ING.Models;
+using BUILD.ING.Services;
 using BUILD.ING.Swagger;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.OpenApi.Models;
 using Serilog;                      // Added: Serilog namespace
@@ -215,6 +218,10 @@ using (var scope = app.Services.CreateScope())
 
     var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
     await DatabaseSeeder.SeedAsync(context).ConfigureAwait(false);
+
+    // Run health checks during startup to verify Tika connectivity
+    var healthCheckService = scope.ServiceProvider.GetRequiredService<HealthCheckService>();
+    await healthCheckService.CheckHealthOnStartupAsync(scope.ServiceProvider).ConfigureAwait(false);
 }
 
 // ---------- MIDDLEWARE TO ADD TRACE ID TO LOG CONTEXT ----------
@@ -245,6 +252,9 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+// app.UseSwagger();
+// app.UseSwaggerUI();
 
 app.UseCors(MyAllowSpecificOrigins);
 
@@ -299,5 +309,3 @@ record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
 {
     public int TemperatureF => 32 + (int) (TemperatureC / 0.5556);
 }
-
-

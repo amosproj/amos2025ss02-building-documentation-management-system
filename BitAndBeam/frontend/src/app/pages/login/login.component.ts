@@ -9,7 +9,7 @@ import { SessionService } from '../../services/session.service';
   standalone: true,
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css'],
-  imports: [CommonModule, FormsModule]
+  imports: [CommonModule, FormsModule],
 })
 export class LoginComponent implements OnInit {
   username = '';

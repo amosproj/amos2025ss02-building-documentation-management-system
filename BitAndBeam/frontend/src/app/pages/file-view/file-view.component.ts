@@ -1,27 +1,39 @@
 import { Component } from '@angular/core';
-import { Router ,ActivatedRoute} from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { PdfViewerModule } from 'ng2-pdf-viewer';
 import { ConfigService } from '../../config.service';
-import { SidebarComponent} from '../../components/sidebar/sidebar.component';
-import { BuildingService, DocumentItem, DocumentResponse } from '../../services/building.service';
-import { Configuration, DocumentsApi, Document as ApiDocument } from '../../../api';
+import { SidebarComponent } from '../../components/sidebar/sidebar.component';
+import {
+  BuildingService,
+  DocumentItem,
+  DocumentResponse,
+} from '../../services/building.service';
+import {
+  Configuration,
+  DocumentsApi,
+  Document as ApiDocument,
+} from '../../../api';
 
 @Component({
   standalone: true,
   selector: 'app-file-view',
   templateUrl: './file-view.component.html',
   styleUrls: ['./file-view.component.css'],
-  imports: [CommonModule, PdfViewerModule, SidebarComponent]
+  imports: [CommonModule, PdfViewerModule, SidebarComponent],
 })
 export class FileViewComponent {
-
   selectedFile: DocumentItem | null = null;
   notFound = false;
   isPdf = false;
   isImage = false;
 
-  constructor(private config: ConfigService,private route: ActivatedRoute,private router: Router, private buildingService: BuildingService) {}
+  constructor(
+    private config: ConfigService,
+    private route: ActivatedRoute,
+    private router: Router,
+    private buildingService: BuildingService,
+  ) {}
   ngOnInit(): void {
     const idParam = this.route.snapshot.paramMap.get('id');
     const id = Number(idParam);
@@ -72,7 +84,7 @@ export class FileViewComponent {
 
     this.buildingService.deleteDocument(this.selectedFile.id).subscribe({
       next: () => this.router.navigate(['/upload']),
-      error: (err) => console.error('Delete failed:', err)
+      error: (err) => console.error('Delete failed:', err),
     });
   }
 }

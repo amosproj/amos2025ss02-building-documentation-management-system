@@ -24,3 +24,4 @@ ENV TIKA_CONFIG=file:///tika-config.xml
 
 # Default command provided by base image (no change)
 CMD ["/docker-entrypoint.sh"]
+

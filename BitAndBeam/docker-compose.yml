@@ -1,8 +1,23 @@
 services:
+
+  tika:
+    build:
+      context: ./tika
+      dockerfile: Dockerfile
+    container_name: tika
+    ports:
+      - "9998:9998"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9998/tika"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
   ollama:
     build:
       context: ./ollama
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile 
     container_name: ollama
     ports:
       - "11434:11434"   # Ollama internal API
@@ -16,12 +31,13 @@ services:
   backend:
     build:
       context: ./backend
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile 
     ports:
       - "5001:5000"
     depends_on:
       - postgres
       - ollama
+      - tika
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - ConnectionStrings__DefaultConnection=Host=postgres;Port=5432;Database=bitandbeam;Username=postgres;Password=postgres
@@ -32,13 +48,14 @@ services:
   frontend:
     build:
       context: ./frontend
-      dockerfile: Dockerfile
-    ports:
-      - "8080:80"
+      dockerfile: Dockerfile 
     depends_on:
       - backend
     environment:
-      - API_URL=http://localhost:5001
+     - API_URL=http://localhost:5001/api 
+    ports:
+     - "8080:80"
+
 
   openapi-client:
     build:
@@ -74,19 +91,7 @@ services:
       POSTGRES_PASSWORD: postgres
       POSTGRES_DB: bitandbeam
 
-  tika:
-    build:
-      context: ./tika
-      dockerfile: Dockerfile
-    container_name: bitandbeam_tika
-    restart: always
-    ports:
-      - "9998:9998"
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:9998/version"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
+
 
 volumes:
   documentdata:
