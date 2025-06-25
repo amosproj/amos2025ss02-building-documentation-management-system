@@ -1,4 +1,24 @@
 services:
+  postgres:
+    image: postgres:17
+    container_name: bitandbeam_postgres
+    restart: always
+    ports:
+      - "5432:5432"
+    volumes:
+      - .:/app
+      - pgdata:/var/lib/postgresql/data
+      - ./database/schema.sql:/docker-entrypoint-initdb.d/init.sql
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: bitandbeam
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5  
+  # Uncomment the following lines if you want to set up CORS for the backen      
   ollama:
     build:
       context: ./ollama
@@ -57,22 +77,8 @@ services:
       test: ["CMD", "curl", "-f", "http://backend:5000/swagger/v1/swagger.json"]
       interval: 10s
       timeout: 5s
-      retries: 5
+      retries: 5 
 
-  postgres:
-    image: postgres:17
-    container_name: bitandbeam_postgres
-    restart: always
-    ports:
-      - "5432:5432"
-    volumes:
-      - .:/app
-      - pgdata:/var/lib/postgresql/data
-      - ./database/schema.sql:/docker-entrypoint-initdb.d/init.sql
-    environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: bitandbeam
 
   tika:
     build:
