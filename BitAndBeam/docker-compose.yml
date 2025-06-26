@@ -27,7 +27,8 @@ services:
     ports:
       - "9998:9998"
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:9998/version"]
+      #test: ["CMD", "curl", "-f", "http://localhost:9998/version"]
+      test: ["CMD-SHELL", "curl -f http://localhost:9998/ || exit 1"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -39,9 +40,10 @@ services:
     container_name: ollama
     ports:
       - "11434:11434"   # Ollama internal API
-      - "8000:8000"    # FastAPI external endpoint
+      - "8001:8000"    # FastAPI external endpoint
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]  # Check Ollama's FastAPI health endpoint
+      #test: ["CMD", "curl", "-f", "http://localhost:8000/api/tags"]  # Check Ollama's FastAPI health endpoint
+      test: ["CMD-SHELL", "curl -f http://localhost:8000/api/tags || exit 1"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -66,10 +68,12 @@ services:
     volumes:
       - documentdata:/app/documents
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:5000/health"]
+      test: ["CMD", "curl", "-f", "http://localhost:5000/healthz"]
+      #test: ["CMD", "curl", "-f", "http://localhost:5001"]
       interval: 10s
       timeout: 5s
       retries: 5
+    command: ["dotnet", "Build.ING.dll"]
 
   frontend:
     build:
@@ -97,7 +101,8 @@ services:
       - SWAGGER_URL=http://backend:5000
       - BACKEND_URL=http://localhost:5001
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://backend:5000/swagger/v1/swagger.json"]
+      #test: ["CMD", "curl", "-f", "http://backend:5000/swagger/v1/swagger.json"]
+      test: ["CMD-SHELL", "curl -f http://backend:5000/swagger/v1/swagger.json || exit 1"]
       interval: 10s
       timeout: 5s
       retries: 5 
