@@ -10,6 +10,9 @@ RUN dotnet restore
 RUN dotnet add package Npgsql
 RUN dotnet add package Npgsql.NetTopologySuite
 
+# Install curl (necessary for healthcheck)
+RUN apt-get update && apt-get install -y curl && rm -rf /var/lib/apt/lists/*
+
 # Copy rest of the source code
 COPY ./BUILD.ING/. ./
 RUN dotnet publish -c Release -o out
