@@ -28,6 +28,9 @@ services:
       - "80:80"
 
   ollama:
+    build:
+      context: ./ollama
+      dockerfile: Dockerfile
     image: ghcr.io/amosproj/bitandbeam-ollama:latest
     container_name: ollama
     restart: always
@@ -56,6 +59,9 @@ services:
       POSTGRES_DB: bitandbeam
 
   tika:
+    build:
+      context: ./tika
+      dockerfile: Dockerfile
     image: apache/tika
     container_name: bitandbeam_tika
     restart: always
