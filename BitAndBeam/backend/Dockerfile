@@ -9,9 +9,7 @@ WORKDIR /app/BUILD.ING
 RUN dotnet restore
 RUN dotnet add package Npgsql
 RUN dotnet add package Npgsql.NetTopologySuite
-
-# Install curl (necessary for healthcheck)
-RUN apt-get update && apt-get install -y curl && rm -rf /var/lib/apt/lists/*
+ 
 
 # Copy rest of the source code
 COPY ./BUILD.ING/. ./
@@ -23,6 +21,9 @@ WORKDIR /app
 
 # Install dos2unix to normalize scripts
 RUN apt-get update && apt-get install -y dos2unix && rm -rf /var/lib/apt/lists/*
+
+# Install curl (necessary for healthcheck)
+RUN apt-get update && apt-get install -y curl && rm -rf /var/lib/apt/lists/*
 
 # To allow configurable ports via environment variable
 ENV ASPNETCORE_URLS=http://+:5000
