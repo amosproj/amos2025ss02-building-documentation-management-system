@@ -70,6 +70,7 @@ services:
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:5000/healthz"]
       #test: ["CMD", "curl", "-f", "http://localhost:5001"]
+      #test: ["CMD-SHELL", "dotnet System.Net.Http.HttpClient.dll http://localhost:5000/healthz || exit 1"]
       interval: 10s
       timeout: 5s
       retries: 5
