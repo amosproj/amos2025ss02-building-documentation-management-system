@@ -22,7 +22,7 @@ services:
     build:
       context: ./tika
       dockerfile: Dockerfile
-    image: apache/tika
+    #image: apache/tika
     container_name: bitandbeam_tika
     restart: always
     ports:
