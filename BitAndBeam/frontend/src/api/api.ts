@@ -392,6 +392,12 @@ export interface Document {
      * @type {string}
      * @memberof Document
      */
+    'category'?: string | null;
+    /**
+     * 
+     * @type {string}
+     * @memberof Document
+     */
     'categoryName'?: string | null;
     /**
      * 
@@ -447,6 +453,12 @@ export interface Document {
      * @memberof Document
      */
     'metadata'?: string | null;
+    /**
+     * 
+     * @type {any}
+     * @memberof Document
+     */
+    'keyInformation'?: any | null;
     /**
      * 
      * @type {string}
