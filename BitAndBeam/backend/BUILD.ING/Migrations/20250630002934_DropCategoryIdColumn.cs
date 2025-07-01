@@ -5,24 +5,23 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Build.ING.Migrations
 {
     /// <inheritdoc />
-    public partial class AddKeyInformationToDocuments : Migration
+    public partial class DropCategoryIdColumn : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.AddColumn<string>(
-                name: "KeyInformation",
-                table: "Documents",
-                type: "jsonb",
-                nullable: true);
+
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropColumn(
-                name: "KeyInformation",
-                table: "Documents");
+            // Optionally restore the column if rolling back
+            migrationBuilder.AddColumn<int>(
+                name: "category_id",
+                table: "Documents",
+                type: "integer",
+                nullable: true);
         }
     }
 }

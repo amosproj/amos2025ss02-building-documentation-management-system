@@ -44,7 +44,8 @@ namespace BUILD.ING.Data
             modelBuilder.Entity<DocumentTagRelation>()
                 .HasOne(dtr => dtr.Document)
                 .WithMany(d => d.DocumentTagRelations)
-                .HasForeignKey(dtr => dtr.DocumentId);
+                .HasForeignKey(dtr => dtr.DocumentId); 
+            
             modelBuilder.Entity<DocumentTagRelation>()
                 .HasOne(dtr => dtr.Tag)
                 .WithMany(t => t.DocumentTagRelations)
@@ -98,7 +99,7 @@ namespace BUILD.ING.Data
             modelBuilder.Entity<Document>()
                 .Property(d => d.CategoryName);
 
-            modelBuilder.Ignore<DocumentTag>();
+            //modelBuilder.Ignore<DocumentTag>();
 
             // Configure JSONB columns for Document
             modelBuilder.Entity<Document>()
