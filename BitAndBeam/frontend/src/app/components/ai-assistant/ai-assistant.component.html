@@ -1,0 +1,84 @@
+<!-- Floating AI Assistant wrapper - Only show if user is authenticated -->
+<div *ngIf="isAuthenticated" class="ai-assistant-wrapper" [class.global-widget]="globalMode">
+  <!-- Main AI assistant container -->
+  <div class="ai-assistant" 
+       [class.hidden-interface]="!showChatInterface"
+       [class.dark-mode]="isDarkMode"
+       [class.global-mode]="globalMode">
+    
+    <div class="assistant-header">
+      <div class="header-title">
+        <i class="fa fa-robot"></i>
+        <h3>AI Assistant</h3>
+      </div>
+      <button class="close-btn" (click)="hideChat()" title="Minimize">
+        <i class="fa fa-minus"></i>
+      </button>
+    </div>
+
+    <!-- Chat messages - scrollable -->
+    <div class="chat-content">
+      <div *ngIf="messages.length === 0" class="welcome-message">
+        <p>👋 Welcome to BitAndBeam AI Assistant!</p>
+        <p class="hint">I can help you find information about your buildings from their documentation. Ask me about specific building details, in light of uploaded documents, or ask me how to use the system.</p>
+      </div>
+      <div *ngFor="let msg of messages" 
+           [ngClass]="msg.sender === 'user' ? 'user-message' : 'ai-message'">
+        <ng-container *ngIf="msg.sender === 'user'">
+          <div class="message-content">
+            <span>{{ msg.text }}</span>
+          </div>
+        </ng-container>
+        <ng-container *ngIf="msg.sender === 'assistant'">
+          <div class="message-header">
+            <i class="fa fa-robot"></i>
+            <span class="sender-name">AI Assistant</span>
+          </div>
+          <div class="message-content">
+            <span [innerHTML]="msg.text | markdownBold"></span>
+          </div>
+        </ng-container>
+      </div>
+    </div>
+
+    <!-- Chat input -->
+    <div class="chat-input-container">
+      <form (ngSubmit)="sendMessage()" class="chat-form">
+        <div class="input-container" style="flex: 1; display: flex; align-items: center; gap: 8px;">
+          <input 
+            type="text" 
+            [(ngModel)]="userInput" 
+            name="userInput" 
+            placeholder="Ask me anything..."
+            [disabled]="isProcessing"
+            style="flex: 1; min-width: 0;" />
+          <button 
+            type="submit" 
+            class="send-btn" 
+            [disabled]="!userInput.trim() || isProcessing"
+            style="margin-left: 4px;">
+            <i class="fa fa-paper-plane"></i>
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Error message display -->
+  <div *ngIf="errorMessage" class="error-message">
+    <i class="fa fa-exclamation-circle"></i>
+    {{ errorMessage }}
+    <button class="error-close" (click)="errorMessage = ''">
+      <i class="fa fa-times"></i>
+    </button>
+  </div>
+
+  <!-- Toggle button (visible when chat is hidden) -->
+  <button 
+    *ngIf="!showChatInterface" 
+    class="chat-toggle-btn"
+    (click)="showChat()"
+    title="Chat with AI Assistant">
+    <i class="fa fa-robot"></i>
+  </button>
+</div>

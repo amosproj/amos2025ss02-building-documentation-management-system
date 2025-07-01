@@ -1,207 +1,204 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ConfigService } from '../../config.service';
-import { SidebarComponent } from '../sidebar/sidebar.component';
-import { FormsModule } from '@angular/forms';
-import { RouterModule, Router } from '@angular/router';
-import { HttpClientModule } from '@angular/common/http';
-import type { AxiosResponse } from 'axios';
-import { DocumentsApi, Building as ApiBuilding,  OllamaApi, Configuration, OllamaRequest } from '../../../api';
-import { BuildingService } from '../../services/building.service';
-import { CategoryService } from '../../services/category.service';
-import { MarkdownBoldPipe } from '../../pipes/markdown-bold.pipe';
-import { DocumentMetadataPopupComponent } from '../document-metadata-popup/document-metadata-popup.component';
 import { ApiClientFactory } from '../../services/api-client.factory';
+import { DocumentsApi } from '../../../api';
+import { SidebarComponent } from '../sidebar/sidebar.component';
+import { AiAssistantComponent } from '../ai-assistant/ai-assistant.component';
+import { DocumentMetadataPopupComponent } from '../document-metadata-popup/document-metadata-popup.component';
+import type { AxiosProgressEvent, AxiosResponse } from 'axios';
+import { SidebarRefreshService } from '../../services/sidebar-refresh.service';
 
 @Component({
   selector: 'app-upload-file',
-  standalone: true,
-  imports: [CommonModule, RouterModule, SidebarComponent, FormsModule, HttpClientModule, MarkdownBoldPipe, DocumentMetadataPopupComponent],
   templateUrl: './upload-file.component.html',
   styleUrls: ['./upload-file.component.css'],
+  standalone: true,
+  imports: [
+    CommonModule,
+    SidebarComponent,
+    AiAssistantComponent,
+    DocumentMetadataPopupComponent
+  ]
 })
 export class UploadFileComponent implements OnInit {
-  uploading = false;
-  uploadSuccess = false;
-  uploadError = '';
-  uploadedFile: File | null = null;
+  // For building association with documents
   selectedBuildingId: number | null = null;
-  buildings: any[] = [];
-
-  // Metadata popup properties
-  showMetadataPopup = false;
   uploadedDocumentId: number | null = null;
 
-  // AI Chat Properties
-  showHistory: boolean = true;
-  userInput: string = '';
-  messages: { sender: 'user' | 'ai', text: string }[] = [];
-  errorMessage: string = '';
+  // File upload properties
+  uploading = false;
+  uploadProgress: number = 0;
+  uploadedFile: File | null = null;
+  isDragOver = false;
+  errorMessage = '';
+  successMessage = '';
+
+  // Metadata popup control
+  showMetadataPopup = false;
 
   private documentsApi: DocumentsApi;
-  private ollamaApi: OllamaApi;
 
-
-  constructor(
-    private apiFactory: ApiClientFactory, // ✅ centralized factory
-    private config: ConfigService,
-    private router: Router,
-    public buildingService: BuildingService,
-    private categoryService: CategoryService
-  ) {
-    this.documentsApi = this.apiFactory.create(DocumentsApi);
-    this.ollamaApi = this.apiFactory.create(OllamaApi);
+  constructor(private apiFactory: ApiClientFactory, private sidebarRefreshService: SidebarRefreshService) {
+    this.documentsApi = this.apiFactory.create<DocumentsApi>(DocumentsApi);
   }
 
-  ngOnInit() {
-    this.buildingService.getBuildings().subscribe({
-      next: (data) => this.buildings = data,
-      error: (err) => console.error('Failed to fetch buildings', err)
-    });
+  ngOnInit(): void {
+    // You could fetch the buildings list here if needed
+    // For now, we're using null which means no specific building is selected
   }
 
-  onFileSelected(event: any) {
+  /**
+   * Handle drag over event for file upload
+   */
+  onDragOver(event: DragEvent): void {
+    if (this.uploading) return;
+    event.preventDefault();
+    event.stopPropagation();
+    this.isDragOver = true;
+  }
+
+  /**
+   * Handle drag leave event for file upload
+   */
+  onDragLeave(event: DragEvent): void {
+    if (this.uploading) return;
+    event.preventDefault();
+    event.stopPropagation();
+    this.isDragOver = false;
+  }
+
+  /**
+   * Handle file drop event for file upload
+   */
+  onDrop(event: DragEvent): void {
+    if (this.uploading) return;
+    event.preventDefault();
+    event.stopPropagation();
+    this.isDragOver = false;
+
+    if (event.dataTransfer?.files?.length) {
+      const file = event.dataTransfer.files[0];
+      this.uploadedFile = file;
+      this.uploadFile(file);
+    }
+  }
+
+  /**
+   * Handle file selection from file input
+   */
+  onFileSelected(event: any): void {
+    if (this.uploading) return;
     const file = event.target.files[0];
     if (!file) return;
 
     this.uploadedFile = file;
-    this.uploadDocumentToServer(file);
+    this.uploadFile(file);
   }
 
-  onDrop(event: DragEvent) {
-    event.preventDefault();
-    if (event.dataTransfer?.files?.length) {
-      const file = event.dataTransfer.files[0];
-      this.uploadedFile = file;
-      this.uploadDocumentToServer(file);
-    }
-  }
+  /**
+   * Upload the selected file
+   */
+  uploadFile(file: File): void {
+    if (!file) return;
 
-  onDragOver(event: Event) {
-    event.preventDefault();
-  }
+    this.uploading = true;
+    this.uploadProgress = 0;
+    this.errorMessage = '';
+    this.successMessage = '';
 
-  uploadDocumentToServer(file: File): void {
-    this.documentsApi.apiDocumentsPost(file)
-      .then((axiosResponse: AxiosResponse<any>) => {
-        const documentId = axiosResponse.data?.documentId;
-
-        if (!documentId) {
-          this.uploadError = 'Upload succeeded but no document ID found in response body.';
-          return;
+    // Pass the file directly as the API expects a File object, not FormData
+    this.documentsApi.apiDocumentsPost(file, {
+      onUploadProgress: (progressEvent: AxiosProgressEvent) => {
+        if (progressEvent.total) {
+          this.uploadProgress = Math.round((progressEvent.loaded * 100) / progressEvent.total);
         }
+      }
+    }).then((response: AxiosResponse<any>) => {
+      console.log('Upload successful', response.data);
+      this.uploading = false;
+      this.uploadedDocumentId = response.data.id || response.data.documentId;
+      this.successMessage = `File "${file.name}" uploaded successfully!`;
 
-        this.uploadSuccess = true;
-        this.uploadedDocumentId = documentId;
+      // Associate the document with a building if needed
+      if (this.selectedBuildingId && this.uploadedDocumentId) {
+        this.associateDocumentWithBuilding(this.uploadedDocumentId, this.selectedBuildingId);
+      }
 
-        // Show the metadata popup instead of navigating directly
-        this.showMetadataPopup = true;
+      // Show metadata popup after successful upload
+      this.showMetadataPopup = true;
+
+      // Emit the uploaded document ID to the parent component or handle locally
+      this.onFileUploaded(this.uploadedDocumentId!);
+
+      // Clear success message after a delay
+      setTimeout(() => {
+        this.successMessage = '';
+      }, 5000);
+
+    }).catch((error: any) => {
+      console.error('Upload failed', error);
+      this.uploading = false;
+      this.errorMessage = 'Upload failed: ' + (error.response?.data?.message || error.message || 'Unknown error');
+
+      // Clear error message after a delay
+      setTimeout(() => {
+        this.errorMessage = '';
+      }, 5000);
+    });
+  }
+
+  /**
+   * Associate the uploaded document with a building using the metadata PATCH endpoint
+   */
+  private associateDocumentWithBuilding(documentId: number, buildingId: number): void {
+    const metadata = {
+      buildingId: buildingId,
+      categoryName: null // Keep the category as is or null if not set yet
+    };
+
+    this.documentsApi.apiDocumentsIdPatch(documentId, metadata)
+      .then(() => {
+        console.log(`Document ${documentId} associated with building ${buildingId}`);
       })
       .catch(error => {
-        this.uploading = false;
-        this.uploadError = 'Upload failed: ' + error.message;
+        console.error('Failed to associate document with building:', error);
       });
   }
 
-  extractDocumentIdFromLocation(location: string | undefined): number | null {
-    if (!location) return null;
-    const match = location.match(/\/(\d+)(\/)?$/);
-    return match ? parseInt(match[1], 10) : null;
+  /**
+   * Update document ID after successful upload
+   * This is called from within the uploadFile method after a successful upload
+   */
+  onFileUploaded(documentId: number): void {
+    console.log('File uploaded with document ID:', documentId);
+    this.uploadedDocumentId = documentId;
+    // Trigger sidebar refresh after upload
+    this.sidebarRefreshService.triggerRefresh();
+    // Any additional actions needed after a file is uploaded
+    // For example, you might want to update a list of documents here
   }
 
-  createBuildingAndUpload() {
-    const name = prompt('New building name:');
-    if (!name?.trim() || !this.uploadedFile) return;
-
-    const building: Partial<ApiBuilding> = { name }; // Only the name for now
-
-    this.buildingService.addBuilding(building).subscribe({
-      next: (building) => {
-        this.uploadDocumentToServer(this.uploadedFile!);
-      },
-      error: (err) => console.error('Failed to create building', err)
-    });
-  }
-
-
-  // ✅ AI Chat Message Sender
-  sendMessage() {
-    const prompt = this.userInput.trim();
-    if (!prompt) return;
-
-    // Add user's message to history
-    this.messages.push({ sender: 'user', text: prompt });
-    this.userInput = '';
-    this.errorMessage = '';
-
-    // Full conversation context after current push
-    const context = this.messages
-      .map(msg => (msg.sender === 'user' ? 'User: ' : 'AI: ') + msg.text)
-      .join('\n');
-
-      const requestPayload: OllamaRequest = {
-        prompt: prompt,
-        context: context
-      };
-
-      this.ollamaApi.apiOllamaAskPost(requestPayload)
-        .then((res) => {
-          const responseText = (res.data as any)?.response || 'No response received.';
-          this.messages.push({ sender: 'ai', text: responseText });
-        })
-        .catch((err: any) => {
-          console.error('Error from AI API:', err);
-          this.errorMessage = '⚠️ AI Assistant is not responding. Please try again later.';
-        });
-
-  }
-
-  toggleHistory() {
-      this.showHistory = !this.showHistory;
-  }
-
-  // Metadata popup handlers
+  /**
+   * Close the metadata popup
+   */
   closeMetadataPopup(): void {
     this.showMetadataPopup = false;
-
-    // If user closes the popup without saving, navigate to the document view
-    if (this.uploadedDocumentId) {
-      this.router.navigate(['/documents', this.uploadedDocumentId]);
-    }
-  }
-  
-  saveDocumentMetadata(metadata: {categoryName: string | null, buildingId: number | null}): void {
-    if (this.uploadedDocumentId) {
-      this.categoryService.assignDocumentCategory(
-        this.uploadedDocumentId, 
-        metadata.categoryName,
-        metadata.buildingId
-      ).subscribe({
-        next: () => {
-          this.showMetadataPopup = false;
-          this.refreshDocuments(); // Refresh the document/building list after update
-        },
-        error: (err) => {
-          console.error('Failed to assign document metadata', err);
-          this.showMetadataPopup = false;
-          this.refreshDocuments();
-        }
-      });
-    }
-  }
-
-  // Refresh the building and document list after update
-  refreshDocuments(): void {
-    // Reload buildings (which include documents)
-    this.buildingService.getBuildings().subscribe({
-      next: (data) => this.buildings = data,
-      error: (err) => console.error('Failed to refresh buildings', err)
-    });
-    // Optionally, reset upload state
-    this.uploadedFile = null;
-    this.uploadSuccess = false;
-    this.uploadError = '';
     this.uploadedDocumentId = null;
   }
 
+  /**
+   * Save document metadata
+   */
+  saveDocumentMetadata(metadata: any): void {
+    if (this.uploadedDocumentId) {
+      this.documentsApi.apiDocumentsIdPatch(this.uploadedDocumentId, metadata)
+        .then(() => {
+          console.log('Document metadata updated successfully');
+          this.showMetadataPopup = false;
+        })
+        .catch(error => {
+          console.error('Failed to update document metadata:', error);
+        });
+    }
+  }
 }

@@ -17,13 +17,13 @@
       <div class="form-group">
         <label for="categorySelect">Document Category:</label>
         <div class="category-selection-container">
-          <select id="categorySelect" [(ngModel)]="selectedCategoryId" (ngModelChange)="onCategoryChange($event)">
+          <select id="categorySelect" [(ngModel)]="selectedCategoryName" (ngModelChange)="onCategoryChange($event)">
             <!-- No Category option -->
             <option [ngValue]="null">No Category</option>
             
             <!-- Available categories options -->
             <optgroup label="Available Categories" *ngIf="categories.length > 0">
-              <option *ngFor="let category of categories" [value]="category.id">
+              <option *ngFor="let category of categories" [value]="category.name">
                 {{ category.name }}
               </option>
             </optgroup>

@@ -25,6 +25,11 @@ namespace BUILD.ING.Controllers
             _logger = logger;
         }
 
+        private int GetCurrentUserOrganizationId()
+        {
+            return int.Parse(User.Claims.First(c => c.Type == "org").Value);
+        }
+
         // POST: api/Buildings
         // Creates a new building and returns its ID
         [HttpPost]
@@ -49,7 +54,7 @@ namespace BUILD.ING.Controllers
                 TotalArea = dto.TotalArea,
                 Floors = dto.Floors,
                 Description = dto.Description,
-                OrganizationId = dto.OrganizationId,
+                OrganizationId = GetCurrentUserOrganizationId(),
                 Coordinates = coordinates,
                 CreatedAt = DateTime.UtcNow,
                 UpdatedAt = DateTime.UtcNow,
@@ -79,7 +84,8 @@ namespace BUILD.ING.Controllers
         {
             _logger.LogInformation("GetBuildings called at {Time}", DateTime.UtcNow);
 
-            var buildings = await _context.Buildings.ToListAsync().ConfigureAwait(false);
+            int orgId = GetCurrentUserOrganizationId();
+            var buildings = await _context.Buildings.Where(b => b.OrganizationId == orgId).ToListAsync().ConfigureAwait(false);
             var buildingIds = buildings.Select(b => b.BuildingId).ToList();
             var documents = _context.Documents
                 .Where(d => d.BuildingId.HasValue && buildingIds.Contains(d.BuildingId.Value))
@@ -117,8 +123,8 @@ namespace BUILD.ING.Controllers
         public async Task<ActionResult<BuildingDto>> GetBuilding(int id)
         {
             _logger.LogInformation("GetBuilding called for ID {BuildingId} at {Time}", id, DateTime.UtcNow);
-
-            var building = await _context.Buildings.FirstOrDefaultAsync(b => b.BuildingId == id).ConfigureAwait(false);
+            var orgId = GetCurrentUserOrganizationId();
+            var building = await _context.Buildings.FirstOrDefaultAsync(b => b.BuildingId == id && b.OrganizationId == orgId).ConfigureAwait(false);
             if (building == null)
             {
                 _logger.LogWarning("GetBuilding did not find building with ID {BuildingId}", id);
@@ -163,20 +169,22 @@ namespace BUILD.ING.Controllers
                 return BadRequest("Mismatched Building ID");
 
             //var existingBuilding = await _context.Buildings.FindAsync(id).ConfigureAwait(false);
+            var orgId = GetCurrentUserOrganizationId();
             var existingBuilding = await _context.Buildings
-                //.Include(b => b.Documents)
                 .Include(b => b.BuildingDocumentRelations)
-                .FirstOrDefaultAsync(b => b.BuildingId == id).ConfigureAwait(false);
+                .FirstOrDefaultAsync(b => b.BuildingId == id && b.OrganizationId == orgId).ConfigureAwait(false);
+
 
 
             if (existingBuilding == null)
                 return NotFound();
 
-            // If the incoming organizationId is null or 0, preserve existing one
-            if (updatedBuilding.OrganizationId == 0)
-                updatedBuilding.OrganizationId = existingBuilding.OrganizationId;
+            // Ignore what the client sent, and instead always set the org based on the logged-in user
+            //if (updatedBuilding.OrganizationId == 0)
+            existingBuilding.OrganizationId = orgId;
 
-            _context.Entry(existingBuilding).CurrentValues.SetValues(updatedBuilding);
+            //Could accidentally overwrite something you're protecting (e.g., OrganizationId, relations)
+            //_context.Entry(existingBuilding).CurrentValues.SetValues(updatedBuilding);
 
 
             // Update only editable fields
@@ -245,9 +253,11 @@ namespace BUILD.ING.Controllers
         {
             _logger.LogInformation("DeleteBuilding called for ID {BuildingId} at {Time}", id, DateTime.UtcNow);
 
+            var orgId = GetCurrentUserOrganizationId();
             var building = await _context.Buildings
                 .Include(b => b.BuildingDocumentRelations)
-                .FirstOrDefaultAsync(b => b.BuildingId == id).ConfigureAwait(false);
+                .FirstOrDefaultAsync(b => b.BuildingId == id && b.OrganizationId == orgId).ConfigureAwait(false);
+
 
             if (building == null)
             {
@@ -272,4 +282,7 @@ namespace BUILD.ING.Controllers
             return NoContent();
         }
     }
+
+
+
 }

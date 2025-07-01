@@ -33,22 +33,14 @@ Table buildings {
   updated_at timestamp [default: `CURRENT_TIMESTAMP`]
   organization_id integer [not null, ref: > organizations.organization_id]
 }
-
-Table document_categories {
-  category_id serial [pk]
-  name varchar(50) [not null]
-  description text [default: null]
-  parent_category_id integer [ref: > document_categories.category_id]
-  created_at timestamp [default: `CURRENT_TIMESTAMP`]
-}
-
+ 
 Table documents {
   document_id serial [pk]
   title varchar(255) [not null]
   file_path varchar(255) [not null]
   file_type varchar(20) [not null]
   file_size integer [not null]
-  category_id integer [ref: > document_categories.category_id]
+  categoryName varchar(100)
   building_id integer [ref: > buildings.building_id]
   uploaded_by integer [ref: > users.user_id]
   upload_date timestamp [default: `CURRENT_TIMESTAMP`]
@@ -58,6 +50,7 @@ Table documents {
   description text
   is_public boolean [default: false]
   metadata jsonb
+  key_information jsonb
 }
 
 Table document_tags {

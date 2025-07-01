@@ -17,6 +17,10 @@ export class AuthGuard implements CanActivate {
   ) {}
 
   canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean {
+    // TEMPORARY: Skip authentication for testing
+    //return true;
+
+    
     const isLoggedIn = this.session.isAuthenticated();
 
     // Special case: direct access to /file-view without file selected
@@ -34,7 +38,8 @@ export class AuthGuard implements CanActivate {
     this.router.navigate(['/login'], {
       queryParams: { returnUrl }
     });
-
+    
     return false;
+    
   }
 }

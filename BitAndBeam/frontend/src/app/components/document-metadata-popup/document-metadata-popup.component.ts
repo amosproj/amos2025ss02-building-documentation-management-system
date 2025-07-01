@@ -24,7 +24,7 @@ export class DocumentMetadataPopupComponent implements OnInit {
   buildings: Building[] = [];
   categories: Category[] = [];
   selectedBuildingId: number | null = null;
-  selectedCategoryId: number | null = null;
+  selectedCategoryName: string | null = null;
   isOtherCategory: boolean = false;
   otherCategoryName: string = '';
   readonly OTHER_CATEGORY_OPTION = 'other';
@@ -58,9 +58,9 @@ export class DocumentMetadataPopupComponent implements OnInit {
       this.selectedBuildingId = null;
     }
 
-    // If documentData has a categoryId, preselect that category
+    // If documentData has a categoryName, preselect that category
     if (this.documentData && this.documentData.categoryName !== undefined) {
-      this.selectedCategoryId = null;
+      this.selectedCategoryName = this.documentData.categoryName;
     }
   }
 
@@ -81,9 +81,10 @@ export class DocumentMetadataPopupComponent implements OnInit {
   onCategoryChange(value: string | null): void {
     if (value === this.OTHER_CATEGORY_OPTION) {
       this.isOtherCategory = true;
-      this.selectedCategoryId = null;
+      this.selectedCategoryName = null;
     } else {
       this.isOtherCategory = false;
+      this.selectedCategoryName = value;
     }
   }
 
@@ -95,8 +96,8 @@ export class DocumentMetadataPopupComponent implements OnInit {
 
     this.categoryService.createCategory({ name: this.otherCategoryName }).subscribe({
       next: (newCategory: Category) => {
-        this.categories.push(newCategory);
-        this.selectedCategoryId = newCategory.id;
+        this.loadCategories(); // reloads the list, avoids duplicates
+        this.selectedCategoryName = newCategory.name;
         this.isOtherCategory = false;
         this.otherCategoryName = '';
         this.showSuccessNotification('New category created successfully');
@@ -118,12 +119,10 @@ export class DocumentMetadataPopupComponent implements OnInit {
       return;
     }
 
-    // Determine categoryId based on selection; null if manual input selected
-    const categoryId: number | null = this.isOtherCategory ? null : this.selectedCategoryId;
+    // Determine categoryName based on selection; null if manual input selected
+    const categoryName: string | null = this.isOtherCategory ? this.otherCategoryName : this.selectedCategoryName;
 
-
-
-    this.updateDocumentMetadata(this.documentId!, null, this.selectedBuildingId);
+    this.updateDocumentMetadata(this.documentId!, categoryName, this.selectedBuildingId);
   }
 
 
@@ -142,9 +141,9 @@ export class DocumentMetadataPopupComponent implements OnInit {
       this.sidebarRefreshService.triggerRefresh(); // ✅ Refresh sidebar
       console.log('✅ Document metadata updated:', response.data);
 
-      // ✅ Show success and auto-close
+      // Show success notification and close immediately
       this.showSuccessNotification('Metadata updated successfully');
-      setTimeout(() => this.onClose(), 1500);
+      this.onClose(); // Close popup immediately after successful submission
     }).catch(error => {
       console.error('❌ Failed to update document metadata', error);
       this.showErrorNotification('Failed to update document metadata');

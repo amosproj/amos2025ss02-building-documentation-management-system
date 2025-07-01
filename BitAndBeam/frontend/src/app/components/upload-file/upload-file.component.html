@@ -1,75 +1,75 @@
 <div class="container">
-  <!-- ✅ Inject the sidebar -->
-  <app-sidebar></app-sidebar>
+    <app-sidebar [currentRoute]="'upload'"></app-sidebar>
+    <div class="content-wrapper">
+        <div class="main-content">
+            <!-- New upload component section -->
+            <div class="upload-section">
+                <div class="upload-container"
+                     [class.drag-over]="isDragOver"
+                     (dragover)="onDragOver($event)"
+                     (dragleave)="onDragLeave($event)"
+                     (drop)="onDrop($event)">
+                    <div class="upload-icon-container">
+                        <span class="upload-icon">📄</span>
+                    </div>
+                    <div class="upload-text-container">
+                        <h3>Upload Documents</h3>
+                        <p>Drag and drop files here or click to browse</p>
+                    </div>
+                    <div class="upload-button-container">
+                      <button class="upload-btn" [disabled]="uploading" (click)="!uploading && fileInput.click()">Choose File</button>
+                        <input
+                            type="file"
+                            #fileInput
+                            (change)="onFileSelected($event)"
+                            style="display: none"
+                            accept=".pdf,.docx,.txt,.png,.jpg,.jpeg">
+                    </div>
+                </div>
 
-  <!-- Document Metadata Popup -->
-  <app-document-metadata-popup 
-    *ngIf="showMetadataPopup" 
-    [documentId]="uploadedDocumentId" 
-    [documentName]="uploadedFile?.name || ''" 
-    (closePopup)="closeMetadataPopup()" 
-    (saveMetadata)="saveDocumentMetadata($event)">
-  </app-document-metadata-popup>
+                <!-- Upload progress and status -->
+                <div *ngIf="uploading" class="upload-progress">
+                    <div class="spinner"></div>
+                    <div *ngIf="uploadProgress > 0 && uploadProgress < 100" class="progress-bar-container">
+                        <div class="progress-bar" [style.width]="uploadProgress + '%'">
+                            {{ uploadProgress }}%
+                        </div>
+                    </div>
+                </div>
 
-  <!-- Main Content -->
-  <main class="main-content">
-    <!-- Drag & Drop Upload Box -->
-    <div
-      class="upload-dropzone"
-      (drop)="onDrop($event)"
-      (dragover)="onDragOver($event)"
-    >
-      <label for="fileInput">📤 Upload Your Document</label><br />
-      <input
-        id="fileInput"
-        type="file"
-        accept=".pdf,.docx,.txt, .png, .jpg, .jpeg"
-        (change)="onFileSelected($event)"
-        hidden
-        #fileInput
-      />
-      <div *ngIf="uploading" class="upload-status">⏳ Uploading...</div>
-      <div *ngIf="uploadSuccess" class="upload-status success">✅ Upload successful!</div>
-      <div *ngIf="uploadError" class="upload-status error">{{ uploadError }}</div>
+                <!-- Success message -->
+                <div *ngIf="successMessage" class="success-message">
+                    <i class="fas fa-check-circle"></i> {{ successMessage }}
+                </div>
 
-      <button class="choose-file" (click)="fileInput.click()">Choose File</button>
+                <!-- Error message -->
+                <div *ngIf="errorMessage" class="error-message">
+                    <i class="fas fa-exclamation-circle"></i> {{ errorMessage }}
+                </div>
+            </div>
 
-      <div *ngIf="uploadedFile" class="file-preview">
-        📎 {{ uploadedFile.name }}
-      </div>
-
-      <!-- Upload status display -->
-      <div *ngIf="uploadedFile && !showMetadataPopup" class="file-upload-status">
-        <p>📄 <strong>{{ uploadedFile.name }}</strong> uploaded successfully!</p>
-      </div>
-      </div>
-
-
-      <!-- AI Assistant Section -->
-      <div class="chat-box">
-      <h3>AI Assistant</h3>
-
-      <button class="toggle-history-btn" (click)="toggleHistory()">
-        {{ showHistory ? 'Hide History' : 'Show History' }}
-      </button>
-
-      <div class="chat-history" *ngIf="showHistory">
-        <div *ngFor="let msg of messages" [ngClass]="msg.sender === 'user' ? 'user-message' : 'ai-message'">
-          <strong *ngIf="msg.sender !== 'user'">AI</strong>{{ msg.sender !== 'user' ? ':' : '' }}
-          <span [innerHTML]="msg.text | markdownBold"></span>
+            <div class="welcome-section">
+                <h1>Welcome to BitAndBeam Document Management</h1>
+                <p>To get started, upload and view your documents, in PDFs, images, etc.</p>
+                <p>Interact with the AI assistant to learn about the uploaded documents. You can attach files into context of conversation by:</p>
+                <ul>
+                    <li>Opening the file of interest</li>
+                    <li>Selecting the file of interest in chat area</li>
+                </ul>
+            </div>
         </div>
-      </div>
 
-      <!-- Error message -->
-      <div *ngIf="errorMessage" class="error-message">
-        {{ errorMessage }}
-      </div>
-
-      <!-- Input box -->
-      <div class="chat-input">
-        <input [(ngModel)]="userInput" type="text" placeholder="Type a message..." (keyup.enter)="sendMessage()" />
-        <button class="send-btn" (click)="sendMessage()">➤</button>
-      </div>
+        <!-- Enhanced AI Assistant without file upload -->
+        <div class="ai-assistant-container">
+            <app-ai-assistant></app-ai-assistant>
+        </div>
     </div>
-  </main>
 </div>
+
+<!-- Document metadata popup -->
+<app-document-metadata-popup
+  *ngIf="showMetadataPopup && uploadedDocumentId"
+  [documentId]="uploadedDocumentId!"
+  (closePopup)="closeMetadataPopup()"
+  (saveMetadata)="saveDocumentMetadata($event)"
+></app-document-metadata-popup>

@@ -13,7 +13,6 @@ namespace BUILD.ING.Dto
         public decimal? TotalArea { get; set; }
         public int? Floors { get; set; }
         public string Description { get; set; }
-        public int OrganizationId { get; set; }
         public NpgsqlPoint? Coordinates { get; set; }
     }
 }

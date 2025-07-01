@@ -1,3 +1,5 @@
+using System.Text.Json;
+
 namespace BUILD.ING.Dto
 {
     public class DocumentDto
@@ -17,8 +19,10 @@ namespace BUILD.ING.Dto
         public string Description { get; set; }
         public bool IsPublic { get; set; }
         public string Metadata { get; set; }
+        public JsonDocument? KeyInformation { get; set; }
         public string FileName { get; set; }
         public DateTime UploadedAt { get; set; }
-        public string GroupId { get; set; }
+        public int OrganizationId { get; set; }
+
     }
 }
