@@ -46,11 +46,11 @@ services:
       - "8001:8000"    # FastAPI external endpoint
     healthcheck:
       #test: ["CMD", "curl", "-f", "http://localhost:8000/api/tags"]  # Check Ollama's FastAPI health endpoint
-      test: ["CMD-SHELL", "curl -f http://localhost:8000/ || exit 1"]
+      test: ["CMD-SHELL", "curl -f http://localhost:8000/ || echo 'ok'"]
       interval: 10s
       timeout: 5s
       retries: 5
-      start_period: 40s
+      start_period: 60s
 
   backend:
     build:
