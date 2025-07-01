@@ -38,6 +38,7 @@ services:
     build:
       context: ./ollama
       dockerfile: Dockerfile
+    image: ghcr.io/amosproj/bitandbeam-ollama:latest
     container_name: ollama
     ports:
       - "11434:11434"   # Ollama internal API
