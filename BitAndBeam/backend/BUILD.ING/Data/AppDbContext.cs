@@ -44,8 +44,8 @@ namespace BUILD.ING.Data
             modelBuilder.Entity<DocumentTagRelation>()
                 .HasOne(dtr => dtr.Document)
                 .WithMany(d => d.DocumentTagRelations)
-                .HasForeignKey(dtr => dtr.DocumentId); 
-            
+                .HasForeignKey(dtr => dtr.DocumentId);
+
             modelBuilder.Entity<DocumentTagRelation>()
                 .HasOne(dtr => dtr.Tag)
                 .WithMany(t => t.DocumentTagRelations)
