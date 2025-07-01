@@ -31,12 +31,13 @@ namespace BUILD.ING.Controllers
             _logger = logger;
         }
 
-        private string GetCurrentUserGroupId()
-        {
-            return "group2"; // Hardcoded for now
-        }
 
         private static string CategoriesJsonPath => Path.Combine("/app/resources", "document_categories.json");
+
+        private int GetCurrentUserOrganizationId()
+        {
+            return int.Parse(User.Claims.First(c => c.Type == "org").Value);
+        }
 
         private static List<DocumentCategory> ReadCategories()
         {
@@ -53,23 +54,26 @@ namespace BUILD.ING.Controllers
             if (file == null || file.Length == 0)
                 return BadRequest("File is required");
 
+            // ╭──────────────────────────── 1. save upload ───────────────────────────╮
             var uploadsPath = Path.Combine("/app/documents");
             Directory.CreateDirectory(uploadsPath);
 
             var fullPath = Path.Combine(uploadsPath, file.FileName);
-
-            using (var stream = new FileStream(fullPath, FileMode.Create))
+            using (var fs = new FileStream(fullPath, FileMode.Create))
             {
-                await file.CopyToAsync(stream).ConfigureAwait(false);
+                await file.CopyToAsync(fs).ConfigureAwait(false);
             }
 
+            // Reset the file stream position to zero before re-reading
             byte[] fileBytes;
             using (var ms = new MemoryStream())
+            using (var fileStream = file.OpenReadStream())
             {
-                await file.CopyToAsync(ms).ConfigureAwait(false);
+                await fileStream.CopyToAsync(ms).ConfigureAwait(false);
                 fileBytes = ms.ToArray();
             }
 
+            // ╭──────────────────────────── 2. Tika extract ───────────────────────────╮
             string metadata = "{}";
             string textForOllama = string.Empty;
 
@@ -77,97 +81,191 @@ namespace BUILD.ING.Controllers
             {
                 metadata = await _tikaService.ExtractMetadataAsync(fileBytes, file.FileName).ConfigureAwait(false);
                 textForOllama = await _tikaService.ExtractTextAsync(fileBytes, file.FileName).ConfigureAwait(false);
-                _logger.LogInformation("✅ Metadata and text extracted for {FileName}", file.FileName);
+                _logger.LogInformation("✅ Metadata & text extracted for {File}", file.FileName);
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "❌ Tika extraction failed for file {FileName}", file.FileName);
+                _logger.LogError(ex, "❌ Tika extraction failed for {File}", file.FileName);
             }
 
+            // ╭──────────────── 3. build prompt (address + category) ─────────────────╮
+            var shortText = textForOllama.Length > 4_000 ? textForOllama[..4_000] : textForOllama;
+            var categoriesJson = JsonSerializer.Serialize(ReadCategories().Select(c => c.Name));
+
+            var prompt = $$"""
+            You are an intelligent document analyzer.
+
+            Given the **extracted text** and a list of **categories** from a German document, your task is to analyze and extract the following fields in a JSON format:
+            
+            **Example output:**
+            {
+                "address":
+                {
+                    "street":"<string|null>",
+                    "house_number":"<string|null>",
+                    "zip_code":"<string|null>",
+                    "city":"<string|null>"
+                },
+                "category":"<string|null>"
+            }
+
+            **TASK A** → Extract a **address** if present.  
+            Look for labels like: 
+            "Adresse", "Anschrift", "Standort", "Objektadresse", "Gebäudeadresse", "Hausanschrift",
+            "Liegenschaft", "Baustellenadresse", "Postanschrift", "Immobilienadresse",
+            or field names such as "Straße", "Haus-Nr.", "PLZ", "Ort", and the same terms in free text.
+
+            **TASK B** → Choose the SINGLE best-matching **category** from "categories"
+            (use null if none fits)
+
+            **Rules**  
+            • Every value must be a JSON string or null - no units, no comments.
+            • No markdown, code-fences, or extra keys.
+            • Output must parse with `JSON.parse()`.
+
+            "categories":
+            {{categoriesJson}}
+
+            "Extracted Text:":
+            {{shortText}}
+            """;
+
             Dictionary<string, string>? parsedAddress = null;
+            string? matchedCategory = null;
             Building? matchedBuilding = null;
 
+            // ╭──────────────────────────── 4. call Ollama ───────────────────────────╮
             try
             {
-                var shortText = textForOllama.Length > 3000 ? textForOllama.Substring(0, 3000) : textForOllama;
+                var client = httpClientFactory.CreateClient("Ollama");
+                var payload = JsonSerializer.Serialize(new { prompt });
+                var resp = await client.PostAsync(
+                                "http://ollama:8000/api/Ollama/ask",
+                                new StringContent(payload, Encoding.UTF8, "application/json"))
+                                        .ConfigureAwait(false);
 
-                var prompt = $$"""
-                The following is the extracted text from a German document. Your task is to identify if it contains an address under the field "Adresse" or in free text.
-
-                Extract the address **only if it looks like a valid building address**, and return the result in JSON format with the following 4 fields:
-
-                - street
-                - house_number
-                - zip_code
-                - city
-
-                All values must be strings or null. DO NOT return markdown or explanation.
-
-                Example:
+                if (resp.IsSuccessStatusCode)
                 {
-                    "street": "Riedener Str.",
-                    "house_number": "1a",
-                    "zip_code": "90518",
-                    "city": "Altdorf"
-                }
+                    var jsonStr = await resp.Content.ReadAsStringAsync().ConfigureAwait(false);
+                    var ollama = JsonSerializer.Deserialize<OllamaController.OllamaResponse>(
+                                    jsonStr,
+                                    new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
 
-                Text:
-                {{shortText}}
-                """;
+                    _logger.LogInformation("OLLAMA response field:\n{0}", ollama?.Response);
 
-                var client = httpClientFactory.CreateClient();
-                var json = JsonSerializer.Serialize(new { prompt });
-                var content = new StringContent(json, Encoding.UTF8, "application/json");
 
-                var response = await client.PostAsync("http://ollama:8000/api/Ollama/ask", content).ConfigureAwait(false);
-
-                if (response.IsSuccessStatusCode)
-                {
-                    var ollamaResultJson = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
-                    var ollamaResult = JsonSerializer.Deserialize<OllamaController.OllamaResponse>(
-                        ollamaResultJson,
-                        new JsonSerializerOptions { PropertyNameCaseInsensitive = true }
-                    );
-
-                    parsedAddress = JsonSerializer.Deserialize<Dictionary<string, string>>(ollamaResult?.Response ?? "{}", new JsonSerializerOptions
+                    if (!string.IsNullOrWhiteSpace(ollama?.Response))
                     {
-                        PropertyNameCaseInsensitive = true
-                    });
+                        // ────────  Ollama JSON fence-strip  ────────────────
+                        var cleanedJson = ollama.Response
+                            .Replace("```json", "", StringComparison.OrdinalIgnoreCase) // remove fenced block tag
+                            .Replace("```", "", StringComparison.OrdinalIgnoreCase) // remove any back-ticks
+                            .Trim();                                                   // trim spaces / \n etc.
 
-                    if (parsedAddress != null && parsedAddress.TryGetValue("street", out var street) &&
-                        parsedAddress.TryGetValue("zip_code", out var zipCode))
-                    {
-                        parsedAddress.TryGetValue("house_number", out var houseNumber);
-                        parsedAddress.TryGetValue("city", out var city);
+                        int first = cleanedJson.IndexOf('{');
+                        int last = cleanedJson.LastIndexOf('}');
+                        if (first >= 0 && last > first)
+                            cleanedJson = cleanedJson[first..(last + 1)];
 
-                        var buildings = _context.Buildings.ToList();
-                        foreach (var building in buildings)
+                        _logger.LogInformation("🧼 Cleaned Ollama JSON: {Cleaned}", cleanedJson);
+
+                        var root = JsonDocument.Parse(cleanedJson).RootElement;
+
+                        // ------ A. ADDRESS -------
+                        if (root.TryGetProperty("address", out var addrObj) &&
+                            addrObj.ValueKind == JsonValueKind.Object)
                         {
-                            bool matchesStreet = string.Equals(building.StreetName?.Trim(), street?.Trim(), StringComparison.OrdinalIgnoreCase);
-                            bool matchesZip = string.Equals(building.PostalCode?.Trim(), zipCode?.Trim(), StringComparison.OrdinalIgnoreCase);
-                            bool matchesHouse = string.IsNullOrWhiteSpace(houseNumber) ||
-                                string.Equals(building.HouseNumber?.Trim(), houseNumber?.Trim(), StringComparison.OrdinalIgnoreCase);
-                            bool matchesCity = string.IsNullOrWhiteSpace(city) ||
-                                string.Equals(building.City?.Trim(), city?.Trim(), StringComparison.OrdinalIgnoreCase);
-
-                            if (matchesStreet && matchesZip && matchesHouse && matchesCity)
+                            // nested form
+                            parsedAddress = new Dictionary<string, string>
                             {
-                                matchedBuilding = building;
-                                break;
-                            }
+                                ["street"] = addrObj.GetProperty("street").GetString() ?? "",
+                                ["house_number"] = addrObj.GetProperty("house_number").GetString() ?? "",
+                                ["zip_code"] = addrObj.GetProperty("zip_code").GetString() ?? "",
+                                ["city"] = addrObj.GetProperty("city").GetString() ?? ""
+                            };
+                        }
+                        else
+                        {
+                            // flat fallback
+                            parsedAddress = new Dictionary<string, string>
+                            {
+                                ["street"] = root.TryGetProperty("street", out var s) ? s.GetString() ?? "" : "",
+                                ["house_number"] = root.TryGetProperty("house_number", out var hn) ? hn.GetString() ?? "" : "",
+                                ["zip_code"] = root.TryGetProperty("zip_code", out var z) ? z.GetString() ?? "" : "",
+                                ["city"] = root.TryGetProperty("city", out var c) ? c.GetString() ?? "" : ""
+                            };
+                        }
+                        if (parsedAddress.Values.All(string.IsNullOrWhiteSpace))
+                            parsedAddress = null;
+
+                        // ------ B. CATEGORY -------
+                        if (root.TryGetProperty("category", out var catElem) &&
+                            catElem.ValueKind == JsonValueKind.String)
+                        {
+                            var cat = catElem.GetString();
+                            if (!string.IsNullOrWhiteSpace(cat) &&
+                                !string.Equals(cat, "null", StringComparison.OrdinalIgnoreCase))
+                                matchedCategory = cat.Trim();
                         }
                     }
                 }
-                else
-                {
-                    _logger.LogWarning("⚠️ Ollama service failed to respond.");
-                }
+                else _logger.LogWarning("⚠️ Ollama service failed (status {Code})", resp.StatusCode);
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "❌ Ollama analysis failed");
             }
 
+            // ╭────────────── 5. try to map address → building ───────────╮
+            if (parsedAddress != null)
+            {
+                parsedAddress.TryGetValue("street", out var street);
+                parsedAddress.TryGetValue("zip_code", out var zip);
+                parsedAddress.TryGetValue("house_number", out var house);
+                parsedAddress.TryGetValue("city", out var city);
+
+                var orgId = GetCurrentUserOrganizationId();
+                var buildings = _context.Buildings
+                    .Where(b => b.OrganizationId == orgId)
+                    .ToList();
+                foreach (var b in buildings)
+                {
+                    bool okStreet = string.IsNullOrWhiteSpace(street) ||
+                                    string.Equals(b.StreetName?.Trim(), street.Trim(),
+                                                StringComparison.OrdinalIgnoreCase);
+
+                    bool okZip = string.IsNullOrWhiteSpace(zip) ||
+                                    string.Equals(b.PostalCode?.Trim(), zip.Trim(),
+                                                StringComparison.OrdinalIgnoreCase);
+
+                    bool okHouse = string.IsNullOrWhiteSpace(house) ||
+                                    string.Equals(b.HouseNumber?.Trim(), house.Trim(),
+                                                StringComparison.OrdinalIgnoreCase);
+
+                    bool okCity = string.IsNullOrWhiteSpace(city) ||
+                                    string.Equals(b.City?.Trim(), city.Trim(),
+                                                StringComparison.OrdinalIgnoreCase);
+
+                    if (okStreet && okZip && okHouse && okCity)
+                    {
+                        matchedBuilding = b;
+                        break;
+                    }
+                }
+            }
+
+            // ╭────────────── 6. Try to map matchedCategory (string) to actual category object ───────────╮
+            var allCategories = ReadCategories();
+            var categoryMatch = allCategories.FirstOrDefault(c =>
+                string.Equals(c.Name?.Trim(), matchedCategory, StringComparison.OrdinalIgnoreCase));
+            string? matchedCategoryName = categoryMatch?.Name;
+            if (categoryMatch == null)
+            {
+                matchedCategoryName = null;
+            }
+
+
+            // ╭──────────────────────────── 7. persist ───────────────────────────────╮
             var document = new Document
             {
                 Title = Path.GetFileNameWithoutExtension(file.FileName),
@@ -182,15 +280,18 @@ namespace BUILD.ING.Controllers
                 IsPublic = false,
                 Description = "No description provided",
                 Metadata = metadata,
+                KeyInformation = null, // This could be populated with structured data from document analysis
                 UploadedAt = DateTime.UtcNow,
                 UploadedBy = null,
-                GroupId = GetCurrentUserGroupId(),
+                OrganizationId = GetCurrentUserOrganizationId(),
                 BuildingId = matchedBuilding?.BuildingId,
+                CategoryName = matchedCategoryName
             };
 
             _context.Documents.Add(document);
             await _context.SaveChangesAsync().ConfigureAwait(false);
 
+            // ╭──────────────────────────── 8. response ──────────────────────────────╮
             var baseUrl = $"{Request.Scheme}://{Request.Host}";
             var fileUrl = $"{baseUrl}/documents/{document.FileName}";
 
@@ -199,17 +300,19 @@ namespace BUILD.ING.Controllers
                 document.DocumentId,
                 FileUrl = fileUrl,
                 HasMetadata = metadata != "{}",
-                SuggestedAddress = parsedAddress != null && parsedAddress.Values.Any(v => !string.IsNullOrWhiteSpace(v))
-                    ? parsedAddress
-                    : new Dictionary<string, string>
-                    {
-                        { "street", "Couldn't identify" },
-                        { "house_number", "Couldn't identify" },
-                        { "zip_code", "Couldn't identify" },
-                        { "city", "Couldn't identify" }
-                    },
+                SuggestedAddress = parsedAddress != null &&
+                                parsedAddress.Values.Any(v => !string.IsNullOrWhiteSpace(v))
+                                ? parsedAddress
+                                : new Dictionary<string, string>
+                                    {
+                                        { "street",       "Couldn't identify" },
+                                        { "house_number", "Couldn't identify" },
+                                        { "zip_code",     "Couldn't identify" },
+                                        { "city",         "Couldn't identify" }
+                                    },
                 BuildingId = matchedBuilding?.BuildingId,
-                BuildingName = matchedBuilding?.Name
+                BuildingName = matchedBuilding?.Name,
+                CategoryName = matchedCategoryName
             });
         }
 
@@ -217,8 +320,17 @@ namespace BUILD.ING.Controllers
         [HttpGet]
         public IActionResult GetAllDocuments()
         {
-            var groupId = GetCurrentUserGroupId();
-            var documents = _context.Documents.Where(d => d.GroupId == groupId).ToList();
+            var orgId = GetCurrentUserOrganizationId();
+            var buildingIds = _context.Buildings
+                .Where(b => b.OrganizationId == orgId)
+                .Select(b => b.BuildingId)
+                .ToList();
+
+            var documents = _context.Documents
+                .Where(d => d.OrganizationId == orgId &&
+                            (!d.BuildingId.HasValue || buildingIds.Contains(d.BuildingId.Value)))
+                .ToList();
+
             var dtos = documents.Select(document => new BUILD.ING.Dto.DocumentDto
             {
                 DocumentId = document.DocumentId,
@@ -236,9 +348,10 @@ namespace BUILD.ING.Controllers
                 Description = document.Description,
                 IsPublic = document.IsPublic,
                 Metadata = document.Metadata,
+                KeyInformation = document.KeyInformation,
                 FileName = document.FileName,
                 UploadedAt = document.UploadedAt,
-                GroupId = document.GroupId
+                OrganizationId = document.OrganizationId
             }).ToList();
             return Ok(dtos);
         }
@@ -246,8 +359,17 @@ namespace BUILD.ING.Controllers
         [HttpGet("{id}")]
         public IActionResult GetDocumentById(int id)
         {
-            var groupId = GetCurrentUserGroupId();
-            var document = _context.Documents.FirstOrDefault(d => d.DocumentId == id && d.GroupId == groupId);
+            var orgId = GetCurrentUserOrganizationId();
+            var buildingIds = _context.Buildings
+                .Where(b => b.OrganizationId == orgId)
+                .Select(b => b.BuildingId)
+                .ToList();
+
+            var document = _context.Documents
+                .FirstOrDefault(d =>
+                    d.DocumentId == id &&
+                    d.OrganizationId == orgId &&
+                    (d.BuildingId == null || buildingIds.Contains(d.BuildingId.Value)));
             if (document == null)
                 return NotFound();
             var dto = new BUILD.ING.Dto.DocumentDto
@@ -267,9 +389,10 @@ namespace BUILD.ING.Controllers
                 Description = document.Description,
                 IsPublic = document.IsPublic,
                 Metadata = document.Metadata,
+                KeyInformation = document.KeyInformation,
                 FileName = document.FileName,
                 UploadedAt = document.UploadedAt,
-                GroupId = document.GroupId
+                OrganizationId = document.OrganizationId
             };
             return Ok(dto);
         }
@@ -333,7 +456,19 @@ namespace BUILD.ING.Controllers
         public IActionResult UpdateDocument(int id, [FromBody] DocumentUpdateRequest request)
         {
             ArgumentNullException.ThrowIfNull(request);
-            var document = _context.Documents.FirstOrDefault(d => d.DocumentId == id && d.GroupId == GetCurrentUserGroupId());
+            var orgId = GetCurrentUserOrganizationId();
+            var buildingIds = _context.Buildings
+                .Where(b => b.OrganizationId == orgId)
+                .Select(b => b.BuildingId)
+                .ToList();
+
+            var document = _context.Documents
+                .FirstOrDefault(d =>
+                    d.DocumentId == id &&
+                    d.OrganizationId == orgId &&
+                    (d.BuildingId == null || buildingIds.Contains(d.BuildingId.Value)));
+
+
             if (document == null)
                 return NotFound();
 
@@ -373,9 +508,10 @@ namespace BUILD.ING.Controllers
                 Description = document.Description,
                 IsPublic = document.IsPublic,
                 Metadata = document.Metadata,
+                KeyInformation = document.KeyInformation,
                 FileName = document.FileName,
                 UploadedAt = document.UploadedAt,
-                GroupId = document.GroupId
+                OrganizationId = document.OrganizationId
             };
             return Ok(dto);
         }
@@ -384,7 +520,19 @@ namespace BUILD.ING.Controllers
         public IActionResult UpdateDocumentMetadata(int id, [FromBody] DocumentMetadataPatchRequest request)
         {
             ArgumentNullException.ThrowIfNull(request);
-            var document = _context.Documents.FirstOrDefault(d => d.DocumentId == id && d.GroupId == GetCurrentUserGroupId());
+            var orgId = GetCurrentUserOrganizationId();
+            var buildingIds = _context.Buildings
+                .Where(b => b.OrganizationId == orgId)
+                .Select(b => b.BuildingId)
+                .ToList();
+
+            var document = _context.Documents
+                .FirstOrDefault(d =>
+                    d.DocumentId == id &&
+                    d.OrganizationId == orgId &&
+                    (d.BuildingId == null || buildingIds.Contains(d.BuildingId.Value)));
+
+
             if (document == null)
                 return NotFound();
 
@@ -401,9 +549,8 @@ namespace BUILD.ING.Controllers
             // Handle BuildingId logic
             if (request.BuildingId.HasValue)
             {
-                var building = _context.Buildings.FirstOrDefault(b => b.BuildingId == request.BuildingId.Value);
-                if (building == null)
-                    return BadRequest($"Building with ID {request.BuildingId} not found.");
+                if (!buildingIds.Contains(request.BuildingId.Value))
+                    return BadRequest($"Building with ID {request.BuildingId} not found in current organization.");
                 document.BuildingId = request.BuildingId.Value;
             }
             else
@@ -431,9 +578,10 @@ namespace BUILD.ING.Controllers
                 Description = document.Description,
                 IsPublic = document.IsPublic,
                 Metadata = document.Metadata,
+                KeyInformation = document.KeyInformation,
                 FileName = document.FileName,
                 UploadedAt = document.UploadedAt,
-                GroupId = document.GroupId
+                OrganizationId = document.OrganizationId
             };
             return Ok(dto);
         }
@@ -441,7 +589,17 @@ namespace BUILD.ING.Controllers
         [HttpDelete("{id}")]
         public IActionResult DeleteDocument(int id)
         {
-            var document = _context.Documents.FirstOrDefault(d => d.DocumentId == id && d.GroupId == GetCurrentUserGroupId());
+            var orgId = GetCurrentUserOrganizationId();
+            var buildingIds = _context.Buildings
+                .Where(b => b.OrganizationId == orgId)
+                .Select(b => b.BuildingId)
+                .ToList();
+
+            var document = _context.Documents
+                .FirstOrDefault(d =>
+                    d.DocumentId == id &&
+                    d.OrganizationId == orgId &&
+                    (d.BuildingId == null || buildingIds.Contains(d.BuildingId.Value)));
             if (document == null)
                 return NotFound();
 
@@ -465,8 +623,19 @@ namespace BUILD.ING.Controllers
         [HttpGet("{id}/download")]
         public IActionResult DownloadDocument(int id)
         {
-            var groupId = GetCurrentUserGroupId();
-            var document = _context.Documents.FirstOrDefault(d => d.DocumentId == id && d.GroupId == groupId);
+            var orgId = GetCurrentUserOrganizationId();
+            var buildingIds = _context.Buildings
+                .Where(b => b.OrganizationId == orgId)
+                .Select(b => b.BuildingId)
+                .ToList();
+
+            var document = _context.Documents
+                .FirstOrDefault(d =>
+                    d.DocumentId == id &&
+                    d.OrganizationId == orgId &&
+                    (d.BuildingId == null || buildingIds.Contains(d.BuildingId.Value)));
+
+
             if (document == null)
                 return NotFound();
 
@@ -481,8 +650,17 @@ namespace BUILD.ING.Controllers
         [HttpGet("{id}/preview")]
         public IActionResult PreviewDocument(int id)
         {
-            var groupId = GetCurrentUserGroupId();
-            var document = _context.Documents.FirstOrDefault(d => d.DocumentId == id && d.GroupId == groupId);
+            var orgId = GetCurrentUserOrganizationId();
+            var buildingIds = _context.Buildings
+                .Where(b => b.OrganizationId == orgId)
+                .Select(b => b.BuildingId)
+                .ToList();
+
+            var document = _context.Documents
+                .FirstOrDefault(d =>
+                    d.DocumentId == id &&
+                    d.OrganizationId == orgId &&
+                    (d.BuildingId == null || buildingIds.Contains(d.BuildingId.Value)));
             if (document == null)
                 return NotFound();
 
@@ -505,8 +683,6 @@ namespace BUILD.ING.Controllers
             return File(fileBytes, contentType);
         }
 
-
-
         public class DocumentMetadataPatchRequest
         {
             public string? CategoryName { get; set; }
@@ -519,6 +695,8 @@ namespace BUILD.ING.Controllers
             public string? Description { get; set; }
         }
 
+
+
         // public class DocumentCategoryCreateRequest
         // {
         //     public string Name { get; set; } = string.Empty;
@@ -528,4 +706,3 @@ namespace BUILD.ING.Controllers
     }
 
 }
-

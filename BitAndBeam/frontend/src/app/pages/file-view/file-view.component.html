@@ -12,48 +12,71 @@
       <!-- Main File Content -->
       <div class="file-main-content" *ngIf="selectedFile">
 
-        <section class="image-viewer" *ngIf="isImage">
+        <section class="image-viewer" *ngIf="isImage" (mouseenter)="showToolbar = true" (mouseleave)="showToolbar = false" style="position: relative;">
           <img
             [src]="selectedFile.url"
             alt="Document Image"
-            style="display: block; max-width: 100%; max-height: 100%; margin: auto; object-fit: contain;">
+            [style.transform]="'scale(' + imageZoom + ')'"
+            style="display: block; max-width: 100%; max-height: 100%; margin: auto; object-fit: contain; transition: transform 0.2s;">
+          <div class="viewer-toolbar" *ngIf="showToolbar" style="position: absolute; top: 10px; right: 10px; background: rgba(0,0,0,0.6); border-radius: 4px; padding: 4px; display: flex; gap: 8px; z-index: 10;">
+            <button (click)="zoomIn()" title="Zoom In" style="color: white; background: none; border: none; font-size: 20px; cursor: pointer;">+</button>
+            <button (click)="zoomOut()" title="Zoom Out" style="color: white; background: none; border: none; font-size: 20px; cursor: pointer;">-</button>
+            <button (click)="resetZoom()" title="Reset Zoom" style="color: white; background: none; border: none; font-size: 20px; cursor: pointer;">⟳</button>
+          </div>
         </section>
 
         <!-- ✅ PDF viewer -->
-        <section class="pdf-viewer" *ngIf="isPdf">
+        <section class="pdf-viewer" *ngIf="isPdf" (mouseenter)="showToolbar = true" (mouseleave)="showToolbar = false" style="position: relative;">
+          <div class="viewer-toolbar" *ngIf="showToolbar" style="position: absolute; top: 10px; right: 24px; background: rgba(0,0,0,0.7); border-radius: 4px; padding: 4px; display: flex; gap: 8px; z-index: 20;">
+            <button (click)="zoomIn()" title="Zoom In" style="color: white; background: none; border: none; font-size: 20px; cursor: pointer;">+</button>
+            <button (click)="zoomOut()" title="Zoom Out" style="color: white; background: none; border: none; font-size: 20px; cursor: pointer;">-</button>
+            <button (click)="resetZoom()" title="Reset Zoom" style="color: white; background: none; border: none; font-size: 20px; cursor: pointer;">⟳</button>
+          </div>
           <pdf-viewer
             [src]="selectedFile.url"
             [show-all]="true"
-            style="display: block; height: 100%; width: 100%;">
+            [zoom]="pdfZoom"
+            [render-text]="true"
+            [original-size]="false"
+            style="display: block; height: 100%; width: 100%; background: transparent;">
           </pdf-viewer>
         </section>
         <!-- Metadata Panel-->
         <!-- ✅ Editable Metadata Panel -->
-        <aside class="metadata-panel">
-          <h3>Edit Metadata</h3>
-
-          <div class="metadata-item">
-            <label for="building-select"><strong>Building:</strong></label>
-            <select id="building-select" [(ngModel)]="selectedBuildingId">
-              <option [ngValue]="null">No Building</option>
-              <option *ngFor="let b of buildings" [ngValue]="b.id">{{ b.name }}</option>
-            </select>
+        <aside class="metadata-panel" [class.collapsed]="isMetadataPanelCollapsed">
+          <div class="metadata-panel-header">
+            <h3 *ngIf="!isMetadataPanelCollapsed">Edit Metadata</h3>
+            <button class="metadata-toggle-btn" (click)="toggleMetadataPanel()" 
+                    [title]="isMetadataPanelCollapsed ? 'Expand metadata panel' : 'Collapse metadata panel'">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd" d="M12.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-2.293-2.293a1 1 0 010-1.414z" clip-rule="evenodd" />
+              </svg>
+            </button>
           </div>
 
+          <div class="metadata-content">
+            <div class="metadata-item">
+              <label for="building-select"><strong>Building:</strong></label>
+              <select id="building-select" [(ngModel)]="selectedBuildingId">
+                <option [ngValue]="null">No Building</option>
+                <option *ngFor="let b of buildings" [ngValue]="b.id">{{ b.name }}</option>
+              </select>
+            </div>
           <div class="metadata-item">
             <label for="category-select"><strong>Category:</strong></label>
-            <select id="category-select" [(ngModel)]="selectedCategoryId">
+            <select id="category-select" [(ngModel)]="selectedCategoryName">
               <option [ngValue]="null">No Category</option>
-              <option *ngFor="let c of categories" [ngValue]="c.id">{{ c.name }}</option>
+              <option *ngFor="let c of categories" [ngValue]="c.name">{{ c.name }}</option>
             </select>
           </div>
 
-          <div class="meta-actions">
-            <button class="save-btn" (click)="saveMetadataChanges()" [disabled]="loading">
-              {{ loading ? 'Saving...' : 'Save Changes' }}
-            </button>
-            <button class="download-btn" (click)="downloadFile()">Download</button>
-            <button class="delete-btn" (click)="deleteFile()">Delete</button>
+            <div class="meta-actions">
+              <button class="save-btn" (click)="saveMetadataChanges()" [disabled]="loading">
+                {{ loading ? 'Saving...' : 'Save Changes' }}
+              </button>
+              <button class="download-btn" (click)="downloadFile()">Download</button>
+              <button class="delete-btn" (click)="deleteFile()">Delete</button>
+            </div>
           </div>
         </aside>
 

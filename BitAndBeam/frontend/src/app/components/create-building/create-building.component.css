@@ -1,35 +1,243 @@
+/* Light/Dark mode variables */
+:root {
+  --bg-primary: #fff;
+  --bg-secondary: #f8fafb;
+  --color-primary: #1b3c58;
+  --color-secondary: #2d3e50;
+  --color-muted: #6c7a89;
+  --border-color: #dbe4ea;
+  --input-bg: #fafdff;
+  --input-focus-bg: #f6fcfb;
+  --btn-gradient: linear-gradient(90deg, #45c3b8 0%, #369995 100%);
+  --btn-gradient-hover: linear-gradient(90deg, #369995 0%, #45c3b8 100%);
+  --shadow-color: rgba(69,195,184,0.12);
+  --shadow-color-intense: rgba(69,195,184,0.13);
+}
+
+/* Dark mode variables */
+.dark-mode {
+  --bg-primary: #1a1f2e;
+  --bg-secondary: #242c3d;
+  --color-primary: #e0e6ed;
+  --color-secondary: #c5d0dd;
+  --color-muted: #94a3b8;
+  --border-color: #364053;
+  --input-bg: #2d3748;
+  --input-focus-bg: #343e52;
+  --btn-gradient: linear-gradient(90deg, #36a3a0 0%, #2a7a76 100%);
+  --btn-gradient-hover: linear-gradient(90deg, #2a7a76 0%, #36a3a0 100%);
+  --shadow-color: rgba(20, 27, 45, 0.35);
+  --shadow-color-intense: rgba(15, 23, 42, 0.45);
+}
+
 .create-building-form {
-  max-width: 400px;
+  max-width: 1000px;
   margin: 2rem auto;
-  padding: 1rem;
-  background: #fffefb;
-  border-radius: 8px;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  padding: 2rem;
+  background: var(--bg-primary);
+  border-radius: 18px;
+  box-shadow: 0 4px 24px var(--shadow-color), 0 1.5px 6px rgba(27,60,88,0.05);
+  position: relative;
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+  min-height: calc(100vh - 4rem);
+  display: flex;
+  flex-direction: column;
 }
-.create-building-form h2 {
-  margin-bottom: 1rem;
+
+.form-header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+  position: relative;
 }
+
+.back-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: transparent;
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  padding: 0.5rem 0.75rem;
+  color: var(--color-primary);
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: all 0.2s ease;
+  position: absolute;
+  left: 0;
+}
+
+.back-btn:hover {
+  background-color: var(--bg-secondary);
+  border-color: #45c3b8;
+  color: #45c3b8;
+}
+
+.back-btn svg {
+  width: 16px;
+  height: 16px;
+}
+
+.form-header h2 {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin: 0;
+  font-weight: 700;
+  color: var(--color-primary);
+}
+
+.form-icon {
+  width: 32px;
+  height: 32px;
+  opacity: 0.9;
+}
+
+/* Two-column layout for form sections */
+.form-sections-container {
+  display: flex;
+  gap: 2rem;
+  flex: 1;
+  min-height: 0;
+}
+
+.form-section {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.form-section--required {
+  background: var(--bg-primary);
+}
+
+.form-section--optional {
+  margin-top: 0;
+}
+
+/* Add spacing to match the required note in the left column */
+.form-section--optional::after {
+  content: '';
+  display: block;
+  height: 1.2rem; /* Further reduced height */
+  margin-top: 0.5rem;
+}
+
+/* Ensure both sections have their first label starting at the same level */
+.form-section > label:first-child {
+  margin-top: 0;
+}
+
+.required-note {
+  font-size: 0.85rem;
+  color: var(--color-muted);
+  margin: 0.5rem 0 0 0;
+  font-style: italic;
+}
+
+/* Responsive design for smaller screens */
+@media (max-width: 768px) {
+  .form-sections-container {
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+  
+  .create-building-form {
+    max-width: 90%;
+    margin: 1rem auto;
+    padding: 1.5rem;
+  }
+  
+  .form-header {
+    margin-bottom: 1.2rem;
+  }
+}
+
 .create-building-form label {
   display: block;
-  margin-bottom: 0.8rem;
+  margin-bottom: 1.1rem;
   font-weight: 500;
+  color: var(--color-secondary);
 }
+
 .create-building-form input,
 .create-building-form select,
 .create-building-form textarea {
   width: 100%;
-  padding: 0.5rem;
-  border-radius: 4px;
-  border: 1px solid #ccc;
+  padding: 0.65rem 0.85rem;
+  border-radius: 6px;
+  border: 1.5px solid var(--border-color);
+  font-size: 1rem;
+  margin-top: 0.3rem;
+  background: var(--input-bg);
+  color: var(--color-primary);
+  transition: border-color 0.2s, background 0.2s, color 0.2s;
+  box-sizing: border-box;
 }
-.create-building-form button {
-  margin-top: 1rem;
-  background: #45c3b8;
+.create-building-form input:focus,
+.create-building-form textarea:focus {
+  border-color: #45c3b8;
+  outline: none;
+  background: var(--input-focus-bg);
+}
+
+.create-building-form textarea {
+  height: 2.6rem; /* Match the height of other input fields */
+  resize: vertical; /* Allow only vertical resizing */
+  min-height: 2.6rem; /* Prevent shrinking below input field height */
+}
+
+.helper-text {
+  display: inline-block;
+  font-size: 0.88rem;
+  color: var(--color-muted);
+  margin-left: 0.5rem;
+}
+
+.submit-btn {
+  margin-top: 0.4rem;
+  background: var(--btn-gradient);
   color: white;
   border: none;
-  padding: 0.6rem 1.2rem;
-  border-radius: 6px;
+  padding: 0.75rem 1.7rem;
+  border-radius: 8px;
+  font-size: 1.08rem;
+  font-weight: 600;
   cursor: pointer;
+  box-shadow: 0 2px 8px var(--shadow-color);
+  transition: background 0.2s, box-shadow 0.2s;
+  letter-spacing: 0.01em;
 }
-.error-message { color: red; margin-bottom: 1rem; }
-.success-message { color: green; margin-bottom: 1rem; }
+.submit-btn:hover {
+  background: var(--btn-gradient-hover);
+  box-shadow: 0 4px 16px var(--shadow-color-intense);
+}
+
+.error-message {
+  color: #e74c3c;
+  margin-bottom: 1rem;
+  font-weight: 600;
+  text-align: center;
+  padding: 10px;
+  border-radius: 6px;
+  background-color: rgba(231, 76, 60, 0.1);
+}
+.success-message {
+  color: #27ae60;
+  margin-bottom: 1rem;
+  font-weight: 600;
+  text-align: center;
+  padding: 10px;
+  border-radius: 6px;
+  background-color: rgba(39, 174, 96, 0.1);
+}
+
+.dark-mode .error-message {
+  background-color: rgba(231, 76, 60, 0.15);
+}
+
+.dark-mode .success-message {
+  background-color: rgba(39, 174, 96, 0.15);
+}

@@ -93,6 +93,18 @@ namespace BUILD.ING.Data
                 .HasForeignKey(d => d.UploadedBy)
                 .OnDelete(DeleteBehavior.SetNull);
 
+
+
+            modelBuilder.Entity<Document>()
+                .Property(d => d.CategoryName);
+
+            modelBuilder.Ignore<DocumentTag>();
+
+            // Configure JSONB columns for Document
+            modelBuilder.Entity<Document>()
+                .Property(d => d.KeyInformation)
+                .HasColumnType("jsonb");
+
             modelBuilder.Entity<Building>().ToTable("Buildings");
         }
     }

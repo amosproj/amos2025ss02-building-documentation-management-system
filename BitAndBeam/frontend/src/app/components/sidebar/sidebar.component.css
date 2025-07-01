@@ -1,9 +1,9 @@
-
 * {
   box-sizing: border-box;
-  font-family: 'Segoe UI', sans-serif;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 }
-hhtml, body {
+
+html, body {
   margin: 0;
   padding: 0;
   height: 100%;
@@ -12,89 +12,444 @@ hhtml, body {
 .container {
   display: flex;
   height: 100vh;
-  background-color: #fefcf8;
   overflow: hidden;
 }
 
-/* Sidebar */
+/* ChatGPT Style Sidebar */
 .sidebar {
   width: 260px;
-  background-color: #1b3c58;
-  color: white;
+  background-color: var(--sidebar-bg);
+  color: var(--sidebar-color);
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
   height: 100vh;
-  padding: 1.5rem 0.25rem;
-  transition: width 0.3s ease;
+  padding: 0;
+  border-right: 1px solid var(--sidebar-border);
+  position: relative;
 }
 
-.sidebar-top{
-  padding: 0 1.2rem;
-  margin-bottom: 2rem;
+.sidebar-top {
+  padding: 16px;
+  border-bottom: 1px solid var(--sidebar-border);
+  margin-bottom: 0;
 }
+
+.logo-section {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.logo-img-container {
+  background: white;
+  padding: 4px 8px;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.logo-img {
+  width: 30px;
+  height: 30px;
+}
+
+.logo-text {
+  font-weight: 700;
+  font-size: 16px;
+  color: var(--sidebar-color);
+  margin-left: 8px;
+}
+
+.home-btn {
+  background: transparent;
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  padding: 4px;
+  margin-left: auto;
+  cursor: pointer;
+  color: var(--text-primary);
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+}
+
+.home-btn:hover {
+  background-color: var(--menu-hover-bg);
+  border-color: var(--accent-color);
+  color: var(--accent-color);
+}
+
+.home-btn svg {
+  width: 14px;
+  height: 14px;
+}
+
 .sidebar-middle {
   display: flex;
   flex-direction: column;
-  padding: 0 1.2rem;
+  padding: 8px;
   flex-grow: 1;
   overflow-y: auto;
-  gap: 1rem;
+  gap: 8px;
+  height: calc(100vh - 120px); /* Adjust based on header/footer height */
+  scrollbar-width: thin;
+}
+
+/* Custom scrollbar styling */
+.sidebar-middle::-webkit-scrollbar {
+  width: 6px;
+}
+
+.sidebar-middle::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.sidebar-middle::-webkit-scrollbar-thumb {
+  background-color: var(--text-muted);
+  opacity: 0.5;
+  border-radius: 20px;
+}
+
+.sidebar-middle::-webkit-scrollbar-thumb:hover {
+  background-color: var(--text-primary);
+  opacity: 0.7;
 }
 
 .sidebar-bottom {
   width: 100%;
-  padding-top: 1rem;
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  border-top: 1px solid var(--sidebar-border);
+  padding: 8px;
 }
 
-/* Welcome Section */
-.user-welcome {
-  display: flex;
-  align-items: center;
-  gap: 0.8rem;
-  margin-bottom: 0.5rem;
-  width: 100%;
-}
-
-.avatar {
-  width: 36px;
-  height: 36px;
-  background-color: #fff;
-  color: #1b3c58;
-  font-weight: bold;
-  border-radius: 50%;
+/* Add Building Button */
+.add-btn {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 1.2rem;
+  width: 100%;
+  padding: 8px 12px;
+  border: 1px solid #45c3b8;
+  border-radius: 6px;
+  background: #45c3b8;
+  font-size: 13px;
+  color: white;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  margin-bottom: 6px;
 }
 
-.welcome-text .greeting {
-  font-size: 0.85rem;
-  color: #ccc;
+.add-btn svg {
+  width: 16px;
+  height: 16px;
+  margin-right: 6px;
 }
 
-.welcome-text .username {
-  font-weight: bold;
-  font-size: 0.95rem;
+.add-btn:hover {
+  background-color: #3ab5a8;
+  border-color: #3ab5a8;
   color: white;
 }
 
-.logout-btn {
-  background-color: transparent;
-  color: #ccc;
-  border: none;
-  font-size: 0.9rem;
+/* Tree View Styling */
+.tree-view {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.tree-item {
+  display: flex;
+  flex-direction: column;
+}
+
+.tree-parent {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  padding: 8px 10px;
+  border-radius: 6px;
+  background-color: var(--sidebar-item-bg);
+  color: var(--sidebar-color);
   cursor: pointer;
+  position: relative;
+  transition: background-color 0.15s ease;
+}
+
+.tree-parent:hover {
+  background-color: var(--sidebar-item-hover-bg);
+}
+
+.tree-parent.expanded {
+  background-color: var(--sidebar-item-active-bg, var(--sidebar-item-hover-bg));
+}
+
+.expand-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  opacity: 0.7;
+  transition: transform 0.2s ease;
+}
+
+.folder-icon {
+  width: 18px;
+  height: 18px;
+  color: var(--accent-color);
+}
+
+.building-title {
+  flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin-right: 8px; /* Add some space before the delete button */
+  min-width: 0; /* Allow flex item to shrink below its content size */
+}
+
+/* Children Documents Styling */
+.tree-children {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  padding-left: 14px;
+  margin-top: 2px;
+  margin-bottom: 2px;
+  overflow: hidden;
+  animation: slideDown 0.2s ease-out;
+}
+
+@keyframes slideDown {
+  from { max-height: 0; opacity: 0; }
+  to { max-height: 1000px; opacity: 1; }
+}
+
+.tree-child {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  padding: 6px 8px 6px 16px;
+  border-radius: 4px;
+  background-color: var(--sidebar-item-bg);
+  color: var(--sidebar-color);
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+  margin-left: 10px;
+  border-left: 1px solid var(--sidebar-border);
+}
+
+.tree-child:hover {
+  background-color: var(--sidebar-item-hover-bg);
+}
+
+/* Highlight for active document in sidebar */
+.tree-child.active {
+  background-color: var(--sidebar-item-active-bg, #d1fae5); /* fallback for light */
+  color: var(--accent-color);
+  font-weight: 600;
+  border-left: 3px solid var(--accent-color);
+}
+
+body.dark-mode .tree-child.active {
+  background-color: var(--sidebar-item-active-bg, #134e4a); /* fallback for dark */
+  color: var(--accent-color);
+  font-weight: 600;
+  border-left: 3px solid var(--accent-color);
+}
+
+.doc-icon {
+  width: 16px;
+  height: 16px;
+  opacity: 0.85;
+  color: var(--text-primary);
+}
+
+.doc-title {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Empty state */
+.empty-docs {
+  padding: 6px 8px 6px 26px;
+  color: var(--text-muted);
+  font-size: 12px;
+  font-style: italic;
+  margin-left: 10px;
+}
+
+/* Delete Button Styling */
+.delete-btn {
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 4px;
+  margin-left: auto; /* Push to the right */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 24px;
+  min-height: 24px;
+  transition: color 0.15s ease;
+}
+
+.delete-btn:hover {
+  color: #ef4444;
+  background-color: rgba(239, 68, 68, 0.1);
+}
+
+/* Profile Section */
+.chat-profile-section {
+  position: relative;
+  width: 100%;
+}
+
+.profile-button {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  padding: 8px 12px;
+  border: none;
+  border-radius: 6px;
+  background: transparent;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  justify-content: space-between;
+}
+
+.profile-button:hover {
+  background-color: var(--menu-hover-bg);
+}
+
+.profile-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background-color: var(--accent-color);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: white;
+}
+
+.profile-icon {
+  width: 20px;
+  height: 20px;
+  color: white;
+}
+
+.profile-info {
+  flex-grow: 1;
+  padding-left: 12px;
   text-align: left;
-  padding: 0;
-  margin-top: 0.3rem;
+}
+
+.profile-name {
+  font-size: 14px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 160px;
   display: block;
+  color: var(--text-primary);
+  font-weight: 500;
+}
+
+.dark-mode .profile-name {
+  color: var(--text-light, #e2e8f0); /* Use theme variable with fallback */
+  opacity: 0.95;
+}
+
+.dropdown-arrow {
+  width: 16px;
+  height: 16px;
+  transition: transform 0.2s ease;
+  color: var(--text-muted);
+}
+
+/* Profile Dropdown */
+.profile-dropdown {
+  position: absolute;
+  bottom: 100%;
+  left: 0;
+  right: 0;
+  margin-bottom: 8px;
+  background-color: var(--bg-primary);
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1);
+  overflow: hidden;
+  z-index: 10;
+}
+
+.theme-selector {
+  padding: 12px;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.theme-label {
+  display: block;
+  font-size: 12px;
+  color: var(--text-muted);
+  margin-bottom: 6px;
+}
+
+.theme-select {
+  width: 100%;
+  padding: 8px 10px;
+  border-radius: 6px;
+  border: 1px solid var(--border-color);
+  background-color: var(--bg-secondary);
+  color: var(--text-primary);
+  font-size: 14px;
+  outline: none;
+}
+
+.dropdown-item {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  padding: 12px;
+  border: none;
+  background: transparent;
+  text-align: left;
+  font-size: 14px;
+  color: var(--text-primary);
+  cursor: pointer;
+  transition: background-color 0.2s;
+  gap: 8px;
+}
+
+.dropdown-item:hover {
+  background-color: var(--bg-secondary);
+}
+
+.item-icon {
+  width: 16px;
+  height: 16px;
+}
+
+.logout-item {
+  color: #ef4444 !important;
+}
+
+body.dark-mode .logout-item {
+  color: #f87171 !important;
 }
 
 .logout-btn:hover {
-  text-decoration: underline;
+  background-color: rgba(255, 255, 255, 0.1);
 }
 
 /* Logo Section */
@@ -111,24 +466,6 @@ hhtml, body {
   background-color: white;
   border-radius: 8px;
   padding: 4px;
-}
-
-.logo-text {
-  font-size: 1.4rem;
-  font-weight: bold;
-  color: white;
-}
-
-/* Add Building Button */
-.add-btn {
-  background-color: #45c3b8;
-  color: white;
-  border: none;
-  padding: 0.6rem 1.2rem;
-  border-radius: 6px;
-  cursor: pointer;
-  width: 80%;
-  font-weight: 500;
 }
 
 /* Building List */

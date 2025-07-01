@@ -17,7 +17,9 @@
   display: flex;
   flex: 1;
   overflow: hidden;
+  background-color: var(--bg-primary);
 }
+
 .file-main-content {
   display: flex;
   flex: 1;
@@ -27,13 +29,13 @@
   flex: 2;
   padding: 1.5rem;
   overflow-y: auto;
-  background-color: #ffffff;
+  background-color: var(--bg-primary);
 }
 .image-viewer {
   flex: 3;
   padding: 0.5rem;
   overflow: auto;
-  background-color: #ffffff;
+  background-color: var(--bg-primary);
 }
 
 .image-viewer img {
@@ -52,53 +54,90 @@
 
 .metadata-panel {
   flex: 1;
-  background-color: #fffefb;
+  background-color: var(--bg-secondary);
   padding: 1.5rem;
-  border-left: 1px solid #ddd;
+  border-left: 1px solid var(--border-color);
   overflow-y: auto;
+  position: relative;
+  transition: all 0.3s ease;
+  min-width: 280px;
+  max-width: 500px;
+}
+
+.metadata-panel.collapsed {
+  flex: 0 0 40px;
+  min-width: 40px;
+  padding: 0;
+  overflow: hidden;
+}
+
+.metadata-panel-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+  padding: 1.5rem 1.5rem 0 1.5rem;
+  margin: 0 -1.5rem 1rem -1.5rem;
+}
+
+.metadata-panel.collapsed .metadata-panel-header {
+  padding: 0.5rem;
+  margin: 0;
+  writing-mode: vertical-rl;
+  text-orientation: mixed;
+  height: 100%;
+  justify-content: center;
+}
+
+.metadata-toggle-btn {
+  background: transparent;
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  padding: 4px;
+  cursor: pointer;
+  color: var(--text-primary);
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+}
+
+.metadata-toggle-btn:hover {
+  background-color: var(--menu-hover-bg, var(--bg-primary));
+  border-color: var(--accent-color);
+}
+
+.metadata-toggle-btn svg {
+  width: 16px;
+  height: 16px;
+  transition: transform 0.3s ease;
+}
+
+.metadata-panel.collapsed .metadata-toggle-btn svg {
+  transform: rotate(180deg);
+}
+
+.metadata-content {
+  transition: opacity 0.3s ease;
+}
+
+.metadata-panel.collapsed .metadata-content {
+  opacity: 0;
+  pointer-events: none;
+  display: none;
 }
 
 .metadata-panel h3 {
   margin-top: 0;
   margin-bottom: 1rem;
+  color: var(--text-primary);
 }
 
 .metadata-item {
   margin-bottom: 0.8rem;
-  color: #333;
-}
-
-.meta-actions button {
-  margin-top: 0.75rem;
-  padding: 0.5rem 1rem;
-  border-radius: 6px;
-  border: none;
-  cursor: pointer;
-  font-size: 0.95rem;
-}
-
-.edit-btn {
-  background-color: #45c3b8;
-  color: white;
-  margin-bottom: 0.5rem;
-}
-
-.download-btn {
-  background-color: #f3e6d8;
-  color: #333;
-  margin-bottom: 0.5rem;
-}
-
-.delete-btn {
-  background-color: #c94444;
-  color: white;
-}
-
-.logo-img {
-  width: 48px;
-  height: 48px;
-  object-fit: contain;
-  border-radius: 8px;
+  color: var(--text-primary);
 }
 
 /* ✅ Metadata dropdown styles */
@@ -106,16 +145,92 @@
   width: 100%;
   padding: 0.45rem;
   border-radius: 6px;
-  border: 1px solid #ccc;
+  border: 1px solid var(--border-color);
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
   font-size: 0.95rem;
   margin-top: 0.25rem;
+  outline: none;
+  transition: border-color 0.2s ease, background-color 0.2s ease;
+}
+
+.metadata-item select:focus {
+  border-color: var(--accent-color);
+  background-color: var(--bg-primary);
+}
+
+.metadata-item select:hover {
+  border-color: var(--text-muted);
+}
+
+.metadata-item label {
+  color: var(--text-primary);
+  font-weight: 500;
+  display: block;
+  margin-bottom: 0.25rem;
+}
+
+.meta-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-top: 1.5rem;
+}
+
+.meta-actions button {
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  font-size: 0.95rem;
+  transition: background-color 0.2s ease, opacity 0.2s ease;
+  width: 100%;
+}
+
+.meta-actions button:hover {
+  opacity: 0.9;
+}
+
+.meta-actions button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.edit-btn {
+  background-color: #45c3b8;
+  color: white;
+}
+
+.edit-btn:hover {
+  background-color: #369995;
+}
+
+.download-btn {
+  background-color: #0077cc;
+  color: white;
+}
+
+.download-btn:hover {
+  background-color: #005fa3;
+}
+
+.delete-btn {
+  background-color: #c94444;
+  color: white;
+}
+
+.delete-btn:hover {
+  background-color: #b83939;
 }
 
 /* ✅ Save button style */
 .save-btn {
   background-color: #0077cc;
   color: white;
-  margin-top: 0.75rem;
+}
+
+.save-btn:hover {
+  background-color: #005fa3;
 }
 
 /* ✅ Toast Notification */
@@ -123,13 +238,32 @@
   position: fixed;
   bottom: 20px;
   right: 30px;
-  background-color: #323232;
-  color: white;
+  background-color: var(--bg-secondary);
+  color: var(--text-primary);
+  border: 1px solid var(--border-color);
   padding: 0.75rem 1.25rem;
   border-radius: 6px;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
   font-size: 0.95rem;
   z-index: 9999;
-  opacity: 0.95;
+  opacity: 0.98;
+}
+
+/* Not found message styling */
+.not-found {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex: 1;
+  background-color: var(--bg-primary);
+  color: var(--text-muted);
+  font-size: 1.2rem;
+}
+
+.logo-img {
+  width: 48px;
+  height: 48px;
+  object-fit: contain;
+  border-radius: 8px;
 }
 

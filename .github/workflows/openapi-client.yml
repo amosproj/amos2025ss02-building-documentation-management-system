@@ -41,7 +41,7 @@ jobs:
         working-directory: BitAndBeam
         run: |
           # Build only the services we need
-          docker compose build postgres backend openapi-client
+          docker compose build postgres ollama tika backend openapi-client
 
       - name: Start services and generate SDK
         working-directory: BitAndBeam

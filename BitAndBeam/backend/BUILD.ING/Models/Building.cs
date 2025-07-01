@@ -21,7 +21,6 @@ namespace BUILD.ING.Models
         public NpgsqlPoint? Coordinates { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime UpdatedAt { get; set; }
-
         public int OrganizationId { get; set; }
         public Organization Organization { get; set; }
         public ICollection<BuildingDocumentRelation> BuildingDocumentRelations { get; set; }

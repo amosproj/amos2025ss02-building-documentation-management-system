@@ -155,6 +155,13 @@ builder.Services.AddHttpClient<BUILD.ING.Services.TikaService>(client =>
     client.Timeout = TimeSpan.FromMinutes(5);
 });
 
+// Register HttpClient for OllamaService with extended timeout (5 minutes)
+builder.Services.AddHttpClient("Ollama", client =>
+{
+    client.BaseAddress = new Uri("http://ollama:8000/");
+    client.Timeout = TimeSpan.FromMinutes(5);
+});
+
 // ---------- JWT AUTHENTICATION CONFIGURATION ----------
 // Configure JWT Bearer Authentication to secure the API endpoints
 var jwtSecret = builder.Configuration["JwtSecret"];

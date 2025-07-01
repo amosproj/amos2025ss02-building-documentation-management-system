@@ -1,7 +1,8 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
+import { ThemeService, ThemeMode } from '../../services/theme.service';
 import { BuildingService } from '../../services/building.service';
 import { Building as ApiBuilding } from '../../../api';
 
@@ -12,12 +13,12 @@ import { Building as ApiBuilding } from '../../../api';
   templateUrl: './create-building.component.html',
   styleUrls: ['./create-building.component.css']
 })
-export class CreateBuildingComponent {
-  // Hardcoded organizations for now
-  organizations = [
-    {id: 1, name: 'Organization Alpha'},
-    {id: 2, name: 'Organization Beta'}
-  ];
+export class CreateBuildingComponent implements OnInit {
+  ngOnInit() {
+    // No need to manage theme here as it's handled by the sidebar
+  }
+
+  // Theme management removed - now handled globally by the sidebar
 
   // Initialize the building object
   building: Partial<ApiBuilding> & { latitude?: number; longitude?: number } = {
@@ -31,7 +32,6 @@ export class CreateBuildingComponent {
     totalArea: null,
     floors: null,
     description: '',
-    organizationId: undefined,
     latitude: undefined,
     longitude: undefined
   };
@@ -40,13 +40,16 @@ export class CreateBuildingComponent {
   successMessage = '';
   errorMessage = '';
 
-  constructor(private buildingService: BuildingService, private router: Router) {
-  }
+  constructor(
+    private buildingService: BuildingService, 
+    private router: Router,
+    private themeService: ThemeService
+  ) {}
 
   submitForm() {
-    if (!this.building.name?.trim() || !this.building.streetName?.trim() || !this.building.houseNumber?.trim() || !this.building.postalCode?.trim() 
-      || !this.building.city?.trim() || !this.building.country?.trim() || !this.building.organizationId) {
-      this.errorMessage = 'Name, Address, and Organization are required.';
+    if (!this.building.name?.trim() || !this.building.streetName?.trim() || !this.building.houseNumber?.trim() || !this.building.postalCode?.trim()
+      || !this.building.city?.trim() || !this.building.country?.trim() ) {
+      this.errorMessage = 'Name and Address fields are required.';
       return;
     }
 
@@ -66,7 +69,6 @@ export class CreateBuildingComponent {
       totalArea: this.building.totalArea,
       floors: this.building.floors,
       description: this.building.description,
-      organizationId: this.building.organizationId,
       buildingDocumentRelations: [],
       coordinates: coordinates
     };
@@ -84,5 +86,9 @@ export class CreateBuildingComponent {
         this.errorMessage = 'Failed to create building. Please try again.';
       }
     });
+  }
+
+  goBack(): void {
+    this.router.navigate(['/upload']);
   }
 }

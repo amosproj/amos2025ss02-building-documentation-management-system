@@ -38,6 +38,7 @@ export class SessionService {
     this.restoreSession();
   }
 
+  // Always use the user object from the login response for email, not the JWT token.
   async login(email: string, password: string): Promise<boolean> {
     try {
       const response = await this.authApi.authLoginPost({ email, password });
@@ -45,8 +46,6 @@ export class SessionService {
 
       if (result.token && result.user) {
         console.log('✅ Token from login:', result.token);
-
-        // ✅ Changed: scheduleAutoLogout is now called asynchronously (non-blocking)
         this.setSession(result.token, result.user);
         return true;
       }
@@ -56,48 +55,55 @@ export class SessionService {
     return false;
   }
 
+  // Store user info in sessionStorage on login, restore on reload
+  private setSession(token: string, user: User): void {
+    this.token.set(token);
+    this.user.set(user);
+    sessionStorage.setItem(this.tokenKey, token);
+    sessionStorage.setItem('user', JSON.stringify(user));
+    setTimeout(() => this.scheduleAutoLogout(token), 0);
+  }
+
   logout(): void {
+    console.log('🚪 Logout called, clearing session');
     sessionStorage.removeItem(this.tokenKey);
+    sessionStorage.removeItem('user');
     this.token.set(null);
     this.user.set(null);
     this.router.navigate(['/login']);
   }
 
-  private setSession(token: string, user: User): void {
-    this.token.set(token);
-    this.user.set(user);
-    sessionStorage.setItem(this.tokenKey, token);
-    setTimeout(() => this.scheduleAutoLogout(token), 0);
-  }
-
-
   private restoreSession(): void {
     const token = sessionStorage.getItem(this.tokenKey);
+    console.log('🔄 RestoreSession called, token exists:', !!token);
     if (!token) return;
-
-    try {
-      const decoded = jwt_decode<DecodedToken>(token);
-      const now = Date.now() / 1000;
-
-      if (decoded.exp > now) {
-        this.token.set(token);
-        const restoredUser: User = {
-          id: Number(decoded.uid),
-          email: decoded.sub,
-          role: decoded.r,
-          organizationId: Number(decoded.org)
-        };
-        this.user.set(restoredUser);
-
-        // ✅ Changed: use non-blocking timeout for auto-logout
-        setTimeout(() => this.scheduleAutoLogout(token), 0);
-      } else {
+    this.token.set(token);
+    // Restore user from sessionStorage if available
+    const userStr = sessionStorage.getItem('user');
+    if (userStr) {
+      try {
+        const user: User = JSON.parse(userStr);
+        this.user.set(user);
+      } catch (e) {
+        this.user.set(null);
+      }
+    }
+    setTimeout(() => {
+      try {
+        const decoded = jwt_decode<DecodedToken>(token);
+        const now = Date.now() / 1000;
+        console.log('🔍 Token decoded, expires at:', new Date(decoded.exp * 1000), 'current time:', new Date());
+        if (decoded.exp <= now) {
+          console.log('❌ Token expired, logging out');
+          this.logout();
+        } else {
+          setTimeout(() => this.scheduleAutoLogout(token), 0);
+        }
+      } catch (error) {
+        console.log('❌ Token decode error, logging out:', error);
         this.logout();
       }
-    } catch {
-      // ✅ Added: defensive catch block for malformed/invalid token
-      this.logout();
-    }
+    }, 0);
   }
 
   private scheduleAutoLogout(token: string): void {
@@ -114,5 +120,22 @@ export class SessionService {
 
   getToken(): string | null {
     return this.token();
+  }
+
+  // Debug method to check user state
+  debugUserState(): void {
+    console.log('🐛 Current user state:', {
+      token: this.getToken() ? 'exists' : 'null',
+      user: this.currentUser,
+      isAuthenticated: this.isAuthenticated()
+    });
+  }
+
+  // Force session check and restoration if needed
+  ensureSessionValid(): void {
+    if (!this.currentUser && this.getToken()) {
+      console.log('🔧 User data missing but token exists, restoring session...');
+      this.restoreSession();
+    }
   }
 }
