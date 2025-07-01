@@ -34,12 +34,13 @@ services:
       timeout: 5s
       retries: 5
         
-  ollama:
-    build:
-      context: ./ollama
-      dockerfile: Dockerfile
+  ollama: 
     image: ghcr.io/amosproj/bitandbeam-ollama:latest
+    #build:
+      #context: ./ollama
+      #dockerfile: Dockerfile  
     container_name: ollama
+    restart: always
     ports:
       - "11434:11434"   # Ollama internal API
       - "8001:8000"    # FastAPI external endpoint
