@@ -20,8 +20,12 @@ services:
     ports:
       - "5001:5000"
     depends_on:
-      - postgres
-      - ollama
+      postgres:
+        condition: service_healthy
+      ollama:
+        condition: service_healthy
+      tika:
+        condition: service_healthy
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - ConnectionStrings__DefaultConnection=Host=postgres;Port=5432;Database=bitandbeam;Username=postgres;Password=postgres
@@ -36,7 +40,8 @@ services:
     ports:
       - "8080:80"
     depends_on:
-      - backend
+      backend:
+        condition: service_started
     environment:
       - API_URL=http://localhost:5001
 
@@ -73,6 +78,11 @@ services:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
       POSTGRES_DB: bitandbeam
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d bitandbeam"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   tika:
     build:

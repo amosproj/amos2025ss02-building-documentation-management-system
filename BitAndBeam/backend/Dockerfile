@@ -18,15 +18,8 @@ RUN dotnet publish -c Release -o out
 FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS runtime
 WORKDIR /app
 
-# Install dos2unix to normalize scripts
-RUN apt-get update && apt-get install -y dos2unix && rm -rf /var/lib/apt/lists/*
-
 # To allow configurable ports via environment variable
 ENV ASPNETCORE_URLS=http://+:5000
-
-# Copy and normalize wait-for-it.sh
-COPY wait-for-it.sh wait-for-it.sh
-RUN dos2unix wait-for-it.sh && chmod +x wait-for-it.sh
 
 # Copy build artifacts from previous stage
 COPY --from=build /app/BUILD.ING/out ./
@@ -37,5 +30,5 @@ COPY ./resources ./resources
 EXPOSE 5000
 #EXPOSE 5001
 
-# Wait for PostgreSQL then start app
-ENTRYPOINT ["./wait-for-it.sh", "postgres:5432", "--", "dotnet", "Build.ING.dll"]
+# Start the application directly
+ENTRYPOINT ["dotnet", "Build.ING.dll"]
