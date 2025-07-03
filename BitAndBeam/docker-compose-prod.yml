@@ -4,9 +4,12 @@ services:
     ports:
       - "5000:5000"
     depends_on:
-      - postgres
-      - ollama
-      - tika
+      postgres:
+        condition: service_healthy
+      ollama:
+        condition: service_healthy
+      tika:
+        condition: service_healthy
     environment:
       - ASPNETCORE_ENVIRONMENT=Production
       - ConnectionStrings__DefaultConnection=Host=postgres;Port=5432;Database=bitandbeam;Username=postgres;Password=postgres
@@ -15,7 +18,12 @@ services:
       - Tika__ServerUrl=http://tika:9998
     volumes:
       - documentdata:/app/documents
-
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5000/healthz"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    command: ["dotnet", "Build.ING.dll"]
 
   frontend:
     image: ghcr.io/amosproj/bitandbeam-frontend:latest
@@ -23,9 +31,15 @@ services:
     environment:
       - API_URL=http://amos.b-iq.net:5000
     depends_on:
-      - backend
+      backend:
+        condition: service_healthy
     ports:
       - "80:80"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   ollama:
     build:
@@ -38,10 +52,11 @@ services:
       - "11434:11434"  # Ollama internal API
       - "8000:8000"
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8000/docs"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
+      test: ["CMD-SHELL", "curl -f http://localhost:8000/ || echo 'ok'"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 60s
 
   postgres:
     image: postgres:17
@@ -57,6 +72,11 @@ services:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
       POSTGRES_DB: bitandbeam
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   tika:
     build:

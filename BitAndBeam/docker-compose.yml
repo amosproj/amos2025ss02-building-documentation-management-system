@@ -28,17 +28,15 @@ services:
     ports:
       - "9998:9998"
     healthcheck:
-      #test: ["CMD", "curl", "-f", "http://localhost:9998/version"]
-      test: ["CMD-SHELL", "curl -f http://localhost:9998/ || exit 1"]
+      test: ["CMD", "curl", "-f", "http://localhost:9998/version"]
       interval: 10s
       timeout: 5s
       retries: 5
         
   ollama: 
-    image: ghcr.io/amosproj/bitandbeam-ollama:latest
-    #build:
-      #context: ./ollama
-      #dockerfile: Dockerfile  
+    build:
+      context: ./ollama
+      dockerfile: Dockerfile  
     container_name: ollama
     restart: always
     ports:
@@ -91,6 +89,11 @@ services:
         condition: service_healthy
     environment:
       - API_URL=http://localhost:5001
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   openapi-client:
     build:
