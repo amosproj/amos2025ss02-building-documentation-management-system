@@ -37,6 +37,13 @@ export class FileViewComponent {
   imageZoom = 1;
   pdfZoom = 1;
 
+  // ✅ New variables for key info
+  metadataRaw: string = '';
+  parsedMetadata: { label: string; value: string }[] = [];
+  keyInformation: { label: string; value: string | null }[] = [];
+  loadingKeyInfo: boolean = false;
+  keyInfo: any = null;
+
   constructor(private config: ConfigService,private route: ActivatedRoute,private router: Router, private buildingService: BuildingService,  private categoryService: CategoryService,
   private apiFactory: ApiClientFactory , private sidebarRefreshService: SidebarRefreshService, private http: HttpClient,
               private session: SessionService) {}
@@ -60,60 +67,132 @@ export class FileViewComponent {
       this.buildingService.getBuildings().subscribe(b => this.buildings = b);
       this.categoryService.getCategories().subscribe(c => this.categories = c);
 
-      this.buildingService.getDocumentById(id).subscribe({
-        next: (doc: ApiDocument) => {
-          const token = this.session.getToken();
-          const previewUrl = `${this.config.apiUrl}/api/Documents/${doc.documentId}/preview`;
+      this.loadDocument(id);
+    });
+  }
 
-          const headers = new HttpHeaders({
-            Authorization: `Bearer ${token}`
-          });
+  loadDocument(id: number){
+    this.buildingService.getDocumentById(id).subscribe({
+      next: (doc: ApiDocument) => {
+        this.metadataRaw = doc.metadata ?? '';
+        if (doc.metadata) {
+          try {
+            const entries = doc.metadata
+              .split(/[\r\n]+/)
+              .map(line => {
+                const separator = line.includes('=') ? '=' : line.includes(',') ? ',' : ':';
+                const [key, ...rest] = line.split(separator).map(s => s.trim());
+                const value = rest.join(separator);
+                return [key, value];
+              })
+              .filter(arr => arr.length >= 2);
 
-          this.http.get(previewUrl, { headers, responseType: 'blob' }).subscribe(blob => {
-            const objectUrl = URL.createObjectURL(blob);
+            const metadataObject: { [key: string]: string } = {};
+            entries.forEach(([key, value]) => {
+              metadataObject[key] = value;
+            });
 
-            this.selectedFile = {
-              id: doc.documentId!,
-              name: doc.fileName ?? '',
-              url: objectUrl,
-              metadata: [
-                { label: 'Uploaded', value: doc.uploadDate ?? '' },
-                {
-                  label: 'Size',
-                  value: `${((doc.fileSize ?? 0) / 1024).toFixed(2)} KB`,
-                },
-                { label: 'Type', value: doc.fileType ?? 'unknown' },
-              ]
-            };
-
-              this.selectedBuildingId = doc.buildingId ?? null;
-              this.selectedCategoryName = doc.categoryName ?? null;
-
-              // ✅ Add document's category to the list if it doesn't exist
-              if (doc.categoryName && !this.categories.some(c => c.name === doc.categoryName)) {
-                this.categories.push({ name: doc.categoryName } as Category);
-              }
-
-            const fileType = (doc.fileType ?? '').toLowerCase();
-            this.isPdf = fileType === 'pdf';
-            this.isImage = fileType === 'png' || fileType === 'jpg' || fileType === 'jpeg';
-          }, err => {
-            console.error('❌ Failed to load document preview:', err);
-            this.notFound = true;
-          });
-        },
-        error: (err) => {
-          console.error('❌ Failed to load document metadata:', err);
-          this.notFound = true;
+            this.parsedMetadata = [
+              { label: 'Title', value: metadataObject['resourceName'] || 'N/A' },
+              { label: 'Author', value: metadataObject['dc:creator'] || metadataObject['pdf:docinfo:creator'] || 'N/A' },
+              { label: 'Created Date', value: metadataObject['dcterms:created']?.split('T')[0] || 'N/A' },
+              { label: 'Modified Date', value: metadataObject['dcterms:modified']?.split('T')[0] || 'N/A' },
+              { label: 'Page Count', value: metadataObject['pdf:ocrPageCount'] || metadataObject['xmpTPg:NPages'] || 'N/A' },
+              { label: 'File Type', value: metadataObject['Content-Type'] || 'N/A' },
+              { label: 'Category', value: doc.categoryName || 'N/A' },
+            ];
+          } catch (e) {
+              console.error('❌ Failed to parse metadata', e);
+              this.parsedMetadata = [];
+            }
         }
-      });
+        const token = this.session.getToken();
+        const previewUrl = `${this.config.apiUrl}/api/Documents/${doc.documentId}/preview`;
+
+        const headers = new HttpHeaders({
+          Authorization: `Bearer ${token}`
+        });
+
+        this.http.get(previewUrl, { headers, responseType: 'blob' }).subscribe(blob => {
+          const objectUrl = URL.createObjectURL(blob);
+
+          this.selectedFile = {
+            id: doc.documentId!,
+            name: doc.fileName ?? '',
+            url: objectUrl,
+            metadata: [
+              { label: 'Uploaded', value: doc.uploadDate ?? '' },
+              {
+                label: 'Size',
+                value: `${((doc.fileSize ?? 0) / 1024).toFixed(2)} KB`,
+              },
+              { label: 'Type', value: doc.fileType ?? 'unknown' },
+            ]
+          };
+          this.selectedBuildingId = doc.buildingId ?? null;
+          this.selectedCategoryName = doc.categoryName ?? null;
+
+          // ✅ Add document's category to the list if it doesn't exist
+          if (doc.categoryName && !this.categories.some(c => c.name === doc.categoryName)) {
+            this.categories.push({ name: doc.categoryName } as Category);
+          }
+
+          if (doc.keyInformation) {
+            this.keyInformation = Object.entries(doc.keyInformation).map(([key, value]) => ({
+              label: key.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase()),  // Pretty label
+              value: value ? String(value) : 'N/A'
+            }));
+          } else {
+              this.keyInformation = [];
+            }
+
+          const fileType = (doc.fileType ?? '').toLowerCase();
+          this.isPdf = fileType === 'pdf';
+          this.isImage = fileType === 'png' || fileType === 'jpg' || fileType === 'jpeg';
+          
+          // ✅ Fetch key info
+          this.fetchKeyInfo(id);
+
+        }, err => {
+          console.error('❌ Failed to load document preview:', err);
+          this.notFound = true;
+        });
+      },
+      error: (err) => {
+        console.error('❌ Failed to load document metadata:', err);
+        this.notFound = true;
+      }
+    });
+  }
+
+  // ✅ New method: fetch key information
+  fetchKeyInfo(id: number) {
+    this.loadingKeyInfo = true;
+    const token = this.session.getToken();
+    const url = `${this.config.apiUrl}/api/Documents/${id}`;
+    const headers = new HttpHeaders({
+      Authorization: `Bearer ${token}`
+    });
+
+    this.http.get<any>(url, { headers }).subscribe({
+      next: (data) => {
+        this.keyInfo = {
+          hasMetadata: data.hasMetadata,
+          suggestedAddress: data.suggestedAddress,
+          rawMetadata: data.metadata,
+        };
+        this.loadingKeyInfo = false;
+      },
+      error: (err) => {
+        console.error('❌ Failed to load key info:', err);
+        this.loadingKeyInfo = false;
+      }
     });
   }
 
   downloadFile(): void {
-    if (this.selectedFile?.id) {
-      this.buildingService.downloadDocument(this.selectedFile.id);
-    }
+    if (!this.selectedFile?.id) return;
+    this.buildingService.downloadDocument(this.selectedFile.id, this.selectedFile.name);
   }
 
   deleteFile(): void {
@@ -134,7 +213,7 @@ export class FileViewComponent {
 
     const patchRequest: DocumentMetadataPatchRequest = {
       buildingId: this.selectedBuildingId,
-      categoryName: this.selectedCategoryName
+      categoryName: this.selectedCategoryName ?? undefined
     };
 
     const documentsApi = this.apiFactory.create(DocumentsApi);
@@ -142,6 +221,10 @@ export class FileViewComponent {
       .then(() => {
         this.toastMessage = '✅ Metadata updated successfully.';
         this.sidebarRefreshService.triggerRefresh();
+
+        // ✅ After save, reload document to update UI
+        this.loadDocument(this.selectedFile!.id);
+
         setTimeout(() => this.toastMessage = '', 4000);
       })
       .catch(() => {

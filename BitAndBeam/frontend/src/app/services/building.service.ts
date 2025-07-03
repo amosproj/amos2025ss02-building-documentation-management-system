@@ -152,9 +152,39 @@ export class BuildingService {
     return from(documentsApi.apiDocumentsIdDelete(id).then(() => {}));
   }
 
-  downloadDocument(id: number): void {
-    const downloadUrl = `${this.config.apiUrl}/api/Documents/${id}/download`;
-    window.open(downloadUrl, '_blank');
+  downloadDocument(id: number, filename: string): void {
+    const documentsApi = this.apiFactory.create(DocumentsApi);
+    documentsApi.apiDocumentsIdDownloadGet(id, { responseType: 'blob' })
+      .then((response: any) => {
+        const blob: Blob = response.data as Blob;
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        // Always infer extension from content-type if missing
+        let finalFilename = filename;
+        let type = response.headers && response.headers['content-type'];
+        if (!/\.[a-zA-Z0-9]+$/.test(finalFilename)) {
+          if (type && type.toLowerCase().includes('jpg')) {
+            finalFilename += '.jpg';
+          } else if (type && type.toLowerCase().includes('png')) {
+            finalFilename += '.png';
+          } else if (type && type.toLowerCase().includes('jpeg')) {
+            finalFilename += '.jpeg';
+          } else if (type && type.toLowerCase().includes('pdf')) {
+            finalFilename += '.pdf';
+          } else {
+            finalFilename += '.file';
+          }
+        }
+        a.download = finalFilename;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        window.URL.revokeObjectURL(url);
+      })
+      .catch(error => {
+        console.error('Download failed', error);
+      });
   }
 
   getGroupedDocuments(): Observable<{ buildingId: number | null, buildingName: string, documents: DocumentItem[] }[]> {

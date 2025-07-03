@@ -70,6 +70,31 @@
             </select>
           </div>
 
+          <div *ngIf="parsedMetadata.length > 0">
+            <h3>📄 Document Information</h3>
+            <table>
+              <tr *ngFor="let item of parsedMetadata">
+                <td><strong>{{ item.label }}:</strong></td>
+                <td>{{ item.value }}</td>
+              </tr>
+            </table>
+          </div>
+          <div class="metadata-section">
+            <h3>Extracted Key Information</h3>
+
+            <div *ngIf="keyInformation.length > 0; else noKeyInfo">
+              <div *ngFor="let item of keyInformation">
+                <strong>{{ item.label }}:</strong> {{ item.value }}
+              </div>
+            </div>
+
+            <ng-template #noKeyInfo>
+              <p style="color: gray; font-style: italic;">
+                No extracted key information found or extraction failed.
+              </p>
+            </ng-template>
+          </div>
+
             <div class="meta-actions">
               <button class="save-btn" (click)="saveMetadataChanges()" [disabled]="loading">
                 {{ loading ? 'Saving...' : 'Save Changes' }}

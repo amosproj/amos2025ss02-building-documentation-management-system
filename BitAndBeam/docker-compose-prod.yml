@@ -1,6 +1,9 @@
+version: "3.8"
+
 services:
   backend:
     image: ghcr.io/amosproj/bitandbeam-backend:latest
+    restart: always
     ports:
       - "5000:5000"
     depends_on:
@@ -12,9 +15,9 @@ services:
         condition: service_healthy
     environment:
       - ASPNETCORE_ENVIRONMENT=Production
-      - ConnectionStrings__DefaultConnection=Host=postgres;Port=5432;Database=bitandbeam;Username=postgres;Password=postgres
       - ASPNETCORE_URLS=http://+:5000
       - CORS__AllowedOrigins=http://amos.b-iq.net,https://amos.b-iq.net
+      - ConnectionStrings__DefaultConnection=Host=postgres;Port=5432;Database=bitandbeam;Username=postgres;Password=postgres
       - Tika__ServerUrl=http://tika:9998
     volumes:
       - documentdata:/app/documents
@@ -28,6 +31,8 @@ services:
   frontend:
     image: ghcr.io/amosproj/bitandbeam-frontend:latest
     restart: always
+    depends_on:
+      - backend
     environment:
       - API_URL=http://amos.b-iq.net:5000
     depends_on:
@@ -85,14 +90,22 @@ services:
     #image: apache/tika
     container_name: bitandbeam_tika
     restart: always
-    ports:
-      - "9998:9998"
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:9998/version"]
       interval: 10s
       timeout: 5s
       retries: 5
+    networks:
+      - internal
+    expose:
+      - "9998"
 
 volumes:
   documentdata:
   pgdata:
+
+networks:
+  internal:
+    driver: bridge
+  web:
+    driver: bridge

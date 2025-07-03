@@ -48,6 +48,310 @@ namespace BUILD.ING.Controllers
             return categories;
         }
 
+        // [HttpPost]
+        // public async Task<IActionResult> UploadDocument(IFormFile file, [FromServices] IHttpClientFactory httpClientFactory)
+        // {
+        //     if (file == null || file.Length == 0)
+        //         return BadRequest("File is required");
+
+        //     // ╭──────────────────────────── 1. save upload ───────────────────────────╮
+        //     var uploadsPath = Path.Combine("/app/documents");
+        //     Directory.CreateDirectory(uploadsPath);
+
+        //     var fullPath = Path.Combine(uploadsPath, file.FileName);
+        //     using (var fs = new FileStream(fullPath, FileMode.Create))
+        //     {
+        //         await file.CopyToAsync(fs).ConfigureAwait(false);
+        //     }
+
+        //     // Reset the file stream position to zero before re-reading
+        //     byte[] fileBytes;
+        //     using (var ms = new MemoryStream())
+        //     using (var fileStream = file.OpenReadStream())
+        //     {
+        //         await fileStream.CopyToAsync(ms).ConfigureAwait(false);
+        //         fileBytes = ms.ToArray();
+        //     }
+
+        //     // ╭──────────────────────────── 2. Tika extract ───────────────────────────╮
+        //     string metadata = "{}";
+        //     string textForOllama = string.Empty;
+
+        //     try
+        //     {
+        //         metadata = await _tikaService.ExtractMetadataAsync(fileBytes, file.FileName).ConfigureAwait(false);
+        //         textForOllama = await _tikaService.ExtractTextAsync(fileBytes, file.FileName).ConfigureAwait(false);
+
+        //         // ⚡ OCR fallback (Option B)
+        //         if (string.IsNullOrWhiteSpace(textForOllama) || textForOllama.Length < 50)
+        //         {
+        //             textForOllama = await _tikaService.ExtractTextAsync(fileBytes, file.FileName, true).ConfigureAwait(false);
+        //         }
+
+        //         _logger.LogInformation("✅ Metadata & text extracted for {File}", file.FileName);
+        //     }
+        //     catch (Exception ex)
+        //     {
+        //         _logger.LogError(ex, "❌ Tika extraction failed for {File}", file.FileName);
+        //     }
+
+        //     // ╭─────────────── 3. build prompt (address + category + key infos) ───────────────╮
+        //     var shortText = textForOllama.Length > 4_000 ? textForOllama[..4_000] : textForOllama;
+        //     var categoriesSchemaJson = JsonSerializer.Serialize(ReadCategories());
+
+        //     var prompt = $$"""
+        //     You are an intelligent document analyzer.
+
+        //     Given the **extracted text** and a **categories schema** (including field definitions) from a German document, your task is to analyze and extract the following information in a strict JSON format:
+
+        //     **Example output:**
+        //     {
+        //         "address":
+        //         {
+        //             "street":"<string|null>",
+        //             "house_number":"<string|null>",
+        //             "zip_code":"<string|null>",
+        //             "city":"<string|null>"
+        //         },
+        //         "category":"Energy Consumption Reports",
+        //         "key_information":
+        //         {
+        //             "report_period":"<string|null>",
+        //             "total_energy_kwh":"<string|null>",
+        //             "energy_source":"<string|null>",
+        //             "benchmark":"<string|null>",
+        //             "author":"<string|null>",
+        //             "issue_date":"<string|null>"
+        //         }
+        //     }
+
+        //     **TASK A** → Extract an **address** if present.  
+        //     Look for labels like: 
+        //     "Adresse", "Anschrift", "Standort", "Objektadresse", "Gebäudeadresse", "Hausanschrift",
+        //     "Liegenschaft", "Baustellenadresse", "Postanschrift", "Immobilienadresse",
+        //     or field names such as "Straße", "Haus-Nr.", "PLZ", "Ort", and the same terms in free text.
+
+        //     **TASK B** → Choose the SINGLE best-matching **category** from "categories_schema"  
+        //     (use null if none fits)
+
+        //     **TASK C** → After choosing a category (TASK B), extract the **key information** fields defined for that category in "categories_schema" and return them under `"key_information"`.  
+        //     For every field in the selected category's 'fields' array:
+        //     • Use the field's **name** as the JSON key.  
+        //     • Try to extract the corresponding value from the document; if not found, set it to null.  
+        //     • Only include the fields declared for that category — no extra keys.
+
+        //     **Rules**  
+        //     • Every value must be a JSON string or null — no units, no comments.  
+        //     • Output MUST be valid JSON that parses with 'JSON.parse()'.  
+        //     • If any field cannot be detected, output it with a null value.  
+        //     • Do **not** wrap the answer in markdown or code fences.
+
+        //     "categories_schema":
+        //     {{categoriesSchemaJson}}
+
+        //     "Extracted Text":
+        //     {{shortText}}
+        //     """;
+
+        //     Dictionary<string, string>? parsedAddress = null;
+        //     string? matchedCategory = null;
+        //     Building? matchedBuilding = null;
+        //     Dictionary<string, string?>? keyInformation = null;
+
+        //     // ╭──────────────────────────── 4. call Ollama ───────────────────────────╮
+        //     try
+        //     {
+        //         var client = httpClientFactory.CreateClient("Ollama");
+        //         var payload = JsonSerializer.Serialize(new { prompt });
+        //         var resp = await client.PostAsync(
+        //                         "http://ollama:8000/api/Ollama/ask",
+        //                         new StringContent(payload, Encoding.UTF8, "application/json"))
+        //                                 .ConfigureAwait(false);
+
+        //         if (resp.IsSuccessStatusCode)
+        //         {
+        //             var jsonStr = await resp.Content.ReadAsStringAsync().ConfigureAwait(false);
+        //             var ollama = JsonSerializer.Deserialize<OllamaController.OllamaResponse>(
+        //                             jsonStr,
+        //                             new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+
+        //             _logger.LogInformation("OLLAMA response field:\n{0}", ollama?.Response);
+
+
+        //             if (!string.IsNullOrWhiteSpace(ollama?.Response))
+        //             {
+        //                 // ────────  Ollama JSON fence-strip  ────────────────
+        //                 var cleanedJson = ollama.Response
+        //                     .Replace("```json", "", StringComparison.OrdinalIgnoreCase) // remove fenced block tag
+        //                     .Replace("```", "", StringComparison.OrdinalIgnoreCase) // remove any back-ticks
+        //                     .Trim();                                                   // trim spaces / \n etc.
+
+        //                 int first = cleanedJson.IndexOf('{');
+        //                 int last = cleanedJson.LastIndexOf('}');
+        //                 if (first >= 0 && last > first)
+        //                     cleanedJson = cleanedJson[first..(last + 1)];
+
+        //                 _logger.LogInformation("🧼 Cleaned Ollama JSON: {Cleaned}", cleanedJson);
+
+        //                 var root = JsonDocument.Parse(cleanedJson).RootElement;
+
+        //                 // ------ A. ADDRESS -------
+        //                 if (root.TryGetProperty("address", out var addrObj) &&
+        //                     addrObj.ValueKind == JsonValueKind.Object)
+        //                 {
+        //                     // nested form
+        //                     parsedAddress = new Dictionary<string, string>
+        //                     {
+        //                         ["street"] = addrObj.GetProperty("street").GetString() ?? "",
+        //                         ["house_number"] = addrObj.GetProperty("house_number").GetString() ?? "",
+        //                         ["zip_code"] = addrObj.GetProperty("zip_code").GetString() ?? "",
+        //                         ["city"] = addrObj.GetProperty("city").GetString() ?? ""
+        //                     };
+        //                 }
+        //                 else
+        //                 {
+        //                     // flat fallback
+        //                     parsedAddress = new Dictionary<string, string>
+        //                     {
+        //                         ["street"] = root.TryGetProperty("street", out var s) ? s.GetString() ?? "" : "",
+        //                         ["house_number"] = root.TryGetProperty("house_number", out var hn) ? hn.GetString() ?? "" : "",
+        //                         ["zip_code"] = root.TryGetProperty("zip_code", out var z) ? z.GetString() ?? "" : "",
+        //                         ["city"] = root.TryGetProperty("city", out var c) ? c.GetString() ?? "" : ""
+        //                     };
+        //                 }
+        //                 if (parsedAddress.Values.All(string.IsNullOrWhiteSpace))
+        //                     parsedAddress = null;
+
+        //                 // ------ B. CATEGORY -------
+        //                 if (root.TryGetProperty("category", out var catElem) &&
+        //                     catElem.ValueKind == JsonValueKind.String)
+        //                 {
+        //                     var cat = catElem.GetString();
+        //                     if (!string.IsNullOrWhiteSpace(cat) &&
+        //                         !string.Equals(cat, "null", StringComparison.OrdinalIgnoreCase))
+        //                         matchedCategory = cat.Trim();
+        //                 }
+
+        //                 // ---------- C. KEY INFORMATION ----------
+        //                 if (root.TryGetProperty("key_information", out var kiObj) && kiObj.ValueKind == JsonValueKind.Object)
+        //                 {
+        //                     keyInformation = kiObj.EnumerateObject().ToDictionary(p => p.Name, p => p.Value.GetString());
+        //                 }
+        //             }
+        //         }
+        //         else
+        //         { 
+        //             _logger.LogWarning("⚠️ Ollama service failed (status {Code})", resp.StatusCode);
+        //         }
+        //     }
+        //     catch (Exception ex)
+        //     {
+        //         _logger.LogError(ex, "❌ Ollama analysis failed");
+        //     }
+
+        //     // ╭────────────── 5. try to map address → building ───────────╮
+        //     if (parsedAddress != null)
+        //     {
+        //         parsedAddress.TryGetValue("street", out var street);
+        //         parsedAddress.TryGetValue("zip_code", out var zip);
+        //         parsedAddress.TryGetValue("house_number", out var house);
+        //         parsedAddress.TryGetValue("city", out var city);
+
+        //         var orgId = GetCurrentUserOrganizationId();
+        //         var buildings = _context.Buildings
+        //             .Where(b => b.OrganizationId == orgId)
+        //             .ToList();
+        //         foreach (var b in buildings)
+        //         {
+        //             bool okStreet = string.IsNullOrWhiteSpace(street) ||
+        //                             string.Equals(b.StreetName?.Trim(), street.Trim(),
+        //                                         StringComparison.OrdinalIgnoreCase);
+
+        //             bool okZip = string.IsNullOrWhiteSpace(zip) ||
+        //                             string.Equals(b.PostalCode?.Trim(), zip.Trim(),
+        //                                         StringComparison.OrdinalIgnoreCase);
+
+        //             bool okHouse = string.IsNullOrWhiteSpace(house) ||
+        //                             string.Equals(b.HouseNumber?.Trim(), house.Trim(),
+        //                                         StringComparison.OrdinalIgnoreCase);
+
+        //             bool okCity = string.IsNullOrWhiteSpace(city) ||
+        //                             string.Equals(b.City?.Trim(), city.Trim(),
+        //                                         StringComparison.OrdinalIgnoreCase);
+
+        //             if (okStreet && okZip && okHouse && okCity)
+        //             {
+        //                 matchedBuilding = b;
+        //                 break;
+        //             }
+        //         }
+        //     }
+
+        //     // ╭────────────── 6. Try to map matchedCategory (string) to actual category object ───────────╮
+        //     var allCategories = ReadCategories();
+        //     var categoryMatch = allCategories.FirstOrDefault(c =>
+        //         string.Equals(c.Name?.Trim(), matchedCategory, StringComparison.OrdinalIgnoreCase));
+        //     string? matchedCategoryName = categoryMatch?.Name;
+        //     if (categoryMatch == null)
+        //     {
+        //         matchedCategoryName = null;
+        //     }
+
+        //     // ╭──────────────────────────── 7. persist ───────────────────────────────╮
+        //     var document = new Document
+        //     {
+        //         Title = Path.GetFileNameWithoutExtension(file.FileName),
+        //         FileName = file.FileName,
+        //         FilePath = file.FileName,
+        //         FileType = Path.GetExtension(file.FileName)?.TrimStart('.')?.ToLower() ?? "unknown",
+        //         FileSize = (int) file.Length,
+        //         UploadDate = DateTime.UtcNow,
+        //         LastModified = DateTime.UtcNow,
+        //         Version = "1.0",
+        //         Status = "draft",
+        //         IsPublic = false,
+        //         Description = "No description provided",
+        //         Metadata = metadata,
+        //         KeyInformation = keyInformation != null
+        //             ? JsonDocument.Parse(JsonSerializer.Serialize(keyInformation))
+        //             : null,
+        //         UploadedAt = DateTime.UtcNow,
+        //         UploadedBy = null,
+        //         OrganizationId = GetCurrentUserOrganizationId(),
+        //         BuildingId = matchedBuilding?.BuildingId,
+        //         CategoryName = matchedCategoryName,
+        //     };
+
+        //     _context.Documents.Add(document);
+        //     await _context.SaveChangesAsync().ConfigureAwait(false);
+
+        //     // ╭──────────────────────────── 8. response ──────────────────────────────╮
+        //     var baseUrl = $"{Request.Scheme}://{Request.Host}";
+        //     var fileUrl = $"{baseUrl}/documents/{document.FileName}";
+
+        //     return Ok(new
+        //     {
+        //         document.DocumentId,
+        //         FileUrl = fileUrl,
+        //         HasMetadata = metadata != "{}",
+        //         SuggestedAddress = parsedAddress != null &&
+        //                         parsedAddress.Values.Any(v => !string.IsNullOrWhiteSpace(v))
+        //                         ? parsedAddress
+        //                         : new Dictionary<string, string>
+        //                             {
+        //                                 { "street",       "Couldn't identify" },
+        //                                 { "house_number", "Couldn't identify" },
+        //                                 { "zip_code",     "Couldn't identify" },
+        //                                 { "city",         "Couldn't identify" }
+        //                             },
+        //         BuildingId = matchedBuilding?.BuildingId,
+        //         BuildingName = matchedBuilding?.Name,
+        //         SuggestedCategoryName = matchedCategory,
+        //         CategoryName = matchedCategoryName,
+        //         KeyInformation = keyInformation
+        //     });
+        // }
+
         [HttpPost]
         public async Task<IActionResult> UploadDocument(IFormFile file, [FromServices] IHttpClientFactory httpClientFactory)
         {
@@ -81,6 +385,13 @@ namespace BUILD.ING.Controllers
             {
                 metadata = await _tikaService.ExtractMetadataAsync(fileBytes, file.FileName).ConfigureAwait(false);
                 textForOllama = await _tikaService.ExtractTextAsync(fileBytes, file.FileName).ConfigureAwait(false);
+
+                // ⚡ OCR fallback (Option B)
+                if (string.IsNullOrWhiteSpace(textForOllama) || textForOllama.Length < 50)
+                {
+                    textForOllama = await _tikaService.ExtractTextAsync(fileBytes, file.FileName, true).ConfigureAwait(false);
+                }
+
                 _logger.LogInformation("✅ Metadata & text extracted for {File}", file.FileName);
             }
             catch (Exception ex)
@@ -88,16 +399,18 @@ namespace BUILD.ING.Controllers
                 _logger.LogError(ex, "❌ Tika extraction failed for {File}", file.FileName);
             }
 
-            // ╭──────────────── 3. build prompt (address + category) ─────────────────╮
+            // ╭─────────────── 3. build prompt (address + category + key infos) ───────────────╮
             var shortText = textForOllama.Length > 4_000 ? textForOllama[..4_000] : textForOllama;
-            var categoriesJson = JsonSerializer.Serialize(ReadCategories().Select(c => c.Name));
+            var categoriesSchemaJson = JsonSerializer.Serialize(ReadCategories());
 
             var prompt = $$"""
             You are an intelligent document analyzer.
 
-            Given the **extracted text** and a list of **categories** from a German document, your task is to analyze and extract the following fields in a JSON format:
+            \nGiven the **extracted text** and a **categories schema** (including field definitions) from a German document, your task is to analyze and extract the following information in a strict JSON format:
             
-            **Example output:**
+            \nYour answer MUST include the following top-level fields: "address", "category", and "key_information".
+
+            \n**Example format:**\n
             {
                 "address":
                 {
@@ -106,33 +419,50 @@ namespace BUILD.ING.Controllers
                     "zip_code":"<string|null>",
                     "city":"<string|null>"
                 },
-                "category":"<string|null>"
+                "category":"Energy Consumption Reports",
+                "key_information":
+                {
+                    "report_period":"<string|null>",
+                    "total_energy_kwh":"<string|null>",
+                    "energy_source":"<string|null>",
+                    "benchmark":"<string|null>",
+                    "author":"<string|null>",
+                    "issue_date":"<string|null>"
+                }
             }
 
-            **TASK A** → Extract a **address** if present.  
+            \n**TASK A** → Extract an **address** if present.\n  
             Look for labels like: 
             "Adresse", "Anschrift", "Standort", "Objektadresse", "Gebäudeadresse", "Hausanschrift",
             "Liegenschaft", "Baustellenadresse", "Postanschrift", "Immobilienadresse",
             or field names such as "Straße", "Haus-Nr.", "PLZ", "Ort", and the same terms in free text.
 
-            **TASK B** → Choose the SINGLE best-matching **category** from "categories"
+            \n**TASK B** → Choose the SINGLE best-matching **category** from "categories_schema"\n  
             (use null if none fits)
 
-            **Rules**  
-            • Every value must be a JSON string or null - no units, no comments.
-            • No markdown, code-fences, or extra keys.
-            • Output must parse with `JSON.parse()`.
+            \n**TASK C** → After choosing a category (TASK B), extract the **key information** fields defined for that category in "categories_schema" and return them under "key_information".\n  
+            For every field in the selected category's 'fields' array:
+            • Use the field's **name** as the JSON key.  
+            • Try to extract the corresponding value from the document; if not found, set it to null.  
+            • Only include the fields declared for that category — no extra keys.
 
-            "categories":
-            {{categoriesJson}}
+            \n**Rules**\n
+            • Every value must be a JSON string or null — no units, no comments.  
+            • Output MUST be valid JSON that parses with 'JSON.parse()'.  
+            • If any field cannot be detected, output it with a null value.  
+            • Do **not** wrap the answer in markdown or code fences.
 
-            "Extracted Text:":
+            \n**categories_schema**:\n
+            {{categoriesSchemaJson}}
+
+            \n**Extracted Text**:\n
             {{shortText}}
             """;
 
             Dictionary<string, string>? parsedAddress = null;
             string? matchedCategory = null;
             Building? matchedBuilding = null;
+            Dictionary<string, string?>? keyInformation = null;
 
             // ╭──────────────────────────── 4. call Ollama ───────────────────────────╮
             try
@@ -207,6 +537,12 @@ namespace BUILD.ING.Controllers
                                 !string.Equals(cat, "null", StringComparison.OrdinalIgnoreCase))
                                 matchedCategory = cat.Trim();
                         }
+
+                        // ---------- C. KEY INFORMATION ----------
+                        if (root.TryGetProperty("key_information", out var kiObj) && kiObj.ValueKind == JsonValueKind.Object)
+                        {
+                            keyInformation = kiObj.EnumerateObject().ToDictionary(p => p.Name, p => p.Value.GetString());
+                        }
                     }
                 }
                 else _logger.LogWarning("⚠️ Ollama service failed (status {Code})", resp.StatusCode);
@@ -264,7 +600,6 @@ namespace BUILD.ING.Controllers
                 matchedCategoryName = null;
             }
 
-
             // ╭──────────────────────────── 7. persist ───────────────────────────────╮
             var document = new Document
             {
@@ -280,12 +615,12 @@ namespace BUILD.ING.Controllers
                 IsPublic = false,
                 Description = "No description provided",
                 Metadata = metadata,
-                KeyInformation = null, // This could be populated with structured data from document analysis
+                KeyInformation = keyInformation != null ? JsonDocument.Parse(JsonSerializer.Serialize(keyInformation)) : null,
                 UploadedAt = DateTime.UtcNow,
                 UploadedBy = null,
                 OrganizationId = GetCurrentUserOrganizationId(),
                 BuildingId = matchedBuilding?.BuildingId,
-                CategoryName = matchedCategoryName
+                CategoryName = matchedCategoryName,
             };
 
             _context.Documents.Add(document);
@@ -312,7 +647,9 @@ namespace BUILD.ING.Controllers
                                     },
                 BuildingId = matchedBuilding?.BuildingId,
                 BuildingName = matchedBuilding?.Name,
-                CategoryName = matchedCategoryName
+                SuggestedCategoryName = matchedCategory,
+                CategoryName = matchedCategoryName,
+                KeyInformation = keyInformation
             });
         }
 
@@ -351,7 +688,7 @@ namespace BUILD.ING.Controllers
                 KeyInformation = document.KeyInformation,
                 FileName = document.FileName,
                 UploadedAt = document.UploadedAt,
-                OrganizationId = document.OrganizationId
+                OrganizationId = document.OrganizationId,
             }).ToList();
             return Ok(dtos);
         }
@@ -372,6 +709,14 @@ namespace BUILD.ING.Controllers
                     (d.BuildingId == null || buildingIds.Contains(d.BuildingId.Value)));
             if (document == null)
                 return NotFound();
+
+            var parsedAddress = new Dictionary<string, string>{
+                { "street",       "Couldn't identify" },
+                { "house_number", "Couldn't identify" },
+                { "zip_code",     "Couldn't identify" },
+                { "city",         "Couldn't identify" }
+            };
+
             var dto = new BUILD.ING.Dto.DocumentDto
             {
                 DocumentId = document.DocumentId,

@@ -23,6 +23,10 @@ namespace BUILD.ING.Dto
         public string FileName { get; set; }
         public DateTime UploadedAt { get; set; }
         public int OrganizationId { get; set; }
+        // ✅ For key information
+        public Dictionary<string, string>? SuggestedAddress { get; set; }
+
+        public bool HasMetadata => !string.IsNullOrWhiteSpace(Metadata) && Metadata != "{}";
 
     }
 }

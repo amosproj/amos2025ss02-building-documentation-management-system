@@ -1,0 +1,103 @@
+name: Start Ollama Service Only
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths:
+      - 'BitAndBeam/ollama/**'
+      - '.github/workflows/ollama-ci.yml'
+
+jobs:
+  build-and-deploy-ollama:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Check if ollama folder changed
+        id: changed
+        run: |
+          BEFORE_SHA="${{ github.event.before }}"
+          echo "Comparing $BEFORE_SHA … ${{ github.sha }}"
+          if [ "$BEFORE_SHA" != "" ] && git diff --name-only "$BEFORE_SHA" "${{ github.sha }}" | grep -q '^BitAndBeam/ollama/'; then
+            echo "Ollama folder changed."
+            echo "changed=true"  >> "$GITHUB_OUTPUT"
+          else
+            echo "Ollama folder unchanged."
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Log in to GitHub Container Registry
+        uses: docker/login-action@v2
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build and push ollama image
+        uses: docker/build-push-action@v5
+        with:
+          context: ./BitAndBeam/ollama
+          push: true
+          tags: |
+            ghcr.io/amosproj/bitandbeam-ollama:latest
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: Upload ollama folder to server
+        uses: appleboy/scp-action@v0.1.4
+        with:
+          host: ${{ secrets.PROJECT_SERVER_IP }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          source: "BitAndBeam/ollama/"
+          target: "~/BitAndBeam/ollama"
+          strip_components: 1
+
+      - name: Upload docker-compose-prod.yml to server
+        uses: appleboy/scp-action@v0.1.4
+        with:
+          host: ${{ secrets.PROJECT_SERVER_IP }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          source: "BitAndBeam/docker-compose-prod.yml"
+          target: "~/BitAndBeam/"
+          strip_components: 1
+
+      - name: Verify remote files
+        uses: appleboy/ssh-action@v1.0.0
+        with:
+          host: ${{ secrets.PROJECT_SERVER_IP }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            echo "Listing ~/BitAndBeam contents:"
+            ls -l ~/BitAndBeam
+            echo "Listing ~/BitAndBeam/ollama contents:"
+            ls -l ~/BitAndBeam/ollama
+
+      - name: Deploy Ollama to Remote Server
+        uses: appleboy/ssh-action@v1.0.0
+        with:
+          host: ${{ secrets.PROJECT_SERVER_IP }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            cd ~/BitAndBeam
+            echo ${{ secrets.GITHUB_TOKEN }} | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+            docker compose -f docker-compose-prod.yml stop ollama || true
+            if [ "${{ steps.changed.outputs.changed }}" = "true" ]; then
+              echo "Ollama folder changed – removing old image."
+              docker rmi ghcr.io/amosproj/bitandbeam-ollama:latest || true
+            else
+              echo "Ollama folder unchanged – keeping existing image."
+            fi
+            docker compose -f docker-compose-prod.yml pull ollama
+            docker compose -f docker-compose-prod.yml up -d ollama
