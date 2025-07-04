@@ -175,7 +175,7 @@
   position: sticky;
   bottom: 0;
   background-color: var(--bg-secondary);
-  padding: 1rem 0 3rem;
+  padding: 1rem 0 3rem 0;
   z-index: 10;
 }
 
@@ -238,12 +238,12 @@
 
 /* ✅ Save button style */
 .save-btn {
-  background-color: #0077cc;
+  background-color: #28a745; /* ✅ Green */;
   color: white;
 }
 
 .save-btn:hover {
-  background-color: #005fa3;
+  background-color: #218838; /* ✅ Darker green on hover */
 }
 
 /* ✅ Toast Notification */
