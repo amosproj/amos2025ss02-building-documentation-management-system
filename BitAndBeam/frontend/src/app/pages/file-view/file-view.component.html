@@ -118,14 +118,14 @@
                   </li>
                 </ul>
               </div>
-            <div class="meta-actions">
+          </div>
+          <div class="meta-actions">
               <button class="save-btn" (click)="saveMetadataChanges()" [disabled]="!hasChanges || loading">
                 {{ loading ? 'Saving...' : 'Save Changes' }}
               </button>
               <button class="download-btn" (click)="downloadFile()">Download</button>
               <button class="delete-btn" (click)="deleteFile()">Delete</button>
             </div>
-          </div>
         </aside>
 
         <!-- ✅ Toast Notification -->
