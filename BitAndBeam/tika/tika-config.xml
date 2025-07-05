@@ -1,23 +1,54 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <properties>
-    <!-- Simple configuration with just OCR enabled -->
+    <!-- Enhanced OCR configuration for better performance -->
     <parsers>
         <parser class="org.apache.tika.parser.DefaultParser">
             <!-- Include all default parsers, including OCR -->
         </parser>
         
-        <!-- Explicitly configure OCR for PDF files -->
+        <!-- Optimized OCR configuration for PDF files -->
         <parser class="org.apache.tika.parser.pdf.PDFParser">
             <params>
                 <param name="extractInlineImages" type="bool">true</param>
-                <param name="ocrStrategy" type="string">auto</param>
+                <!-- Use 'no_ocr' as default strategy to prevent automatic OCR on all PDFs -->
+                <!-- OCR will be explicitly triggered when needed via API parameters -->
+                <param name="ocrStrategy" type="string">no_ocr</param>
+                <!-- Enable multi-threading for PDF processing -->
+                <param name="maxMainMemoryBytes" type="int">-1</param>
             </params>
         </parser>
         
-        <!-- Configure OCR with minimal settings -->
+        <!-- Performance-optimized OCR with Tesseract -->
         <parser class="org.apache.tika.parser.ocr.TesseractOCRParser">
             <params>
+                <!-- Language configuration -->
                 <param name="language" type="string">deu+eng</param>
+                
+                <!-- Performance optimization parameters -->
+                <!-- Use fast mode for better performance with adequate quality -->
+                <param name="tesseractPath" type="string">/usr/bin/tesseract</param>
+                <param name="enableImageProcessing" type="bool">true</param>
+                
+                <!-- Page segmentation mode: 3 = Fully automatic page segmentation (faster) -->
+                <param name="tesseractPageSegMode" type="string">3</param>
+                
+                <!-- OCR engine mode: 3 = Default, based on what is available (best speed/accuracy trade-off) -->
+                <param name="tesseractOcrEngineMode" type="string">3</param>
+                
+                <!-- Density (DPI) - lower for faster processing but maintain readability -->
+                <param name="density" type="int">200</param>
+                
+                <!-- Depth - 8 bit is faster than higher bit depths -->
+                <param name="depth" type="int">8</param>
+                
+                <!-- Enable multi-threading for OCR -->
+                <param name="maxFileLengthToOcr" type="int">10485760</param>
+                <param name="timeoutSeconds" type="int">300</param>
+                <param name="minFileSizeToOcr" type="int">0</param>
+                <param name="maxFileSizeToOcr" type="int">20971520</param>
+                
+                <!-- Pre-processing to improve OCR quality and speed -->
+                <param name="preprocessingImageType" type="string">gray</param>
             </params>
         </parser>
     </parsers>
