@@ -60,26 +60,61 @@ namespace BitAndBeam.Controllers
                     fileBytes = ms.ToArray();
                 }
 
-                // 1) Fast path: try extraction without forcing OCR
-                var textResult = await _tikaService.ExtractTextAsync(fileBytes, model.File.FileName, false).ConfigureAwait(false);
-
+                // Performance tracking for OCR process
+                var sw = System.Diagnostics.Stopwatch.StartNew();
+                
+                // Check file type to determine optimal processing strategy
+                string fileExtension = Path.GetExtension(model.File.FileName).ToLowerInvariant();
+                bool isPdf = fileExtension == ".pdf";
+                bool isImage = new[] { ".jpg", ".jpeg", ".png", ".tiff", ".tif", ".bmp", ".gif" }.Contains(fileExtension);
+                bool needsOcr = isPdf || isImage;
+                
+                string textResult = null;
                 bool ocrApplied = false;
 
-                // 2) If not enough text, do a second pass with OCR enabled
-                if (string.IsNullOrWhiteSpace(textResult) || textResult.Trim().Length < 50)
+                if (needsOcr)
                 {
-                    textResult = await _tikaService.ExtractTextAsync(fileBytes, model.File.FileName, true).ConfigureAwait(false);
-                    ocrApplied = true; // we explicitly triggered OCR
-                }
-                else
-                {
-                    // 3) Heuristic: if Tika already applied OCR, the XHTML usually contains a div with class="ocr" or "page"
-                    if (textResult.Contains("class=\"ocr\"", StringComparison.OrdinalIgnoreCase) ||
-                        textResult.Contains("class=\"page\"", StringComparison.OrdinalIgnoreCase))
+                    // For documents likely needing OCR, try optimized processing
+                    _logger.LogInformation("Processing document that may need OCR: {FileName}", model.File.FileName);
+                    
+                    // 1) Fast path: try extraction without forcing OCR for PDFs first
+                    if (isPdf)
                     {
+                        textResult = await _tikaService.ExtractTextAsync(fileBytes, model.File.FileName, false).ConfigureAwait(false);
+                        
+                        // 2) If not enough text, do a second pass with OCR enabled
+                        if (string.IsNullOrWhiteSpace(textResult) || textResult.Trim().Length < 50)
+                        {
+                            _logger.LogInformation("Initial extraction produced insufficient text, applying OCR: {FileName}", model.File.FileName);
+                            textResult = await _tikaService.ExtractTextAsync(fileBytes, model.File.FileName, true).ConfigureAwait(false);
+                            ocrApplied = true; // we explicitly triggered OCR
+                        }
+                        else if (textResult.Contains("class=\"ocr\"", StringComparison.OrdinalIgnoreCase) ||
+                                textResult.Contains("class=\"page\"", StringComparison.OrdinalIgnoreCase))
+                        {
+                            // Tika already applied OCR during the fast path
+                            ocrApplied = true;
+                        }
+                    }
+                    else
+                    {
+                        // For image files, immediately use OCR
+                        textResult = await _tikaService.ExtractTextAsync(fileBytes, model.File.FileName, true).ConfigureAwait(false);
                         ocrApplied = true;
                     }
                 }
+                else
+                {
+                    // For documents unlikely to need OCR (regular text files, etc.)
+                    _logger.LogInformation("Processing regular document: {FileName}", model.File.FileName);
+                    textResult = await _tikaService.ExtractTextAsync(fileBytes, model.File.FileName, false).ConfigureAwait(false);
+                }
+                
+                sw.Stop();
+                _logger.LogInformation(
+                    "Document processing completed in {ElapsedMs}ms for {FileName}, Size: {Size}KB, OCR applied: {OcrApplied}", 
+                    sw.ElapsedMilliseconds, model.File.FileName, fileBytes.Length/1024, ocrApplied);
+
 
                 // Extract metadata
                 var metadataResult = await _tikaService.ExtractMetadataAsync(fileBytes, model.File.FileName).ConfigureAwait(false);
