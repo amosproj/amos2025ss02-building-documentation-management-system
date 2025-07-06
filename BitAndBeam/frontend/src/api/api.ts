@@ -542,12 +542,6 @@ export interface DocumentMetadataPatchRequest {
     'buildingId'?: number | null;
     /**
      * 
-     * @type {SuggestedAddress}
-     * @memberof DocumentMetadataPatchRequest
-     */
-    'suggestedAddress'?: SuggestedAddress;
-    /**
-     * 
      * @type {{ [key: string]: string | null; }}
      * @memberof DocumentMetadataPatchRequest
      */
@@ -833,37 +827,6 @@ export interface ProblemDetails {
      * @memberof ProblemDetails
      */
     'instance'?: string | null;
-}
-/**
- * 
- * @export
- * @interface SuggestedAddress
- */
-export interface SuggestedAddress {
-    /**
-     * 
-     * @type {string}
-     * @memberof SuggestedAddress
-     */
-    'street'?: string | null;
-    /**
-     * 
-     * @type {string}
-     * @memberof SuggestedAddress
-     */
-    'house_Number'?: string | null;
-    /**
-     * 
-     * @type {string}
-     * @memberof SuggestedAddress
-     */
-    'zip_Code'?: string | null;
-    /**
-     * 
-     * @type {string}
-     * @memberof SuggestedAddress
-     */
-    'city'?: string | null;
 }
 /**
  * 
