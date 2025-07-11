@@ -47,7 +47,7 @@ export class FileViewComponent {
   // ✅ New variables for key info
   metadataRaw: string = '';
   parsedMetadata: { label: string; value: string }[] = [];
-  keyInformation: { label: string; value: string | null }[] = [];
+  keyInformation: { key: string; label: string; value: string | null }[] = [];
   loadingKeyInfo: boolean = false;
   keyInfo: any = null;
   hasChanges: boolean = false;
@@ -60,14 +60,14 @@ export class FileViewComponent {
 
 
   constructor(private config: ConfigService,private route: ActivatedRoute,private router: Router, private buildingService: BuildingService,  private categoryService: CategoryService,
-              private apiFactory: ApiClientFactory , private sidebarRefreshService: SidebarRefreshService, private http: HttpClient,
+  private apiFactory: ApiClientFactory , private sidebarRefreshService: SidebarRefreshService, private http: HttpClient,
               private session: SessionService) {}
 
   /**
-   * On component init:
-   * - Watch route for document ID
-   * - Fetch buildings, categories, and selected document data
-   */
+ * On component init:
+ * - Watch route for document ID
+ * - Fetch buildings, categories, and selected document data
+ */
   ngOnInit(): void {
     // Watch for route param changes
     this.route.paramMap.subscribe(paramMap => {
@@ -93,9 +93,9 @@ export class FileViewComponent {
   }
 
   /**
-   * Loads document by ID from backend, sets preview,
-   * parses metadata, and initializes document state.
-   */
+ * Loads document by ID from backend, sets preview,
+ * parses metadata, and initializes document state.
+ */
   loadDocument(id: number){
     this.buildingService.getDocumentById(id).subscribe({
       next: (doc: ApiDocument) => {
@@ -127,9 +127,9 @@ export class FileViewComponent {
               { label: 'Category', value: doc.categoryName || 'N/A' },
             ];
           } catch (e) {
-            console.error('❌ Failed to parse metadata', e);
-            this.parsedMetadata = [];
-          }
+              console.error('❌ Failed to parse metadata', e);
+              this.parsedMetadata = [];
+            }
         }
         const token = this.session.getToken();
         const previewUrl = `${this.config.apiUrl}/api/Documents/${doc.documentId}/preview`;
@@ -174,12 +174,13 @@ export class FileViewComponent {
 
           if (doc.keyInformation) {
             this.keyInformation = Object.entries(doc.keyInformation).map(([key, value]) => ({
+              key: key,
               label: key.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase()),  // Pretty label
-              value: value !== null ? String(value) : 'N/A'  // Force even nulls to show
+              value: value !== null ? String(value) : ''  // Force even nulls to show
             }));
           } else {
-            this.keyInformation = [];
-          }
+              this.keyInformation = [];
+            }
 
           const fileType = (doc.fileType ?? '').toLowerCase();
           this.isPdf = fileType === 'pdf';
@@ -201,9 +202,9 @@ export class FileViewComponent {
   }
 
   /**
-   * Loads extracted key information from backend.
-   * If none is found, auto-generates empty key fields based on category.
-   */
+ * Loads extracted key information from backend.
+ * If none is found, auto-generates empty key fields based on category.
+ */
   fetchKeyInfo(id: number) {
     this.loadingKeyInfo = true;
     const token = this.session.getToken();
@@ -230,15 +231,16 @@ export class FileViewComponent {
         }
         // ✅ If no keyInformation found but category is selected, generate empty key fields
         if ((!data.keyInformation || Object.keys(data.keyInformation).length === 0) &&
-          this.selectedCategoryName && this.categories.length > 0) {
+            this.selectedCategoryName && this.categories.length > 0) {
           const match = this.categories.find(c => c.name === this.selectedCategoryName);
           if (match && Array.isArray(match.fields)) {
             this.keyInformation = this.generateKeyInfoFromCategory(match);
           }
         } else {
-          this.keyInformation = Object.entries(data.keyInformation || {}).map(([key, value]) => ({
-            label: key.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase()),
-            value: value !== null ? String(value) : 'N/A'
+          this.keyInformation = (data.keyInformation || []).map((item: any) => ({
+            key: item.key,
+            label: item.name,
+            value: item.value ?? ''
           }));
         }
         if (!this.keyInformation.length && this.selectedCategoryName) {
@@ -269,9 +271,9 @@ export class FileViewComponent {
   }
 
   /**
-   * Builds patch request and sends metadata updates to backend.
-   * Regenerates view after successful save.
-   */
+ * Builds patch request and sends metadata updates to backend.
+ * Regenerates view after successful save.
+ */
   saveMetadataChanges(): void {
     if (!this.selectedFile?.id) return;
 
@@ -280,7 +282,7 @@ export class FileViewComponent {
 
     // 🟡 AUTO-GENERATE blank key info if none is loaded but category is selected
     if ((!this.keyInformation || this.keyInformation.length === 0) &&
-      this.selectedCategoryName && this.categories.length > 0) {
+        this.selectedCategoryName && this.categories.length > 0) {
       const match = this.categories.find(c => c.name === this.selectedCategoryName);
       if (match && Array.isArray(match.fields) && match.fields.length > 0) {
         this.keyInformation = this.generateKeyInfoFromCategory(match);
@@ -293,7 +295,7 @@ export class FileViewComponent {
       buildingId: this.selectedBuildingId,
       categoryName: this.selectedCategoryName ?? undefined,
       keyInformation: Object.fromEntries(
-        this.keyInformation.map(k => [k.label.toLowerCase().replace(/ /g, '_'), k.value])
+        this.keyInformation.map(k => [k.key, k.value])
       )
     };
 
@@ -319,9 +321,9 @@ export class FileViewComponent {
       });
   }
   /**
-   * Resets key fields when category is changed,
-   * initializes touchedFields map for validation.
-   */
+ * Resets key fields when category is changed,
+ * initializes touchedFields map for validation.
+ */
   onCategoryChange(): void {
     const selected = this.categories.find(c => c.name === this.selectedCategoryName);
     if (selected && Array.isArray(selected.fields)) {
@@ -353,18 +355,18 @@ export class FileViewComponent {
     this.imageZoom = 1;
     this.pdfZoom = 1;
   }
-  /**
-   * Checks if a given field label is marked as mandatory
-   * in the selected category's field list.
-   */
+ /**
+ * Checks if a given field label is marked as mandatory
+ * in the selected category's field list.
+ */
   isFieldRequired(label: string): boolean {
     const category = this.categories.find(c => c.name === this.selectedCategoryName);
     return !!category?.fields?.find(f => f.name === label && f.mandatory);
   }
 
   /**
-   * Tries to guess the input type for a field based on its label.
-   */
+ * Tries to guess the input type for a field based on its label.
+ */
   getInputType(label: string): string {
     const lower = label.toLowerCase();
     if (lower.includes('datum') || lower.includes('date')) return 'date';
@@ -373,12 +375,12 @@ export class FileViewComponent {
   }
 
   /**
-   * Compares the current form state with the original state to determine
-   * if changes were actually made (used to toggle Save button).
-   */
+ * Compares the current form state with the original state to determine
+ * if changes were actually made (used to toggle Save button).
+ */
   checkForChanges(): void {
     const currentInfo = Object.fromEntries(
-      this.keyInformation.map(k => [k.label.toLowerCase().replace(/ /g, '_'), k.value || ''])
+      this.keyInformation.map(k => [k.key, k.value || ''])
     );
 
     const categoryChanged = this.selectedCategoryName !== this.originalCategoryName;
@@ -392,10 +394,10 @@ export class FileViewComponent {
   }
 
   /**
-   * Generates empty key information fields from a category,
-   * and initializes touched state for validation tracking.
-   */
-  private generateKeyInfoFromCategory(category: Category): { label: string; value: string }[] {
+ * Generates empty key information fields from a category,
+ * and initializes touched state for validation tracking.
+ */
+  private generateKeyInfoFromCategory(category: Category): { key: string; label: string; value: string }[] {
     this.touchedFields = {};
     if (!Array.isArray(category.fields)) {
       return [];
@@ -404,6 +406,7 @@ export class FileViewComponent {
     return category.fields.map(field => {
       this.touchedFields[field.name] = false;
       return {
+        key: field.key,
         label: field.name,
         value: ''
       };

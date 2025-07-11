@@ -182,59 +182,63 @@ namespace BitAndBeam.Controllers
                             matchedCategory = cat.Trim();
                     }
 
-                   // KEY INFORMATION (structured with key + name + value)
-                   if (root.TryGetProperty("key_information", out var kiObj) && kiObj.ValueKind == JsonValueKind.Object)
-                   {
-                       var keyInformationStructured = new Dictionary<string, Dictionary<string, string?>>();
+                    // KEY INFORMATION (structured with key + name + value)
+                    if (root.TryGetProperty("key_information", out var kiObj) && kiObj.ValueKind == JsonValueKind.Object)
+                    {
+                        var keyInformationStructured = new Dictionary<string, Dictionary<string, string?>>();
 
-                       // Look up the matching category schema
-                       var allCategories = ReadCategories();
-                       var matchedCat = allCategories.FirstOrDefault(c =>
-                           string.Equals(c.Name?.Trim(), matchedCategory, StringComparison.OrdinalIgnoreCase));
+                        // Look up the matching category schema
+                        var allCategoriesSecondPass = ReadCategories();
+                        var matchedCat = allCategoriesSecondPass.FirstOrDefault(c =>
+                            string.Equals(c.Name?.Trim(), matchedCategory, StringComparison.OrdinalIgnoreCase));
 
-                       if (matchedCat != null)
-                       {
-                           foreach (var field in matchedCat.Fields)
-                           {
-                               var fieldKey = field.Key ?? field.Name?.Replace(" ", "").Replace("ä", "ae").Replace("ö", "oe")
-                                                          .Replace("ü", "ue").Replace("ß", "ss"); // Fallback if key is missing
-                               var fieldName = field.Name;
+                        if (matchedCat != null)
+                        {
+                            foreach (var field in matchedCat.Fields)
+                            {
+                                var fieldKey = field.Key ?? field.Name?.Replace(" ", "").Replace("ä", "ae").Replace("ö", "oe")
+                                                           .Replace("ü", "ue").Replace("ß", "ss"); // Fallback if key is missing
+                                var fieldName = field.Name;
 
-                               string? extractedValue = null;
-                               if (kiObj.TryGetProperty(fieldName, out var prop))
-                               {
-                                   extractedValue = prop.ValueKind switch
-                                   {
-                                       JsonValueKind.String => prop.GetString(),
-                                       JsonValueKind.Number => prop.GetRawText(),
-                                       JsonValueKind.True => "true",
-                                       JsonValueKind.False => "false",
-                                       _ => null
-                                   };
-                               }
+                                string? extractedValue = null;
+                                var match = kiObj.EnumerateObject()
+                                    .FirstOrDefault(p => string.Equals(p.Name.Trim(), fieldName.Trim(), StringComparison.OrdinalIgnoreCase));
 
-                               keyInformationStructured[fieldKey] = new Dictionary<string, string?>
-                               {
-                                   ["name"] = fieldName,
-                                   ["value"] = extractedValue
-                               };
-                           }
+                                if (!string.IsNullOrEmpty(match.Name))
+                                {
+                                    var prop = match.Value;
+                                    extractedValue = prop.ValueKind switch
+                                    {
+                                        JsonValueKind.String => prop.GetString(),
+                                        JsonValueKind.Number => prop.GetRawText(),
+                                        JsonValueKind.True => "true",
+                                        JsonValueKind.False => "false",
+                                        _ => null
+                                    };
+                                }
+                                if (match.Name == null)
+                                    _logger.LogWarning("⚠️ Ollama did not return field: {0}", fieldName);
 
-                           // Flatten for saving in Document entity
-                           keyInformation = keyInformationStructured.ToDictionary(
-                               kv => kv.Key,
-                               kv => JsonSerializer.Serialize(kv.Value)
-                           );
+                                keyInformationStructured[fieldKey] = new Dictionary<string, string?>
+                                {
+                                    ["name"] = fieldName,
+                                    ["value"] = extractedValue
+                                };
+                            }
 
-                           // Optional debug write
-                           var tempJsonPath = Path.Combine(textOutputDir, "key_information_structured.json");
-                           var prettyJson = JsonSerializer.Serialize(keyInformationStructured, new JsonSerializerOptions { WriteIndented = true });
-                           await System.IO.File.WriteAllTextAsync(tempJsonPath, prettyJson).ConfigureAwait(false);
-                       }
-                   }
+                            // Flatten for saving in Document entity
+                            keyInformation = keyInformationStructured.ToDictionary(
+                                kv => kv.Key,
+                                kv => JsonSerializer.Serialize(kv.Value)
+                            );
 
-
+                            // Optional debug write
+                            var tempJsonPath = Path.Combine(textOutputDir, "key_information_structured.json");
+                            var prettyJson = JsonSerializer.Serialize(keyInformationStructured, new JsonSerializerOptions { WriteIndented = true });
+                            await System.IO.File.WriteAllTextAsync(tempJsonPath, prettyJson).ConfigureAwait(false);
+                        }
                     }
+
                 }
             }
             catch (Exception ex)
