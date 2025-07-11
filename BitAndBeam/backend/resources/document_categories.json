@@ -50,7 +50,7 @@
       "name": "Bebauungsplan",
       "description": "Verbindliche städtebauliche Festsetzung über Art und Maß der baulichen Nutzung eines Gebiets.",
       "fields": [
-        {"name": "Nummer", "description": "Eindeutige Identifikationsnummer des Bebauungsplans.", "mandatory": true},
+        {"key": "planNumber","name": "Nummer", "description": "Eindeutige Identifikationsnummer des Bebauungsplans.", "mandatory": true},
         {"name": "Bezeichnung", "description": "Titel oder Name des Bebauungsplans.", "mandatory": true},
         {"name": "Maßstab", "description": "Maßstab der Planzeichnung (z. B. 1:1000).", "mandatory": true},
         {"name": "Datum", "description": "Datum der Rechtskraft oder Aufstellung des Plans.", "mandatory": true},
