@@ -30,7 +30,7 @@
         {"key": "primaryEnergyActual","name": "Primärenergiebedarf Ist-Wert", "description": "Tatsächlicher Primärenergiebedarf des Gebäudes.", "mandatory": true},
         {"key": "primaryEnergyRequired","name": "Primärenergiebedarf Anforderungswert", "description": "Vorgeschriebener Referenzwert für den Primärenergiebedarf.", "mandatory": false},
         {"key": "envelopeQualityActual","name": "Qualität der Gebäudehülle Ist-Wert", "description": "Tatsächliche energetische Qualität der Gebäudehülle.", "mandatory": false},
-        {"name": "Qualität der Gebäudehülle Anforderungswert", "description": "Vorgeschriebener Referenzwert zur Gebäudehülle.", "mandatory": false},
+        {"key": "envelopeQualityRequired","name": "Qualität der Gebäudehülle Anforderungswert", "description": "Vorgeschriebener Referenzwert zur Gebäudehülle.", "mandatory": false},
         {"name": "Maßnahmen zur kostengünstigen Verbesserung der Energieeffizienz", "description": "Empfohlene Maßnahmen zur Verbesserung der Energieeffizienz, sofern möglich.", "mandatory": false}
       ]
     },
