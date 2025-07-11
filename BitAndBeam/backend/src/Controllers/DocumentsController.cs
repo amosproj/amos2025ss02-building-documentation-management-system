@@ -607,7 +607,10 @@ namespace BitAndBeam.Controllers
                 Description = document.Description,
                 IsPublic = document.IsPublic,
                 Metadata = document.Metadata,
-                KeyInformation = document.KeyInformation,
+                KeyInformation = BuildStructuredKeyInformation(
+                    document.KeyInformation?.Deserialize<Dictionary<string, string?>>() ?? new(),
+                    document.CategoryName
+                ),
                 FileName = document.FileName,
                 UploadedAt = document.UploadedAt,
                 OrganizationId = document.OrganizationId
