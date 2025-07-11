@@ -116,8 +116,11 @@
   transition: transform 0.3s ease;
 }
 
-.metadata-panel.collapsed .metadata-toggle-btn svg {
-  transform: rotate(180deg);
+.metadata-panel.collapsed .metadata-toggle-btn {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  z-index: 5;
 }
 
 .metadata-content {
