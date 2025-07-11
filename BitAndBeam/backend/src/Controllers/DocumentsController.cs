@@ -360,7 +360,7 @@ namespace BitAndBeam.Controllers
                 KeyInformation = BuildStructuredKeyInformation(
                     document.KeyInformation?.Deserialize<Dictionary<string, string?>>() ?? new(),
                     document.CategoryName
-                )
+                ),
                 FileName = document.FileName,
                 UploadedAt = document.UploadedAt,
                 OrganizationId = document.OrganizationId,
