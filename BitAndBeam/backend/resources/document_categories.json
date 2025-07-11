@@ -41,7 +41,7 @@
         {"key": "designer","name": "Entwurfsverfasser", "description": "Name und Kontaktdaten der verantwortlichen Entwurfsverfassenden Person.", "mandatory": true},
         {"key": "applicant","name": "Bauherr", "description": "Name und Kontaktdaten des Bauherrn oder Antragstellers.", "mandatory": true},
         {"key": "plot","name": "Baugrundstück", "description": "Angabe zur Lage des Baugrundstücks (Gemarkung, Flur-Nr.).", "mandatory": true},
-        {"name": "Gebäudeklasse", "description": "Eingruppierung des Gebäudes nach Bauordnung.", "mandatory": true},
+        {"key": "buildingClass","name": "Gebäudeklasse", "description": "Eingruppierung des Gebäudes nach Bauordnung.", "mandatory": true},
         {"name": "Sonderbaunummer", "description": "Kennzeichnung bei Sonderbauten.", "mandatory": false},
         {"name": "Datum des Antrags", "description": "Datum der Einreichung des Bauantrags.", "mandatory": true}
       ]
