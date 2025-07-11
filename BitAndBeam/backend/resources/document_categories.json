@@ -27,7 +27,7 @@
         {"key": "dataCollectedBy","name": "Datenerhebung durch", "description": "Person oder Stelle, die die Datenerhebung durchgeführt hat.", "mandatory": true},
         {"key": "co2Emissions","name": "Treibhausgasemissionen", "description": "CO₂-Emissionen des Gebäudes in kg CO₂-Äquivalent pro m² und Jahr.", "mandatory": true},
         {"key": "finalEnergyDemand","name": "Endenergiebedarf", "description": "Endenergiebedarf des Gebäudes in kWh/m²a.", "mandatory": true},
-        {"name": "Primärenergiebedarf Ist-Wert", "description": "Tatsächlicher Primärenergiebedarf des Gebäudes.", "mandatory": true},
+        {"key": "primaryEnergyActual","name": "Primärenergiebedarf Ist-Wert", "description": "Tatsächlicher Primärenergiebedarf des Gebäudes.", "mandatory": true},
         {"name": "Primärenergiebedarf Anforderungswert", "description": "Vorgeschriebener Referenzwert für den Primärenergiebedarf.", "mandatory": false},
         {"name": "Qualität der Gebäudehülle Ist-Wert", "description": "Tatsächliche energetische Qualität der Gebäudehülle.", "mandatory": false},
         {"name": "Qualität der Gebäudehülle Anforderungswert", "description": "Vorgeschriebener Referenzwert zur Gebäudehülle.", "mandatory": false},
