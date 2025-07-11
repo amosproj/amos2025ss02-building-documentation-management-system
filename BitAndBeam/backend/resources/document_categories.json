@@ -8,7 +8,7 @@
       "fields": [
         { "key": "certificateType","name": "Art des Ausweises", "description": "Typ des Energieausweises: Bedarfsausweis oder Verbrauchsausweis.", "mandatory": true},
         {"key": "issueDate","name": "Ausstellungsdatum", "description": "Datum der Ausstellung des Energieausweises.", "mandatory": true},
-        {"name": "Gültigkeit (Ablaufdatum)", "description": "Datum, an dem der Ausweis seine Gültigkeit verliert.", "mandatory": true},
+        {"key": "expirationDate","name": "Gültigkeit (Ablaufdatum)", "description": "Datum, an dem der Ausweis seine Gültigkeit verliert.", "mandatory": true},
         {"name": "Registriernummer des Ausweises", "description": "Offizielle Registriernummer des Energieausweises.", "mandatory": true},
         {"name": "Gebäudetyp", "description": "Art des Gebäudes (z. B. Wohngebäude, Nichtwohngebäude).", "mandatory": true},
         {"name": "Adresse", "description": "Standort des Gebäudes mit Straße, PLZ und Ort.", "mandatory": true},
