@@ -236,9 +236,10 @@ export class FileViewComponent {
             this.keyInformation = this.generateKeyInfoFromCategory(match);
           }
         } else {
-          this.keyInformation = Object.entries(data.keyInformation || {}).map(([key, value]) => ({
-            label: key.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase()),
-            value: value !== null ? String(value) : 'N/A'
+          this.keyInformation = (data.keyInformation || []).map((item: any) => ({
+            key: item.key,
+            label: item.name,
+            value: item.value ?? ''
           }));
         }
         if (!this.keyInformation.length && this.selectedCategoryName) {
