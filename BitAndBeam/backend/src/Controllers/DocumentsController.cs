@@ -112,6 +112,7 @@ namespace BitAndBeam.Controllers
             var shortText = textForOllama.Length > 4_000 ? textForOllama[..4_000] : textForOllama;
             // var cleanedText = OcrTextPreprocessor.Preprocess(textForOllama);
             // var shortText = cleanedText.Length > 4_000 ? cleanedText[..4_000] : cleanedText;
+            // var shortText = textForOllama;
             var categoriesSchemaJson = JsonSerializer.Serialize(ReadCategories());
 
             var prompt = BuildPrompt(shortText, categoriesSchemaJson);
@@ -181,35 +182,58 @@ namespace BitAndBeam.Controllers
                             matchedCategory = cat.Trim();
                     }
 
-                    // KEY INFORMATION
-                    if (root.TryGetProperty("key_information", out var kiObj) && kiObj.ValueKind == JsonValueKind.Object)
-                    {
-                        // Create a temp list to store all key-value pairs (even duplicates)
-                        var keyInformationTemp = new List<(string Key, string? Value)>();
-                        foreach (var property in kiObj.EnumerateObject())
-                        {
-                            string value = property.Value.ValueKind switch
-                            {
-                                JsonValueKind.String => property.Value.GetString() ?? string.Empty,
-                                JsonValueKind.Number => property.Value.GetRawText(),
-                                JsonValueKind.True => "true",
-                                JsonValueKind.False => "false",
-                                JsonValueKind.Null => null,
-                                _ => property.Value.ToString()
-                            };
-                            keyInformationTemp.Add((property.Name, value));
-                            if (!keyInformation.ContainsKey(property.Name))
-                            {
-                                keyInformation[property.Name] = value;
-                            }
-                        }
-                        // Save key_information_temp.txt (all key-value pairs, one per line)
-                        if (keyInformationTemp.Count > 0)
-                        {
-                            var tempTxtPath = Path.Combine(textOutputDir, "key_information_temp.txt");
-                            var lines = keyInformationTemp.Select(kv => $"{kv.Key}: {kv.Value}");
-                            await System.IO.File.WriteAllLinesAsync(tempTxtPath, lines).ConfigureAwait(false);
-                        }
+                   // KEY INFORMATION (structured with key + name + value)
+                   if (root.TryGetProperty("key_information", out var kiObj) && kiObj.ValueKind == JsonValueKind.Object)
+                   {
+                       var keyInformationStructured = new Dictionary<string, Dictionary<string, string?>>();
+
+                       // Look up the matching category schema
+                       var allCategories = ReadCategories();
+                       var matchedCat = allCategories.FirstOrDefault(c =>
+                           string.Equals(c.Name?.Trim(), matchedCategory, StringComparison.OrdinalIgnoreCase));
+
+                       if (matchedCat != null)
+                       {
+                           foreach (var field in matchedCat.Fields)
+                           {
+                               var fieldKey = field.Key ?? field.Name?.Replace(" ", "").Replace("ä", "ae").Replace("ö", "oe")
+                                                          .Replace("ü", "ue").Replace("ß", "ss"); // Fallback if key is missing
+                               var fieldName = field.Name;
+
+                               string? extractedValue = null;
+                               if (kiObj.TryGetProperty(fieldName, out var prop))
+                               {
+                                   extractedValue = prop.ValueKind switch
+                                   {
+                                       JsonValueKind.String => prop.GetString(),
+                                       JsonValueKind.Number => prop.GetRawText(),
+                                       JsonValueKind.True => "true",
+                                       JsonValueKind.False => "false",
+                                       _ => null
+                                   };
+                               }
+
+                               keyInformationStructured[fieldKey] = new Dictionary<string, string?>
+                               {
+                                   ["name"] = fieldName,
+                                   ["value"] = extractedValue
+                               };
+                           }
+
+                           // Flatten for saving in Document entity
+                           keyInformation = keyInformationStructured.ToDictionary(
+                               kv => kv.Key,
+                               kv => JsonSerializer.Serialize(kv.Value)
+                           );
+
+                           // Optional debug write
+                           var tempJsonPath = Path.Combine(textOutputDir, "key_information_structured.json");
+                           var prettyJson = JsonSerializer.Serialize(keyInformationStructured, new JsonSerializerOptions { WriteIndented = true });
+                           await System.IO.File.WriteAllTextAsync(tempJsonPath, prettyJson).ConfigureAwait(false);
+                       }
+                   }
+
+
                     }
                 }
             }
@@ -357,7 +381,7 @@ namespace BitAndBeam.Controllers
                 Description = document.Description,
                 IsPublic = document.IsPublic,
                 Metadata = document.Metadata,
-                KeyInformation = JsonDocument.Parse(JsonSerializer.Serialize(BuildStructuredKeyInformation(document.KeyInformation?.Deserialize<Dictionary<string, string?>>() ?? new(), document.CategoryName))),
+                KeyInformation = document.KeyInformation,
                 FileName = document.FileName,
                 UploadedAt = document.UploadedAt,
                 OrganizationId = document.OrganizationId,
@@ -406,7 +430,7 @@ namespace BitAndBeam.Controllers
                 Description = document.Description,
                 IsPublic = document.IsPublic,
                 Metadata = document.Metadata,
-                KeyInformation = JsonDocument.Parse(JsonSerializer.Serialize(BuildStructuredKeyInformation(document.KeyInformation?.Deserialize<Dictionary<string, string?>>() ?? new(), document.CategoryName))),
+                KeyInformation = document.KeyInformation,
                 FileName = document.FileName,
                 UploadedAt = document.UploadedAt,
                 OrganizationId = document.OrganizationId
@@ -525,7 +549,7 @@ namespace BitAndBeam.Controllers
                 Description = document.Description,
                 IsPublic = document.IsPublic,
                 Metadata = document.Metadata,
-                KeyInformation = JsonDocument.Parse(JsonSerializer.Serialize(BuildStructuredKeyInformation(document.KeyInformation?.Deserialize<Dictionary<string, string?>>() ?? new(), document.CategoryName))),
+                KeyInformation = document.KeyInformation,
                 FileName = document.FileName,
                 UploadedAt = document.UploadedAt,
                 OrganizationId = document.OrganizationId
@@ -598,7 +622,7 @@ namespace BitAndBeam.Controllers
                 Description = document.Description,
                 IsPublic = document.IsPublic,
                 Metadata = document.Metadata,
-                KeyInformation = JsonDocument.Parse(JsonSerializer.Serialize(BuildStructuredKeyInformation(document.KeyInformation?.Deserialize<Dictionary<string, string?>>() ?? new(), document.CategoryName))),
+                KeyInformation = document.KeyInformation,
                 FileName = document.FileName,
                 UploadedAt = document.UploadedAt,
                 OrganizationId = document.OrganizationId
@@ -881,6 +905,7 @@ namespace BitAndBeam.Controllers
                 var truncatedContent = documentContent.Length > maxContentLength
                     ? documentContent.Substring(0, maxContentLength)
                     : documentContent;
+                // var truncatedContent = documentContent;
 
                 // Construct the prompt for Ollama
                 var prompt = $$"""
@@ -1120,26 +1145,5 @@ namespace BitAndBeam.Controllers
 
             return cleanedText.Trim();
         }
-
-        private List<object> BuildStructuredKeyInformation(Dictionary<string, string?> raw, string? categoryName)
-        {
-            var categories = ReadCategories();
-            var category = categories.FirstOrDefault(c => c.Name == categoryName);
-            if (category == null) return [];
-
-            var result = new List<object>();
-            foreach (var field in category.Fields)
-            {
-                raw.TryGetValue(field.Name, out var value);
-                result.Add(new
-                {
-                    key = field.Key,
-                    name = field.Name,
-                    value = value
-                });
-            }
-            return result;
-        }
-
     }
 }
