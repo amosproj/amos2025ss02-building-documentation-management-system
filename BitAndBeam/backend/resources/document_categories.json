@@ -16,7 +16,7 @@
         {"key": "heaterConstructionYear","name": "Baujahr Wärmeerzeuger", "description": "Baujahr der Heizungsanlage oder anderer Wärmeerzeuger.", "mandatory": false},
         {"key": "usableFloorArea","name": "Gebäudenutzfläche", "description": "Nettogrundfläche des Gebäudes in Quadratmetern.", "mandatory": true},
         {"key": "mainHeatingEnergySources","name": "Wesentliche Energieträger für Heizung", "description": "Primäre Energiequellen für die Heizungsanlage.", "mandatory": true},
-        {"name": "Wesentliche Energieträger für Warmwasser", "description": "Primäre Energiequellen für die Warmwasserbereitung.", "mandatory": false},
+        {"key": "mainHotWaterEnergySources","name": "Wesentliche Energieträger für Warmwasser", "description": "Primäre Energiequellen für die Warmwasserbereitung.", "mandatory": false},
         {"name": "Art Erneuerbare Energien", "description": "Eingesetzte Arten erneuerbarer Energien (z. B. Solarthermie, Biomasse).", "mandatory": false},
         {"name": "Art der Lüftung", "description": "Lüftungskonzept des Gebäudes (z. B. Fensterlüftung, mechanische Lüftung).", "mandatory": false},
         {"name": "Art der Kühlung", "description": "Vorhandene Kühlsysteme im Gebäude.", "mandatory": false},
