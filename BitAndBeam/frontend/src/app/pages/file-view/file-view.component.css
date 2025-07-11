@@ -91,18 +91,13 @@
 }
 
 .metadata-toggle-btn {
-  background: transparent;
+  background-color: var(--bg-primary); /* or white */
   border: 1px solid var(--border-color);
-  border-radius: 4px;
-  padding: 4px;
-  cursor: pointer;
+  border-radius: 6px;
+  padding: 6px;
   color: var(--text-primary);
-  transition: all 0.2s ease;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 28px;
-  height: 28px;
+  font-size: 18px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
 }
 
 .metadata-toggle-btn:hover {
