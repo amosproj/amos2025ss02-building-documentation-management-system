@@ -21,7 +21,7 @@
         {"key": "ventilationType","name": "Art der Lüftung", "description": "Lüftungskonzept des Gebäudes (z. B. Fensterlüftung, mechanische Lüftung).", "mandatory": false},
         {"key": "coolingType","name": "Art der Kühlung", "description": "Vorhandene Kühlsysteme im Gebäude.", "mandatory": false},
         {"key": "inspectedAirConditionUnits","name": "Anzahl Inspektionspflichtige Klimaanlagen", "description": "Zahl der klimaanlagen, die einer Inspektionspflicht unterliegen.", "mandatory": false},
-        {"name": "Anlass der Ausstellung des Energieausweises", "description": "Grund für die Ausstellung (z. B. Verkauf, Vermietung, Modernisierung).", "mandatory": false},
+        {"key": "issuanceReason","name": "Anlass der Ausstellung des Energieausweises", "description": "Grund für die Ausstellung (z. B. Verkauf, Vermietung, Modernisierung).", "mandatory": false},
         {"name": "Energiebedarfsausweis", "description": "Kennzeichnung, ob es sich um einen Bedarfsausweis handelt.", "mandatory": true},
         {"name": "Energieverbrauchsausweis", "description": "Kennzeichnung, ob es sich um einen Verbrauchsausweis handelt.", "mandatory": true},
         {"name": "Datenerhebung durch", "description": "Person oder Stelle, die die Datenerhebung durchgeführt hat.", "mandatory": true},
