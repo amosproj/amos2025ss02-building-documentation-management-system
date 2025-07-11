@@ -6,7 +6,7 @@
       "name": "Energieausweis",
       "description": "Dokumentation über die energetische Qualität eines Gebäudes inklusive Energiebedarf, Verbrauch und Emissionen.",
       "fields": [
-        {"name": "Art des Ausweises", "description": "Typ des Energieausweises: Bedarfsausweis oder Verbrauchsausweis.", "mandatory": true},
+        { "key": "certificateType","name": "Art des Ausweises", "description": "Typ des Energieausweises: Bedarfsausweis oder Verbrauchsausweis.", "mandatory": true},
         {"name": "Ausstellungsdatum", "description": "Datum der Ausstellung des Energieausweises.", "mandatory": true},
         {"name": "Gültigkeit (Ablaufdatum)", "description": "Datum, an dem der Ausweis seine Gültigkeit verliert.", "mandatory": true},
         {"name": "Registriernummer des Ausweises", "description": "Offizielle Registriernummer des Energieausweises.", "mandatory": true},
