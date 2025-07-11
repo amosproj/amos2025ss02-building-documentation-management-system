@@ -380,7 +380,7 @@ export class FileViewComponent {
  */
   checkForChanges(): void {
     const currentInfo = Object.fromEntries(
-      this.keyInformation.map(k => [k.label.toLowerCase().replace(/ /g, '_'), k.value || ''])
+      this.keyInformation.map(k => [k.key, k.value || ''])
     );
 
     const categoryChanged = this.selectedCategoryName !== this.originalCategoryName;
