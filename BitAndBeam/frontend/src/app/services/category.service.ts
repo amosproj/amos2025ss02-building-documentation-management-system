@@ -5,13 +5,13 @@ import { Configuration, DocumentsApi } from '../../api';
 import { ApiClientFactory } from './api-client.factory';
 
 export interface Category {
-  key: string;
   name: string;
   description?: string;
   fields?: CategoryField[];
 }
 
 export interface CategoryField {
+  key: string;
   name: string;
   description: string;
   mandatory: boolean;
