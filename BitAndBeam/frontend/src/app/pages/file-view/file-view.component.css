@@ -105,8 +105,10 @@
 }
 
 .metadata-toggle-btn:hover {
-  background-color: var(--menu-hover-bg, var(--bg-primary));
-  border-color: var(--accent-color);
+  background-color: var(--accent-color);
+  color: white;
+  transform: scale(1.05);
+  transition: all 0.2s ease;
 }
 
 .metadata-toggle-btn svg {
