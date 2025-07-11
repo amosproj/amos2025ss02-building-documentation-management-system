@@ -52,7 +52,7 @@
       "fields": [
         {"key": "planNumber","name": "Nummer", "description": "Eindeutige Identifikationsnummer des Bebauungsplans.", "mandatory": true},
         {"key": "title","name": "Bezeichnung", "description": "Titel oder Name des Bebauungsplans.", "mandatory": true},
-        {"name": "Maßstab", "description": "Maßstab der Planzeichnung (z. B. 1:1000).", "mandatory": true},
+        {"key": "scale","name": "Maßstab", "description": "Maßstab der Planzeichnung (z. B. 1:1000).", "mandatory": true},
         {"name": "Datum", "description": "Datum der Rechtskraft oder Aufstellung des Plans.", "mandatory": true},
         {"name": "Textuelle Festsetzungen", "description": "Schriftliche Regelungen zur Nutzung und Gestaltung.", "mandatory": true}
       ]
