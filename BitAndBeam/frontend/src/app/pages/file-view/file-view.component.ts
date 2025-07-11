@@ -295,8 +295,8 @@ export class FileViewComponent {
       buildingId: this.selectedBuildingId,
       categoryName: this.selectedCategoryName ?? undefined,
       keyInformation: Object.fromEntries(
-        this.keyInformation.map(k => [k.label.toLowerCase().replace(/ /g, '_'), k.value])
-      )
+        this.keyInformation.map(k => [k.key, k.value])
+  )
     };
 
     console.log('📦 Patch request payload:', patchRequest);
