@@ -887,7 +887,7 @@ namespace BitAndBeam.Controllers
                 You are a helpful assistant answering questions about contents of document.
                 Use ONLY the information from the **DOCUMENT CONTENT** provided below, to provide a concise and accurate answer to the **USER QUESTION**.
                 If the answer cannot be found in the document, say so clearly - do not create new information.
-                
+
                 **DOCUMENT CONTENT**:
                 {{truncatedContent}}
 
@@ -1120,5 +1120,26 @@ namespace BitAndBeam.Controllers
 
             return cleanedText.Trim();
         }
+
+        private List<object> BuildStructuredKeyInformation(Dictionary<string, string?> raw, string? categoryName)
+        {
+            var categories = ReadCategories();
+            var category = categories.FirstOrDefault(c => c.Name == categoryName);
+            if (category == null) return [];
+
+            var result = new List<object>();
+            foreach (var field in category.Fields)
+            {
+                raw.TryGetValue(field.Name, out var value);
+                result.Add(new
+                {
+                    key = field.Key,
+                    name = field.Name,
+                    value = value
+                });
+            }
+            return result;
+        }
+
     }
 }
