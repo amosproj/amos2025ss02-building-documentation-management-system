@@ -18,3 +18,8 @@ services:
       retries: 3
     ports:
       - "11434:11434"
+    environment:
+      - OLLAMA_MAX_PROMPT_TOKENS=32768
+      - OLLAMA_CONTEXT_LENGTH=32768
+      - OLLAMA_NUM_PARALLEL=0
+      - OLLAMA_KEEP_ALIVE=24h
