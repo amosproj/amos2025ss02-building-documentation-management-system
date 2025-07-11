@@ -62,7 +62,7 @@ export class FileViewComponent {
   constructor(private config: ConfigService,private route: ActivatedRoute,private router: Router, private buildingService: BuildingService,  private categoryService: CategoryService,
   private apiFactory: ApiClientFactory , private sidebarRefreshService: SidebarRefreshService, private http: HttpClient,
               private session: SessionService) {}
-  
+
   /**
  * On component init:
  * - Watch route for document ID
@@ -175,7 +175,7 @@ export class FileViewComponent {
           if (doc.keyInformation) {
             this.keyInformation = Object.entries(doc.keyInformation).map(([key, value]) => ({
               label: key.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase()),  // Pretty label
-              value: value !== null ? String(value) : 'N/A'  // Force even nulls to show
+              value: value !== null ? String(value) : ''  // Force even nulls to show
             }));
           } else {
               this.keyInformation = [];
@@ -371,7 +371,7 @@ export class FileViewComponent {
     if (lower.includes('zahl') || lower.includes('nummer') || lower.includes('anzahl')) return 'number';
     return 'text';
   }
-  
+
   /**
  * Compares the current form state with the original state to determine
  * if changes were actually made (used to toggle Save button).
