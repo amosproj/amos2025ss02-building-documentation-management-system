@@ -47,7 +47,7 @@ export class FileViewComponent {
   // ✅ New variables for key info
   metadataRaw: string = '';
   parsedMetadata: { label: string; value: string }[] = [];
-  keyInformation: { label: string; value: string | null }[] = [];
+  keyInformation: { key: string; label: string; value: string | null }[] = [];
   loadingKeyInfo: boolean = false;
   keyInfo: any = null;
   hasChanges: boolean = false;
@@ -174,6 +174,7 @@ export class FileViewComponent {
 
           if (doc.keyInformation) {
             this.keyInformation = Object.entries(doc.keyInformation).map(([key, value]) => ({
+              key: key,
               label: key.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase()),  // Pretty label
               value: value !== null ? String(value) : ''  // Force even nulls to show
             }));
@@ -405,6 +406,7 @@ export class FileViewComponent {
     return category.fields.map(field => {
       this.touchedFields[field.name] = false;
       return {
+        key: field.key,
         label: field.name,
         value: ''
       };

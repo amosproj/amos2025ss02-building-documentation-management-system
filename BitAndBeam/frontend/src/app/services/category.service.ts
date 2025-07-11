@@ -5,6 +5,7 @@ import { Configuration, DocumentsApi } from '../../api';
 import { ApiClientFactory } from './api-client.factory';
 
 export interface Category {
+  key: string;
   name: string;
   description?: string;
   fields?: CategoryField[];
@@ -50,7 +51,7 @@ export class CategoryService {
   // Assign document category using the OpenAPI SDK
   assignDocumentCategory(documentId: number, categoryName: string | null, buildingId: number | null): Observable<any> {
     const patchRequest = { categoryName, buildingId };
-    
+
     return from(
       this.documentsApi.apiDocumentsIdPatch(documentId, patchRequest)
         .then(response => response || {})
