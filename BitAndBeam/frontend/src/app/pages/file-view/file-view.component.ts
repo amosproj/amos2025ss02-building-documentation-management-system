@@ -397,7 +397,7 @@ export class FileViewComponent {
  * Generates empty key information fields from a category,
  * and initializes touched state for validation tracking.
  */
-  private generateKeyInfoFromCategory(category: Category): { label: string; value: string }[] {
+  private generateKeyInfoFromCategory(category: Category): { key: string; label: string; value: string }[] {
     this.touchedFields = {};
     if (!Array.isArray(category.fields)) {
       return [];
