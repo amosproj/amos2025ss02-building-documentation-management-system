@@ -124,6 +124,13 @@ namespace BitAndBeam.Controllers
             string? matchedCategory = null;
             Building? matchedBuilding = null;
             Dictionary<string, string?> keyInformation = new();
+            
+            // 6. Try to map matchedCategory (string) to actual category object
+            var allCategories = ReadCategories();
+            var categoryMatch = allCategories.FirstOrDefault(c =>
+                string.Equals(c.Name?.Trim(), matchedCategory, StringComparison.OrdinalIgnoreCase));
+            string? matchedCategoryName = categoryMatch?.Name;
+            if (categoryMatch == null) matchedCategoryName = null;
 
             // 4. Ollama call
             try
@@ -185,8 +192,10 @@ namespace BitAndBeam.Controllers
                     // KEY INFORMATION
                     if (root.TryGetProperty("key_information", out var kiObj) && kiObj.ValueKind == JsonValueKind.Object)
                     {
+                        var extractedMap = new Dictionary<string, string?>();
                         // Create a temp list to store all key-value pairs (even duplicates)
                         var keyInformationTemp = new List<(string Key, string? Value)>();
+
                         foreach (var property in kiObj.EnumerateObject())
                         {
                             string value = property.Value.ValueKind switch
@@ -198,10 +207,23 @@ namespace BitAndBeam.Controllers
                                 JsonValueKind.Null => null,
                                 _ => property.Value.ToString()
                             };
+                            extractedMap[property.Name] = value;
                             keyInformationTemp.Add((property.Name, value));
                             if (!keyInformation.ContainsKey(property.Name))
                             {
                                 keyInformation[property.Name] = value;
+                            }
+                        }
+                        if (categoryMatch != null)
+                        {
+                            keyInformation.Clear();
+                            foreach (var field in categoryMatch.Fields)
+                            {
+                                var label = field.Name;
+                                var key = field.Key;
+                                string? value = extractedMap.TryGetValue(label, out var val) ? val : null;
+
+                                keyInformation[key] = value;
                             }
                         }
                         // Save key_information_temp.txt (all key-value pairs, one per line)
@@ -246,12 +268,7 @@ namespace BitAndBeam.Controllers
                 }
             }
 
-            // 6. Try to map matchedCategory (string) to actual category object
-            var allCategories = ReadCategories();
-            var categoryMatch = allCategories.FirstOrDefault(c =>
-                string.Equals(c.Name?.Trim(), matchedCategory, StringComparison.OrdinalIgnoreCase));
-            string? matchedCategoryName = categoryMatch?.Name;
-            if (categoryMatch == null) matchedCategoryName = null;
+            
 
             // 7. persist
             var document = new Document
