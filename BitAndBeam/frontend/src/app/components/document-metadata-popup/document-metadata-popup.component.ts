@@ -264,13 +264,13 @@ export class DocumentMetadataPopupComponent implements OnInit, OnDestroy {
 
     // First save the metadata
     documentsApi.apiDocumentsIdPatch(documentId, patchRequest)
-      .then((metadataResponse) => {
+      .then(async (metadataResponse) => {
         console.log('✅ Document metadata saved successfully');
         
         // Now try to extract key information
         console.log('🔍 Attempting to extract key information...');
         
-        this.extractKeyInformationPromise(documentId, categoryName)
+        await this.extractKeyInformationPromise(documentId, categoryName)
           .then((extractionResponse) => {
             console.log('✅ Key information extracted successfully');
             this.isExtractingKeyInfo = false;
@@ -301,29 +301,16 @@ export class DocumentMetadataPopupComponent implements OnInit, OnDestroy {
   /**
    * Extract key information as a promise
    */
-  private extractKeyInformationPromise(documentId: number, categoryName: string): Promise<any> {
+  private async extractKeyInformationPromise(documentId: number, categoryName: string): Promise<any> {
     const documentsApi = this.apiFactory.create(DocumentsApi);
-    
-    // Try to use the OpenAPI client method if it exists
-    const extractMethod = (documentsApi as any).apiDocumentsIdExtractKeyInformationPost 
-                       || (documentsApi as any).apiDocumentsDocumentIdExtractKeyInformationPost
-                       || (documentsApi as any).extractKeyInformation;
 
-    if (extractMethod && typeof extractMethod === 'function') {
-      console.log('✅ Using OpenAPI client method for key extraction');
-      return extractMethod.call(documentsApi, documentId, { categoryName: categoryName });
-    } else {
-      console.log('⚠️ OpenAPI method not found, using manual HTTP call');
-      
-      // Fallback to manual HTTP call
-      return import('axios').then(axios => {
-        const authConfig = this.getAuthenticatedAxiosConfig();
-        return axios.default.post(
-          `${authConfig.baseURL}/api/Documents/${documentId}/extract-key-information`,
-          { categoryName: categoryName },
-          authConfig
-        );
-      });
+    try {
+      const response = await documentsApi.apiDocumentsIdExtractKeyInformationPost(documentId, { categoryName: categoryName });
+      console.log('✅ Key information extraction response:', response);
+      return response;
+    } catch (error) {
+      console.error('❌ Key information extraction failed:', error);
+      return await Promise.reject('Key information extraction failed');
     }
   }
 
@@ -348,65 +335,65 @@ export class DocumentMetadataPopupComponent implements OnInit, OnDestroy {
     });
   }
 
-  private getAuthenticatedAxiosConfig(): any {
-    try {
-      const documentsApi = this.apiFactory.create(DocumentsApi);
-      const apiInstance = documentsApi as any;
+  // private getAuthenticatedAxiosConfig(): any {
+  //   try {
+  //     const documentsApi = this.apiFactory.create(DocumentsApi);
+  //     const apiInstance = documentsApi as any;
       
-      const config: any = {
-        baseURL: window.location.origin.replace(':4200', ':5001').replace(':8080', ':5001'),
-        headers: {}
-      };
+  //     const config: any = {
+  //       baseURL: window.location.origin.replace(':4200', ':5001').replace(':8080', ':5001'),
+  //       headers: {}
+  //     };
 
-      // Try to extract auth headers from the existing API client
-      if (apiInstance.configuration) {
-        const authConfig = apiInstance.configuration;
-        if (authConfig.apiKey) {
-          config.headers['Authorization'] = `Bearer ${authConfig.apiKey}`;
-        }
-        if (authConfig.accessToken) {
-          config.headers['Authorization'] = `Bearer ${authConfig.accessToken}`;
-        }
-      }
+  //     // Try to extract auth headers from the existing API client
+  //     if (apiInstance.configuration) {
+  //       const authConfig = apiInstance.configuration;
+  //       if (authConfig.apiKey) {
+  //         config.headers['Authorization'] = `Bearer ${authConfig.apiKey}`;
+  //       }
+  //       if (authConfig.accessToken) {
+  //         config.headers['Authorization'] = `Bearer ${authConfig.accessToken}`;
+  //       }
+  //     }
 
-      // Try to get auth from the default axios instance if available
-      if (apiInstance.defaults?.headers?.common?.Authorization) {
-        config.headers['Authorization'] = apiInstance.defaults.headers.common.Authorization;
-      }
+  //     // Try to get auth from the default axios instance if available
+  //     if (apiInstance.defaults?.headers?.common?.Authorization) {
+  //       config.headers['Authorization'] = apiInstance.defaults.headers.common.Authorization;
+  //     }
 
-      // Get CSRF token if available
-      const csrfToken = this.getCsrfToken();
-      if (csrfToken) {
-        config.headers['X-CSRF-TOKEN'] = csrfToken;
-      }
+  //     // Get CSRF token if available
+  //     const csrfToken = this.getCsrfToken();
+  //     if (csrfToken) {
+  //       config.headers['X-CSRF-TOKEN'] = csrfToken;
+  //     }
 
-      console.log('🔐 Auth config prepared:', { ...config, headers: { ...config.headers, Authorization: config.headers.Authorization ? '[HIDDEN]' : undefined } });
+  //     console.log('🔐 Auth config prepared:', { ...config, headers: { ...config.headers, Authorization: config.headers.Authorization ? '[HIDDEN]' : undefined } });
       
-      return config;
-    } catch (error) {
-      console.error('❌ Failed to get auth config:', error);
-      return {
-        baseURL: window.location.origin.replace(':4200', ':5001').replace(':8080', ':5001')
-      };
-    }
-  }
+  //     return config;
+  //   } catch (error) {
+  //     console.error('❌ Failed to get auth config:', error);
+  //     return {
+  //       baseURL: window.location.origin.replace(':4200', ':5001').replace(':8080', ':5001')
+  //     };
+  //   }
+  // }
 
-  private getCsrfToken(): string | null {
-    // Try to get CSRF token from meta tag
-    const csrfMeta = document.querySelector('meta[name="csrf-token"]') as HTMLMetaElement;
-    if (csrfMeta) {
-      return csrfMeta.content;
-    }
+  // private getCsrfToken(): string | null {
+  //   // Try to get CSRF token from meta tag
+  //   const csrfMeta = document.querySelector('meta[name="csrf-token"]') as HTMLMetaElement;
+  //   if (csrfMeta) {
+  //     return csrfMeta.content;
+  //   }
     
-    // Try to get from cookie
-    const csrfCookie = document.cookie.split(';')
-      .find(cookie => cookie.trim().startsWith('XSRF-TOKEN='));
-    if (csrfCookie) {
-      return decodeURIComponent(csrfCookie.split('=')[1]);
-    }
+  //   // Try to get from cookie
+  //   const csrfCookie = document.cookie.split(';')
+  //     .find(cookie => cookie.trim().startsWith('XSRF-TOKEN='));
+  //   if (csrfCookie) {
+  //     return decodeURIComponent(csrfCookie.split('=')[1]);
+  //   }
     
-    return null;
-  }
+  //   return null;
+  // }
 
   private completeSave(categoryName: string | null, buildingId: number | null): void {
     // Emit metadata saved event

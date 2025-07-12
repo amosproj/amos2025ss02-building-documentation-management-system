@@ -124,9 +124,12 @@ namespace BitAndBeam.Controllers
 
             // 3. Initial prompt - Only extract address and suggest category (NO key information yet)
             textForOllama = ExtractVisibleText(textForOllama);
+            var extractedTextPath = Path.Combine(textOutputDir, "extracted_text.txt");
+            await System.IO.File.WriteAllTextAsync(extractedTextPath, textForOllama).ConfigureAwait(false);
+
             var shortText = textForOllama.Length > 4_000 ? textForOllama[..4_000] : textForOllama;
             // Read categories directly from file as raw JSON to avoid double serialization
-            var categoriesSchemaJson = System.IO.File.ReadAllText(CategoriesJsonPath);
+            var categoriesSchemaJson = JsonSerializer.Serialize(ReadCategories());
 
             var initialPrompt = BuildInitialPrompt(shortText, categoriesSchemaJson);
 
@@ -162,7 +165,7 @@ namespace BitAndBeam.Controllers
 
                     _logger.LogInformation("🧼 Cleaned Ollama JSON: {Cleaned}", cleanedJson);
 
-                    var cleanedJsonPath = Path.Combine(textOutputDir, "initial_ollama_response.json");
+                    var cleanedJsonPath = Path.Combine(textOutputDir, "cleaned_initial_ollama_response.json");
                     using (var cleanedStream = new FileStream(cleanedJsonPath, FileMode.Create, FileAccess.Write, FileShare.None, 4096, useAsync: true))
                     using (var cleanedWriter = new StreamWriter(cleanedStream))
                     {
@@ -258,10 +261,6 @@ namespace BitAndBeam.Controllers
             _context.Documents.Add(document);
             await _context.SaveChangesAsync().ConfigureAwait(false);
 
-            // Store the extracted text for later use in key information extraction
-            var extractedTextPath = Path.Combine(textOutputDir, $"extracted_text_{document.DocumentId}.txt");
-            await System.IO.File.WriteAllTextAsync(extractedTextPath, textForOllama).ConfigureAwait(false);
-
             // Save initial analysis results
             if (parsedAddress != null && parsedAddress.Count > 0)
             {
@@ -316,124 +315,26 @@ namespace BitAndBeam.Controllers
 
             try
             {
-                // Read the previously extracted text
-                var textOutputDir = "/app/documents2";
-                var extractedTextPath = Path.Combine(textOutputDir, $"extracted_text_{document.DocumentId}.txt");
 
-                if (!System.IO.File.Exists(extractedTextPath))
+                var keyInformation = await ExtractKeyInformationForDocument(document.DocumentId, request).ConfigureAwait(false);
+
+                if (keyInformation != null)
                 {
-                    _logger.LogWarning("Extracted text file not found for document {DocumentId}, re-extracting", document.DocumentId);
-
-                    // Re-extract text if file doesn't exist
-                    var filePath = Path.Combine("/app/documents", document.FileName);
-                    if (!System.IO.File.Exists(filePath))
-                        return BadRequest("Original document file not found");
-
-                    var fileBytes = System.IO.File.ReadAllBytes(filePath);
-                    var textForOllama = await _tikaService.ExtractTextAsync(fileBytes, document.FileName).ConfigureAwait(false);
-
-                    if (string.IsNullOrWhiteSpace(textForOllama) || textForOllama.Length < 50)
-                    {
-                        textForOllama = await _tikaService.ExtractTextAsync(fileBytes, document.FileName, true).ConfigureAwait(false);
-                    }
-
-                    textForOllama = ExtractVisibleText(textForOllama);
-                    await System.IO.File.WriteAllTextAsync(extractedTextPath, textForOllama).ConfigureAwait(false);
+                    _logger.LogInformation("✅ Key information extracted for document {DocumentId} with category {Category}", document.DocumentId, request.CategoryName);
                 }
-
-                var extractedText = await System.IO.File.ReadAllTextAsync(extractedTextPath).ConfigureAwait(false);
-                var shortText = extractedText.Length > 4_000 ? extractedText[..4_000] : extractedText;
-
-                // Read categories directly from file as raw JSON to avoid double serialization
-                var categoriesSchemaJson = System.IO.File.ReadAllText(CategoriesJsonPath);
-
-                // Debug log the categories schema structure
-                _logger.LogInformation("Categories schema for key extraction: {Schema}", categoriesSchemaJson);
-                _logger.LogInformation("Requested category name: {CategoryName}", request.CategoryName);
-
-                var keyInfoPrompt = BuildKeyInformationPrompt(shortText, categoriesSchemaJson, request.CategoryName);
-
-                // Extract key information using second Ollama call
-                Dictionary<string, string?> keyInformation = new();
-
-                var ollamaRawResponse = await _ollamaService.GenerateAsync(keyInfoPrompt).ConfigureAwait(false);
-                _logger.LogInformation("OLLAMA key information response:\n{0}", ollamaRawResponse);
-
-                var ollamaJsonDoc = JsonDocument.Parse(ollamaRawResponse);
-                var ollamaRoot = ollamaJsonDoc.RootElement;
-
-                if (ollamaRoot.TryGetProperty("response", out var responseElem))
+                else
                 {
-                    var innerResponseString = responseElem.GetString();
-
-                    var cleanedJson = innerResponseString
-                        .Replace("```json", "", StringComparison.OrdinalIgnoreCase)
-                        .Replace("```", "", StringComparison.OrdinalIgnoreCase)
-                        .Trim();
-
-                    int first = cleanedJson.IndexOf('{');
-                    int last = cleanedJson.LastIndexOf('}');
-                    if (first >= 0 && last > first)
-                        cleanedJson = cleanedJson[first..(last + 1)];
-
-                    _logger.LogInformation("🧼 Cleaned Key Info JSON: {Cleaned}", cleanedJson);
-
-                    // Defensive: Check if cleanedJson is valid JSON object before parsing
-                    if (string.IsNullOrWhiteSpace(cleanedJson) || !cleanedJson.Trim().StartsWith("{"))
-                    {
-                        _logger.LogError("❌ Invalid key info JSON received from AI: {Cleaned}", cleanedJson);
-                        return StatusCode(500, new { error = "AI key extraction returned invalid JSON.", raw = cleanedJson });
-                    }
-
-                    var cleanedJsonPath = Path.Combine(textOutputDir, "key_info_ollama_response.json");
-                    using (var cleanedStream = new FileStream(cleanedJsonPath, FileMode.Create, FileAccess.Write, FileShare.None, 4096, useAsync: true))
-                    using (var cleanedWriter = new StreamWriter(cleanedStream))
-                    {
-                        await cleanedWriter.WriteAsync(cleanedJson).ConfigureAwait(false);
-                    }
-
-                    var root = JsonDocument.Parse(cleanedJson).RootElement;
-
-                    // Extract key information
-                    if (root.TryGetProperty("key_information", out var kiObj) && kiObj.ValueKind == JsonValueKind.Object)
-                    {
-                        foreach (var property in kiObj.EnumerateObject())
-                        {
-                            string value = property.Value.ValueKind switch
-                            {
-                                JsonValueKind.String => property.Value.GetString() ?? string.Empty,
-                                JsonValueKind.Number => property.Value.GetRawText(),
-                                JsonValueKind.True => "true",
-                                JsonValueKind.False => "false",
-                                JsonValueKind.Null => null,
-                                _ => property.Value.ToString()
-                            };
-                            keyInformation[property.Name] = value;
-                        }
-                    }
+                    _logger.LogWarning("Null key information extracted for document {DocumentId}", document.DocumentId);
+                    var errorPath = Path.Combine("/app/documents2", "error_key_info_extraction.txt");
+                    await System.IO.File.WriteAllTextAsync(errorPath, $"Null key information extracted for document {document.DocumentId}").ConfigureAwait(false);
                 }
-
-                // Update document with confirmed category and extracted key information
-                document.CategoryName = request.CategoryName;
-                document.KeyInformation = keyInformation.Count > 0 ? JsonDocument.Parse(JsonSerializer.Serialize(keyInformation)) : null;
-                document.LastModified = DateTime.UtcNow;
-
-                await _context.SaveChangesAsync().ConfigureAwait(false);
-
-                // Save extracted key information to file
-                if (keyInformation.Count > 0)
-                {
-                    var keyInfoJsonPath = Path.Combine(textOutputDir, "final_key_information.json");
-                    var keyInfoJson = JsonSerializer.Serialize(keyInformation, new JsonSerializerOptions { WriteIndented = true });
-                    await System.IO.File.WriteAllTextAsync(keyInfoJsonPath, keyInfoJson).ConfigureAwait(false);
-                }
-
-                _logger.LogInformation("✅ Key information extracted for document {DocumentId} with category {Category}", document.DocumentId, request.CategoryName);
+                // Reload the document to get updated key information
+                document = _context.Documents.FirstOrDefault(d => d.DocumentId == id);
 
                 return Ok(new
                 {
                     Success = true,
-                    KeyInformation = keyInformation,
+                    KeyInformation = document.KeyInformation,
                     CategoryName = document.CategoryName
                 });
             }
@@ -697,10 +598,10 @@ namespace BitAndBeam.Controllers
                     _logger.LogInformation("Category changed for document {DocumentId}, re-extracting key information", document.DocumentId);
 
                     // Call the key information extraction method
-                    var extractRequest = new ExtractKeyInformationRequest { CategoryName = document.CategoryName };
-                    var extractResult = await ExtractKeyInformationForDocument(document.DocumentId, extractRequest).ConfigureAwait(false);
+                    var extractKeyInformationRequest = new ExtractKeyInformationRequest { CategoryName = document.CategoryName };
+                    var keyInformation = await ExtractKeyInformationForDocument(document.DocumentId, extractKeyInformationRequest).ConfigureAwait(false);
 
-                    if (extractResult != null)
+                    if (keyInformation != null)
                     {
                         // Reload the document to get updated key information
                         document = _context.Documents.FirstOrDefault(d => d.DocumentId == id);
@@ -739,47 +640,73 @@ namespace BitAndBeam.Controllers
         }
 
         // Helper method for key information extraction (used by both endpoints)
-        private async Task<Dictionary<string, string?>?> ExtractKeyInformationForDocument(int documentId, ExtractKeyInformationRequest request)
+        public async Task<Dictionary<string, string?>?> ExtractKeyInformationForDocument(int documentId, ExtractKeyInformationRequest request)
         {
+            var textOutputDir = "/app/documents2";
+            Directory.CreateDirectory(textOutputDir);
+            _logger.LogInformation("Extracting key information for document {DocumentId} with category {CategoryName}", documentId, request.CategoryName);
+            var logPath = Path.Combine(textOutputDir, "key_info_extraction_log.txt");
+            await System.IO.File.WriteAllTextAsync(logPath, $"Starting key information extraction for document {documentId} with category {request.CategoryName}").ConfigureAwait(false);
             var document = _context.Documents.FirstOrDefault(d => d.DocumentId == documentId);
-            if (document == null) return null;
+            if (document == null)
+            {
+                _logger.LogWarning("Document with ID {DocumentId} not found for key information extraction", documentId);
+                var errorPath = Path.Combine(textOutputDir, "error_file_not_found.txt");
+                await System.IO.File.WriteAllTextAsync(errorPath, $"Document not found: {documentId}").ConfigureAwait(false);
+                return null;
+            }
 
             try
             {
-                // Read the previously extracted text
-                var textOutputDir = "/app/documents2";
-                var extractedTextPath = Path.Combine(textOutputDir, $"extracted_text_{document.DocumentId}.txt");
-
-                if (!System.IO.File.Exists(extractedTextPath))
+                var filePath = Path.Combine("/app/documents", document.FileName);
+                if (!System.IO.File.Exists(filePath))
                 {
-                    // Re-extract text if file doesn't exist
-                    var filePath = Path.Combine("/app/documents", document.FileName);
-                    if (!System.IO.File.Exists(filePath)) return null;
-
-                    var fileBytes = System.IO.File.ReadAllBytes(filePath);
-                    var textForOllama = await _tikaService.ExtractTextAsync(fileBytes, document.FileName).ConfigureAwait(false);
-
-                    if (string.IsNullOrWhiteSpace(textForOllama) || textForOllama.Length < 50)
-                    {
-                        textForOllama = await _tikaService.ExtractTextAsync(fileBytes, document.FileName, true).ConfigureAwait(false);
-                    }
-
-                    textForOllama = ExtractVisibleText(textForOllama);
-                    await System.IO.File.WriteAllTextAsync(extractedTextPath, textForOllama).ConfigureAwait(false);
+                    _logger.LogWarning("File {FilePath} does not exist for document {DocumentId}", filePath, documentId);
+                    var errorPath = Path.Combine(textOutputDir, "error_file_not_found.txt");
+                    await System.IO.File.WriteAllTextAsync(errorPath, $"File not found: {filePath}").ConfigureAwait(false);
+                    return null;
                 }
 
-                var extractedText = await System.IO.File.ReadAllTextAsync(extractedTextPath).ConfigureAwait(false);
-                var shortText = extractedText.Length > 4_000 ? extractedText[..4_000] : extractedText;
+                var fileBytes = System.IO.File.ReadAllBytes(filePath);
+                var textForOllama = await _tikaService.ExtractTextAsync(fileBytes, document.FileName).ConfigureAwait(false);
+
+                if (string.IsNullOrWhiteSpace(textForOllama) || textForOllama.Length < 50)
+                {
+                    textForOllama = await _tikaService.ExtractTextAsync(fileBytes, document.FileName, true).ConfigureAwait(false);
+                }
+
+                textForOllama = ExtractVisibleText(textForOllama);
+                var extractedTextPath = Path.Combine(textOutputDir, "extracted_text.txt");
+                await System.IO.File.WriteAllTextAsync(extractedTextPath, textForOllama).ConfigureAwait(false);
+
+                var shortText = textForOllama.Length > 4_000 ? textForOllama[..4_000] : textForOllama;
 
                 // Build category-specific prompt for key information extraction
                 // Read categories directly from file as raw JSON to avoid double serialization
-                var categoriesSchemaJson = System.IO.File.ReadAllText(CategoriesJsonPath);
+                var categoriesSchemaJson = JsonSerializer.Serialize(ReadCategories());
                 var keyInfoPrompt = BuildKeyInformationPrompt(shortText, categoriesSchemaJson, request.CategoryName);
 
                 // Extract key information using Ollama call
                 Dictionary<string, string?> keyInformation = new();
+                string ollamaRawResponse = null;
+                try
+                {
+                    ollamaRawResponse = await _ollamaService.GenerateAsync(keyInfoPrompt).ConfigureAwait(false);
+                }
+                catch (Exception ollamaEx)
+                {
+                    var errorPath = Path.Combine(textOutputDir, "error_ollama_service.txt");
+                    await System.IO.File.WriteAllTextAsync(errorPath, $"OllamaService error: {ollamaEx.Message}").ConfigureAwait(false);
+                    _logger.LogError(ollamaEx, "❌ OllamaService call failed for document {DocumentId}", documentId);
+                    return null;
+                }
 
-                var ollamaRawResponse = await _ollamaService.GenerateAsync(keyInfoPrompt).ConfigureAwait(false);
+                if (string.IsNullOrWhiteSpace(ollamaRawResponse))
+                {
+                    var errorPath = Path.Combine(textOutputDir, "error_ollama_response_empty.txt");
+                    await System.IO.File.WriteAllTextAsync(errorPath, "OllamaService returned empty response").ConfigureAwait(false);
+                    return null;
+                }
 
                 var ollamaJsonDoc = JsonDocument.Parse(ollamaRawResponse);
                 var ollamaRoot = ollamaJsonDoc.RootElement;
@@ -797,6 +724,13 @@ namespace BitAndBeam.Controllers
                     int last = cleanedJson.LastIndexOf('}');
                     if (first >= 0 && last > first)
                         cleanedJson = cleanedJson[first..(last + 1)];
+
+                    var cleanedKeyInfoPath = Path.Combine(textOutputDir, "cleaned_key_information_response.json");
+                    using (var cleanedStream = new FileStream(cleanedKeyInfoPath, FileMode.Create, FileAccess.Write, FileShare.None, 4096, useAsync: true))
+                    using (var cleanedWriter = new StreamWriter(cleanedStream))
+                    {
+                        await cleanedWriter.WriteAsync(cleanedJson).ConfigureAwait(false);
+                    }
 
                     var root = JsonDocument.Parse(cleanedJson).RootElement;
 
@@ -819,6 +753,20 @@ namespace BitAndBeam.Controllers
                     }
                 }
 
+                if (keyInformation.Count > 0)
+                {
+                    var keyInfoJsonPath = Path.Combine(textOutputDir, "saved_key_information.json");
+                    var keyInfoJson = JsonSerializer.Serialize(keyInformation, new JsonSerializerOptions { WriteIndented = true });
+                    await System.IO.File.WriteAllTextAsync(keyInfoJsonPath, keyInfoJson).ConfigureAwait(false);
+                }
+                else
+                {
+                    var errorPath = Path.Combine(textOutputDir, "error_key_information_empty.txt");
+                    await System.IO.File.WriteAllTextAsync(errorPath, "No key information extracted from Ollama response").ConfigureAwait(false);
+                }
+
+                // Update document with confirmed category
+                document.CategoryName = request.CategoryName;
                 // Update document with extracted key information
                 document.KeyInformation = keyInformation.Count > 0 ? JsonDocument.Parse(JsonSerializer.Serialize(keyInformation)) : null;
                 document.LastModified = DateTime.UtcNow;
@@ -829,6 +777,8 @@ namespace BitAndBeam.Controllers
             }
             catch (Exception ex)
             {
+                var errorPath = Path.Combine(textOutputDir, "error_key_info_extraction_exception.txt");
+                await System.IO.File.WriteAllTextAsync(errorPath, $"Exception: {ex.Message}").ConfigureAwait(false);
                 _logger.LogError(ex, "❌ Key information extraction failed for document {DocumentId}", documentId);
                 return null;
             }
@@ -858,14 +808,6 @@ namespace BitAndBeam.Controllers
             }
             else
             {
-            }
-
-            // Also delete extracted text file
-            var textOutputDir = "/app/documents2";
-            var extractedTextPath = Path.Combine(textOutputDir, $"extracted_text_{document.DocumentId}.txt");
-            if (System.IO.File.Exists(extractedTextPath))
-            {
-                System.IO.File.Delete(extractedTextPath);
             }
 
             _context.Documents.Remove(document);
