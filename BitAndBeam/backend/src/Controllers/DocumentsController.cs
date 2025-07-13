@@ -234,8 +234,11 @@ namespace BitAndBeam.Controllers
                         {
                             var label = field.Name;
                             var key = field.Key;
-                            string? value = extractedMap.TryGetValue(label, out var val) ? val : null;
-
+                            //string? value = extractedMap.TryGetValue(label, out var val) ? val : null;
+                            string? value = 
+                                    extractedMap.TryGetValue(label, out var val) ? val :
+                                    extractedMap.TryGetValue(field.Key, out var fallbackVal) ? fallbackVal :
+                                    null;
                             keyInformation[key] = value;
                         }
                     } 
