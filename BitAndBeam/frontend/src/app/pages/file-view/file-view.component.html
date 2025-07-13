@@ -1,16 +1,20 @@
 <!-- file-view.component.html -->
+ <!-- ✅ Global top bar -->
+<div class="top-bar">
+  <div class="top-left">
+    <img src="assets/logo.png" alt="App Logo" class="logo-img" />
+    <span class="app-name">BIT & BEAM</span>
+    <button class="home-btn" title="Home">🏠</button>
+  </div>
+  <div class="top-right">
+    <span class="section-title">Edit Metadata</span>
+    <button class="metadata-toggle-btn" (click)="toggleMetadataPanel()" title="Toggle metadata">☰</button>
+  </div>
+</div>
+
 <div class="layout">
   <app-sidebar>  </app-sidebar>
   <div class="main-area">
-    <div class="file-top-bar">
-      <div class="left-section">
-        <button class="home-btn" title="Home">🏠</button>
-        <span class="section-title">Edit Metadata</span>
-      </div>
-      <button class="metadata-toggle-btn" (click)="toggleMetadataPanel()" title="Toggle metadata">
-        ☰
-      </button>
-    </div>
     <div class="file-view-container">
 
       <!-- Not Found Message -->
