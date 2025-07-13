@@ -429,4 +429,8 @@ export class FileViewComponent {
       };
     });
   }
+  ngOnDestroy(): void {
+    document.removeEventListener('mousemove', this.handleMouseMove);
+  }
+
 }
