@@ -42,9 +42,14 @@
             style="display: block; height: 100%; width: 100%; background: transparent;">
           </pdf-viewer>
         </section>
+        <div class="metadata-hover-indicator" *ngIf="isMetadataPanelCollapsed">
+          ▶
+        </div>
         <!-- Metadata Panel-->
         <!-- ✅ Editable Metadata Panel -->
-        <aside class="metadata-panel" [class.collapsed]="isMetadataPanelCollapsed">
+        <aside class="metadata-panel" [class.collapsed]="isMetadataPanelCollapsed" [class.collapsed]="isMetadataPanelCollapsed"
+       (mouseenter)="withinPanel = true"
+       (mouseleave)="withinPanel = false">
           <div class="metadata-panel-header">
             <h3 *ngIf="!isMetadataPanelCollapsed">Document Details</h3>
           </div>
