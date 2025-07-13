@@ -137,6 +137,7 @@ namespace BitAndBeam.Controllers
             string? matchedCategoryName = null;
             Building? matchedBuilding = null;
             string? suggestedCategory = null;
+            string? suggestedCategoryName = null;
             Dictionary<string, string?> keyInformation = new();
 
             // 4. Ollama call
