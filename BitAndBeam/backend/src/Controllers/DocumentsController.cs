@@ -182,7 +182,7 @@ namespace BitAndBeam.Controllers
                     // KEY INFORMATION
                     if (root.TryGetProperty("key_information", out var kiObj) && kiObj.ValueKind == JsonValueKind.Object)
                     {
-                        
+
                         // Create a temp list to store all key-value pairs (even duplicates)
                         var keyInformationTemp = new List<(string Key, string? Value)>();
 
@@ -221,12 +221,12 @@ namespace BitAndBeam.Controllers
                             matchedCategory = cat.Trim();
                     }
                     // 6. Try to map matchedCategory (string) to actual category object
-                    
+
                     var allCategories = ReadCategories();
                     var categoryMatch = allCategories.FirstOrDefault(c =>
                         string.Equals(c.Name?.Trim(), matchedCategory, StringComparison.OrdinalIgnoreCase));
                     matchedCategoryName = categoryMatch?.Name;
-                    
+
                     if (categoryMatch != null)
                     {
                         keyInformation.Clear();
@@ -235,27 +235,27 @@ namespace BitAndBeam.Controllers
                             var label = field.Name;
                             var key = field.Key;
                             //string? value = extractedMap.TryGetValue(label, out var val) ? val : null;
-                            string? value = 
+                            string? value =
                                     extractedMap.TryGetValue(label, out var val) ? val :
                                     extractedMap.TryGetValue(field.Key, out var fallbackVal) ? fallbackVal :
                                     null;
                             keyInformation[key] = value;
                         }
-                    } 
+                    }
                     else
                     {
                         matchedCategory = null;
                         keyInformation = null;
                     }
                 }
-                
-                }
+
+            }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "❌ Ollama analysis failed");
             }
 
-            
+
 
             // 5. Try to map address → building
             if (parsedAddress != null)
@@ -284,7 +284,7 @@ namespace BitAndBeam.Controllers
                 }
             }
 
-            
+
 
             // 7. persist
             var document = new Document
