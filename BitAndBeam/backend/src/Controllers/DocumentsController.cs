@@ -136,6 +136,7 @@ namespace BitAndBeam.Controllers
             string? matchedCategory = null;
             string? matchedCategoryName = null;
             Building? matchedBuilding = null;
+            Dictionary<string, string?> keyInformation = new();
 
             // 4. Ollama call
             try
@@ -291,15 +292,7 @@ namespace BitAndBeam.Controllers
                         break;
                     }
                 }
-            }
-
-            // 6. Validate suggested category exists
-            var allCategories = ReadCategories();
-            var categoryMatch = allCategories.FirstOrDefault(c =>
-                string.Equals(c.Name?.Trim(), suggestedCategory, StringComparison.OrdinalIgnoreCase));
-            string? suggestedCategoryName = categoryMatch?.Name;
-            if (categoryMatch == null) suggestedCategoryName = null;
-
+            } 
 
             // 7. Save document WITHOUT key information (will be extracted after user confirmation)
             var document = new Document
