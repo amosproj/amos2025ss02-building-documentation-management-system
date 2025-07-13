@@ -133,10 +133,14 @@ namespace BitAndBeam.Controllers
 
             // Initialize result fields
             Dictionary<string, string>? parsedAddress = null;
-            string? suggestedCategory = null;
+            string? matchedCategory = null;
+            string? matchedCategoryName = null;
             Building? matchedBuilding = null;
+            string? suggestedCategory = null;
+            string? suggestedCategoryName = null;
+            Dictionary<string, string?> keyInformation = new();
 
-            // 4. Initial Ollama call - only for address and category suggestion
+            // 4. Ollama call
             try
             {
                 var ollamaRawResponse = await _ollamaService.GenerateAsync(initialPrompt).ConfigureAwait(false);
@@ -185,19 +189,85 @@ namespace BitAndBeam.Controllers
                         if (parsedAddress.Values.All(string.IsNullOrWhiteSpace)) parsedAddress = null;
                     }
 
-                    // CATEGORY (only suggestion, not final)
+
+                    var extractedMap = new Dictionary<string, string?>();
+                    // KEY INFORMATION
+                    if (root.TryGetProperty("key_information", out var kiObj) && kiObj.ValueKind == JsonValueKind.Object)
+                    {
+
+                        // Create a temp list to store all key-value pairs (even duplicates)
+                        var keyInformationTemp = new List<(string Key, string? Value)>();
+
+                        foreach (var property in kiObj.EnumerateObject())
+                        {
+                            string value = property.Value.ValueKind switch
+                            {
+                                JsonValueKind.String => property.Value.GetString() ?? string.Empty,
+                                JsonValueKind.Number => property.Value.GetRawText(),
+                                JsonValueKind.True => "true",
+                                JsonValueKind.False => "false",
+                                JsonValueKind.Null => null,
+                                _ => property.Value.ToString()
+                            };
+                            extractedMap[property.Name] = value;
+                            keyInformationTemp.Add((property.Name, value));
+                            if (!keyInformation.ContainsKey(property.Name))
+                            {
+                                keyInformation[property.Name] = value;
+                            }
+                        }
+
+                        // Save key_information_temp.txt (all key-value pairs, one per line)
+                        if (keyInformationTemp.Count > 0)
+                        {
+                            var tempTxtPath = Path.Combine(textOutputDir, "key_information_temp.txt");
+                            var lines = keyInformationTemp.Select(kv => $"{kv.Key}: {kv.Value}");
+                            await System.IO.File.WriteAllLinesAsync(tempTxtPath, lines).ConfigureAwait(false);
+                        }
+                    }
+                    // CATEGORY
                     if (root.TryGetProperty("category", out var catElem) && catElem.ValueKind == JsonValueKind.String)
                     {
                         var cat = catElem.GetString();
                         if (!string.IsNullOrWhiteSpace(cat) && !string.Equals(cat, "null", StringComparison.OrdinalIgnoreCase))
-                            suggestedCategory = cat.Trim();
+                            matchedCategory = cat.Trim();
+                    }
+                    // 6. Try to map matchedCategory (string) to actual category object
+
+                    var allCategories = ReadCategories();
+                    var categoryMatch = allCategories.FirstOrDefault(c =>
+                        string.Equals(c.Name?.Trim(), matchedCategory, StringComparison.OrdinalIgnoreCase));
+                    matchedCategoryName = categoryMatch?.Name;
+
+                    if (categoryMatch != null)
+                    {
+                        keyInformation.Clear();
+                        foreach (var field in categoryMatch.Fields)
+                        {
+                            var label = field.Name;
+                            var key = field.Key;
+                            //string? value = extractedMap.TryGetValue(label, out var val) ? val : null;
+                            string? value =
+                                    extractedMap.TryGetValue(label, out var val) ? val :
+                                    extractedMap.TryGetValue(field.Key, out var fallbackVal) ? fallbackVal :
+                                    null;
+                            keyInformation[key] = value;
+                        }
+                    }
+                    else
+                    {
+                        matchedCategory = null;
+                        keyInformation = null;
                     }
                 }
+
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "❌ Initial Ollama analysis failed");
             }
+
+
 
             // 5. Try to map address → building
             if (parsedAddress != null)
@@ -225,13 +295,6 @@ namespace BitAndBeam.Controllers
                     }
                 }
             }
-
-            // 6. Validate suggested category exists
-            var allCategories = ReadCategories();
-            var categoryMatch = allCategories.FirstOrDefault(c =>
-                string.Equals(c.Name?.Trim(), suggestedCategory, StringComparison.OrdinalIgnoreCase));
-            string? suggestedCategoryName = categoryMatch?.Name;
-            if (categoryMatch == null) suggestedCategoryName = null;
 
             // 7. Save document WITHOUT key information (will be extracted after user confirmation)
             var document = new Document
@@ -1121,7 +1184,7 @@ namespace BitAndBeam.Controllers
                 You are a helpful assistant answering questions about contents of document.
                 Use ONLY the information from the **DOCUMENT CONTENT** provided below, to provide a concise and accurate answer to the **USER QUESTION**.
                 If the answer cannot be found in the document, say so clearly - do not create new information.
-                
+
                 **DOCUMENT CONTENT**:
                 {{truncatedContent}}
 

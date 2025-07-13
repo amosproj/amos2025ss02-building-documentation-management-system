@@ -35,6 +35,7 @@ export class FileViewComponent implements OnInit, OnDestroy {
   selectedBuildingId: number | null = null;
   selectedCategoryName: string | null = null;
   originalCategoryName: string | null = null; // For tracking changes
+  originalBuildingId: number | null = null; // For tracking changes
   loading = false;
   toastMessage = '';
   isMetadataPanelCollapsed = false;
@@ -45,10 +46,11 @@ export class FileViewComponent implements OnInit, OnDestroy {
   // ✅ Key info variables
   metadataRaw: string = '';
   parsedMetadata: { label: string; value: string }[] = [];
-  keyInformation: { label: string; value: string | null }[] = [];
+  keyInformation: { key: string; label: string; value: string | null }[] = [];
   loadingKeyInfo: boolean = false;
   keyInfo: any = null;
   hasChanges: boolean = false;
+  originalKeyInformation: { [key: string]: string } = {};
 
   // ✅ Analysis variables
   isAnalyzing: boolean = false;
@@ -58,6 +60,9 @@ export class FileViewComponent implements OnInit, OnDestroy {
   // Cleanup
   private destroy$ = new Subject<void>();
   private blobUrl: string | null = null;
+
+  // For tracking touched fields in validation
+  touchedFields: { [key: string]: boolean } = {};
 
   constructor(
     private config: ConfigService,
@@ -229,10 +234,11 @@ export class FileViewComponent implements OnInit, OnDestroy {
             this.parsedMetadata = [];
           }
         }
-
-        // ✅ Store original category name for comparison
+        // ✅ Store original category name and building id for comparison
         this.originalCategoryName = doc.categoryName ?? null;
         this.selectedCategoryName = doc.categoryName ?? null;
+        this.originalBuildingId = doc.buildingId ?? null;
+        this.selectedBuildingId = doc.buildingId ?? null;
         this.selectedBuildingId = doc.buildingId ?? null;
 
         // ✅ Ensure all categories are available in dropdown
@@ -278,15 +284,27 @@ export class FileViewComponent implements OnInit, OnDestroy {
                 ]
               };
 
-              if (doc.keyInformation) {
-                this.keyInformation = Object.entries(doc.keyInformation).map(([key, value]) => ({
-                  label: key.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase()),
-                  value: value !== null ? String(value) : 'N/A'
-                }));
-              } else {
-                this.keyInformation = [];
-              }
+            this.originalKeyInformation = {};
+            if (doc.keyInformation) {
+              Object.entries(doc.keyInformation).forEach(([key, value]) => {
+                this.originalKeyInformation[key.toLowerCase()] = value !== null ? String(value) : '';
+              });
+            }
 
+            // ✅ Add document's category to the list if it doesn't exist
+            if (doc.categoryName && !this.categories.some(c => c.name === doc.categoryName)) {
+              this.categories.push({ name: doc.categoryName } as Category);
+            }
+
+            if (doc.keyInformation) {
+              this.keyInformation = Object.entries(doc.keyInformation).map(([key, value]) => ({
+                key: key,
+                label: key.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase()),  // Pretty label
+                value: value !== null ? String(value) : ''  // Force even nulls to show
+              }));
+            } else {
+                this.keyInformation = [];
+            }
               const fileType = (doc.fileType ?? '').toLowerCase();
               this.isPdf = fileType === 'pdf';
               this.isImage = fileType === 'png' || fileType === 'jpg' || fileType === 'jpeg';
@@ -342,20 +360,21 @@ export class FileViewComponent implements OnInit, OnDestroy {
             const match = this.categories.find(c => c.name === this.selectedCategoryName);
             if (match && Array.isArray(match.fields)) {
               this.keyInformation = match.fields.map(f => ({
+                key: f.key,
                 label: f.name,
                 value: ''
               }));
             }
-          } else {
-            this.keyInformation = Object.entries(data.keyInformation || {}).map(([key, value]) => ({
-              label: key.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase()),
-              value: value !== null ? String(value) : 'N/A'
-            }));
-          }
-          
-          if (!this.keyInformation.length && this.selectedCategoryName) {
-            this.onCategoryChange();
-          }
+        } else {
+          this.keyInformation = (data.keyInformation || []).map((item: any) => ({
+            key: item.key,
+            label: item.name,
+            value: item.value ?? ''
+          }));
+        }
+        if (!this.keyInformation.length && this.selectedCategoryName) {
+          this.onCategoryChange();
+        }
 
           this.loadingKeyInfo = false;
         },
@@ -410,6 +429,7 @@ export class FileViewComponent implements OnInit, OnDestroy {
       const newKeyInfo = selected.fields.map(field => {
         const existing = this.keyInformation.find(k => k.label === field.name);
         return {
+          key: field.key,
           label: field.name,
           value: existing?.value || ''
         };
@@ -442,7 +462,9 @@ export class FileViewComponent implements OnInit, OnDestroy {
     } = {
       buildingId: this.selectedBuildingId,
       categoryName: this.selectedCategoryName ?? undefined,
-      keyInformation: keyInfoObject
+      keyInformation: Object.fromEntries(
+        this.keyInformation.map(k => [k.key, k.value])
+      )
     };
 
     const documentsApi = this.apiFactory.create(DocumentsApi);
@@ -625,5 +647,62 @@ export class FileViewComponent implements OnInit, OnDestroy {
   resetZoom(): void {
     this.imageZoom = 1;
     this.pdfZoom = 1;
+  }
+ /**
+ * Checks if a given field label is marked as mandatory
+ * in the selected category's field list.
+ */
+  isFieldRequired(label: string): boolean {
+    const category = this.categories.find(c => c.name === this.selectedCategoryName);
+    return !!category?.fields?.find(f => f.name === label && f.mandatory);
+  }
+
+  /**
+ * Tries to guess the input type for a field based on its label.
+ */
+  getInputType(label: string): string {
+    const lower = label.toLowerCase();
+    if (lower.includes('datum') || lower.includes('date')) return 'date';
+    if (lower.includes('zahl') || lower.includes('nummer') || lower.includes('anzahl')) return 'number';
+    return 'text';
+  }
+
+  /**
+ * Compares the current form state with the original state to determine
+ * if changes were actually made (used to toggle Save button).
+ */
+  checkForChanges(): void {
+    const currentInfo = Object.fromEntries(
+      this.keyInformation.map(k => [k.key, k.value || ''])
+    );
+
+    const categoryChanged = this.selectedCategoryName !== this.originalCategoryName;
+    const buildingChanged = this.selectedBuildingId !== this.originalBuildingId;
+
+    const metadataChanged = Object.keys(currentInfo).some(key =>
+      currentInfo[key] !== this.originalKeyInformation[key]
+    );
+
+    this.hasChanges = categoryChanged || buildingChanged || metadataChanged;
+  }
+
+  /**
+ * Generates empty key information fields from a category,
+ * and initializes touched state for validation tracking.
+ */
+  private generateKeyInfoFromCategory(category: Category): { key: string; label: string; value: string }[] {
+    this.touchedFields = {};
+    if (!Array.isArray(category.fields)) {
+      return [];
+    }
+
+    return category.fields.map(field => {
+      this.touchedFields[field.name] = false;
+      return {
+        key: field.key,
+        label: field.name,
+        value: ''
+      };
+    });
   }
 }

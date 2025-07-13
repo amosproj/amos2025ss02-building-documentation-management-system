@@ -11,6 +11,7 @@ export interface Category {
 }
 
 export interface CategoryField {
+  key: string;
   name: string;
   description: string;
   mandatory: boolean;
@@ -50,7 +51,7 @@ export class CategoryService {
   // Assign document category using the OpenAPI SDK
   assignDocumentCategory(documentId: number, categoryName: string | null, buildingId: number | null): Observable<any> {
     const patchRequest = { categoryName, buildingId };
-    
+
     return from(
       this.documentsApi.apiDocumentsIdPatch(documentId, patchRequest)
         .then(response => response || {})
