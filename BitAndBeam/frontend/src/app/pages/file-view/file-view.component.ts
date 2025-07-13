@@ -392,6 +392,24 @@ export class FileViewComponent {
 
     this.hasChanges = categoryChanged || buildingChanged || metadataChanged;
   }
+  withinPanel = false;
+
+  handleMouseMove = (event: MouseEvent) => {
+    const screenWidth = window.innerWidth;
+    const cursorX = event.clientX;
+
+    const withinEdgeZone = screenWidth - cursorX <= 40;
+
+    if (withinEdgeZone || this.withinPanel) {
+      if (this.isMetadataPanelCollapsed) {
+        this.isMetadataPanelCollapsed = false;
+      }
+    } else {
+      if (!this.isMetadataPanelCollapsed) {
+        this.isMetadataPanelCollapsed = true;
+      }
+    }
+  };
 
   /**
  * Generates empty key information fields from a category,
