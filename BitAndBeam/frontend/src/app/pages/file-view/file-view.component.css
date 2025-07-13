@@ -341,3 +341,15 @@
   top: 0;
   z-index: 100;
 }
+
+.left-section {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.section-title {
+  font-size: 1rem;
+  font-weight: bold;
+  color: var(--text-primary);
+}
