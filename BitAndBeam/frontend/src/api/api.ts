@@ -684,6 +684,19 @@ export interface DocumentUpdateRequest {
     'description'?: string | null;
 }
 /**
+ * 
+ * @export
+ * @interface ExtractKeyInformationRequest
+ */
+export interface ExtractKeyInformationRequest {
+    /**
+     * 
+     * @type {string}
+     * @memberof ExtractKeyInformationRequest
+     */
+    'categoryName'?: string | null;
+}
+/**
  * Represents the data sent when a user logs in.
  * @export
  * @interface LoginRequest
@@ -1883,6 +1896,46 @@ export const DocumentsApiAxiosParamCreator = function (configuration?: Configura
         /**
          * 
          * @param {number} id 
+         * @param {ExtractKeyInformationRequest} [extractKeyInformationRequest] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        apiDocumentsIdExtractKeyInformationPost: async (id: number, extractKeyInformationRequest?: ExtractKeyInformationRequest, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            // verify required parameter 'id' is not null or undefined
+            assertParamExists('apiDocumentsIdExtractKeyInformationPost', 'id', id)
+            const localVarPath = `/api/Documents/{id}/extract-key-information`
+                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication Bearer required
+            await setApiKeyToObject(localVarHeaderParameter, "Authorization", configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(extractKeyInformationRequest, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @param {number} id 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
@@ -2146,6 +2199,19 @@ export const DocumentsApiFp = function(configuration?: Configuration) {
         /**
          * 
          * @param {number} id 
+         * @param {ExtractKeyInformationRequest} [extractKeyInformationRequest] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async apiDocumentsIdExtractKeyInformationPost(id: number, extractKeyInformationRequest?: ExtractKeyInformationRequest, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.apiDocumentsIdExtractKeyInformationPost(id, extractKeyInformationRequest, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['DocumentsApi.apiDocumentsIdExtractKeyInformationPost']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @param {number} id 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
@@ -2263,6 +2329,16 @@ export const DocumentsApiFactory = function (configuration?: Configuration, base
         /**
          * 
          * @param {number} id 
+         * @param {ExtractKeyInformationRequest} [extractKeyInformationRequest] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        apiDocumentsIdExtractKeyInformationPost(id: number, extractKeyInformationRequest?: ExtractKeyInformationRequest, options?: any): AxiosPromise<void> {
+            return localVarFp.apiDocumentsIdExtractKeyInformationPost(id, extractKeyInformationRequest, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @param {number} id 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
@@ -2370,6 +2446,18 @@ export class DocumentsApi extends BaseAPI {
      */
     public apiDocumentsIdDownloadGet(id: number, options?: RawAxiosRequestConfig) {
         return DocumentsApiFp(this.configuration).apiDocumentsIdDownloadGet(id, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {number} id 
+     * @param {ExtractKeyInformationRequest} [extractKeyInformationRequest] 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof DocumentsApi
+     */
+    public apiDocumentsIdExtractKeyInformationPost(id: number, extractKeyInformationRequest?: ExtractKeyInformationRequest, options?: RawAxiosRequestConfig) {
+        return DocumentsApiFp(this.configuration).apiDocumentsIdExtractKeyInformationPost(id, extractKeyInformationRequest, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**

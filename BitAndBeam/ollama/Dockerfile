@@ -1,7 +1,7 @@
 FROM ollama/ollama:latest
 
-# Install dos2unix
-RUN apt-get update && apt-get install -y dos2unix && apt-get clean
+# Install dos2unix and curl
+RUN apt-get update && apt-get install -y dos2unix curl && apt-get clean
 
 # Set working directory
 WORKDIR /app
