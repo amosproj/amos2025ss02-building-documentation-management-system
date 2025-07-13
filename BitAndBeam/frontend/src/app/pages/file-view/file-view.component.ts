@@ -35,6 +35,7 @@ export class FileViewComponent implements OnInit, OnDestroy {
   selectedBuildingId: number | null = null;
   selectedCategoryName: string | null = null;
   originalCategoryName: string | null = null; // For tracking changes
+  originalBuildingId: number | null = null; // For tracking changes
   loading = false;
   toastMessage = '';
   isMetadataPanelCollapsed = false;
@@ -233,10 +234,11 @@ export class FileViewComponent implements OnInit, OnDestroy {
             this.parsedMetadata = [];
           }
         }
-
-        // ✅ Store original category name for comparison
+        // ✅ Store original category name and building id for comparison
         this.originalCategoryName = doc.categoryName ?? null;
         this.selectedCategoryName = doc.categoryName ?? null;
+        this.originalBuildingId = doc.buildingId ?? null;
+        this.selectedBuildingId = doc.buildingId ?? null;
         this.selectedBuildingId = doc.buildingId ?? null;
 
         // ✅ Ensure all categories are available in dropdown
