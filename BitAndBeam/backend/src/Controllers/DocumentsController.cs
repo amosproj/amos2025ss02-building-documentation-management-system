@@ -122,128 +122,137 @@ namespace BitAndBeam.Controllers
             // -- Initialize result fields
             Dictionary<string, string>? parsedAddress = null;
             string? matchedCategory = null;
+            
             Building? matchedBuilding = null;
             Dictionary<string, string?> keyInformation = new();
-            
-            // 6. Try to map matchedCategory (string) to actual category object
-            var allCategories = ReadCategories();
-            var categoryMatch = allCategories.FirstOrDefault(c =>
-                string.Equals(c.Name?.Trim(), matchedCategory, StringComparison.OrdinalIgnoreCase));
-            string? matchedCategoryName = categoryMatch?.Name;
-            if (categoryMatch == null)
-            {
-                matchedCategoryName = null;
-                keyInformation = null; 
-            }
+
+
 
             // 4. Ollama call
-                try
+            try
+            {
+                var ollamaRawResponse = await _ollamaService.GenerateAsync(prompt).ConfigureAwait(false);
+                _logger.LogInformation("OLLAMA response field:\n{0}", ollamaRawResponse);
+
+                // Parse main response object
+                var ollamaJsonDoc = JsonDocument.Parse(ollamaRawResponse);
+                var ollamaRoot = ollamaJsonDoc.RootElement;
+
+                if (ollamaRoot.TryGetProperty("response", out var responseElem))
                 {
-                    var ollamaRawResponse = await _ollamaService.GenerateAsync(prompt).ConfigureAwait(false);
-                    _logger.LogInformation("OLLAMA response field:\n{0}", ollamaRawResponse);
+                    var innerResponseString = responseElem.GetString();
 
-                    // Parse main response object
-                    var ollamaJsonDoc = JsonDocument.Parse(ollamaRawResponse);
-                    var ollamaRoot = ollamaJsonDoc.RootElement;
+                    // Remove possible code-fence
+                    var cleanedJson = innerResponseString
+                        .Replace("```json", "", StringComparison.OrdinalIgnoreCase)
+                        .Replace("```", "", StringComparison.OrdinalIgnoreCase)
+                        .Trim();                                                   // trim spaces / \n etc.
 
-                    if (ollamaRoot.TryGetProperty("response", out var responseElem))
+                    int first = cleanedJson.IndexOf('{');
+                    int last = cleanedJson.LastIndexOf('}');
+                    if (first >= 0 && last > first)
+                        cleanedJson = cleanedJson[first..(last + 1)];
+
+                    _logger.LogInformation("🧼 Cleaned Ollama JSON: {Cleaned}", cleanedJson);
+
+                    var cleanedJsonPath = Path.Combine(textOutputDir, "cleaned_ollama_response.json");
+                    using (var cleanedStream = new FileStream(cleanedJsonPath, FileMode.Create, FileAccess.Write, FileShare.None, 4096, useAsync: true))
+                    using (var cleanedWriter = new StreamWriter(cleanedStream))
                     {
-                        var innerResponseString = responseElem.GetString();
+                        await cleanedWriter.WriteAsync(cleanedJson).ConfigureAwait(false);
+                    }
 
-                        // Remove possible code-fence
-                        var cleanedJson = innerResponseString
-                            .Replace("```json", "", StringComparison.OrdinalIgnoreCase)
-                            .Replace("```", "", StringComparison.OrdinalIgnoreCase)
-                            .Trim();                                                   // trim spaces / \n etc.
+                    var root = JsonDocument.Parse(cleanedJson).RootElement;
 
-                        int first = cleanedJson.IndexOf('{');
-                        int last = cleanedJson.LastIndexOf('}');
-                        if (first >= 0 && last > first)
-                            cleanedJson = cleanedJson[first..(last + 1)];
-
-                        _logger.LogInformation("🧼 Cleaned Ollama JSON: {Cleaned}", cleanedJson);
-
-                        var cleanedJsonPath = Path.Combine(textOutputDir, "cleaned_ollama_response.json");
-                        using (var cleanedStream = new FileStream(cleanedJsonPath, FileMode.Create, FileAccess.Write, FileShare.None, 4096, useAsync: true))
-                        using (var cleanedWriter = new StreamWriter(cleanedStream))
+                    // ADDRESS
+                    if (root.TryGetProperty("address", out var addrObj) && addrObj.ValueKind == JsonValueKind.Object)
+                    {
+                        parsedAddress = new Dictionary<string, string>
                         {
-                            await cleanedWriter.WriteAsync(cleanedJson).ConfigureAwait(false);
-                        }
+                            ["street"] = addrObj.GetProperty("street").GetString() ?? "",
+                            ["house_number"] = addrObj.GetProperty("house_number").GetString() ?? "",
+                            ["zip_code"] = addrObj.GetProperty("zip_code").GetString() ?? "",
+                            ["city"] = addrObj.GetProperty("city").GetString() ?? ""
+                        };
+                        if (parsedAddress.Values.All(string.IsNullOrWhiteSpace)) parsedAddress = null;
+                    }
 
-                        var root = JsonDocument.Parse(cleanedJson).RootElement;
 
-                        // ADDRESS
-                        if (root.TryGetProperty("address", out var addrObj) && addrObj.ValueKind == JsonValueKind.Object)
+                    var extractedMap = new Dictionary<string, string?>();
+                    // KEY INFORMATION
+                    if (root.TryGetProperty("key_information", out var kiObj) && kiObj.ValueKind == JsonValueKind.Object)
+                    {
+                        
+                        // Create a temp list to store all key-value pairs (even duplicates)
+                        var keyInformationTemp = new List<(string Key, string? Value)>();
+
+                        foreach (var property in kiObj.EnumerateObject())
                         {
-                            parsedAddress = new Dictionary<string, string>
+                            string value = property.Value.ValueKind switch
                             {
-                                ["street"] = addrObj.GetProperty("street").GetString() ?? "",
-                                ["house_number"] = addrObj.GetProperty("house_number").GetString() ?? "",
-                                ["zip_code"] = addrObj.GetProperty("zip_code").GetString() ?? "",
-                                ["city"] = addrObj.GetProperty("city").GetString() ?? ""
+                                JsonValueKind.String => property.Value.GetString() ?? string.Empty,
+                                JsonValueKind.Number => property.Value.GetRawText(),
+                                JsonValueKind.True => "true",
+                                JsonValueKind.False => "false",
+                                JsonValueKind.Null => null,
+                                _ => property.Value.ToString()
                             };
-                            if (parsedAddress.Values.All(string.IsNullOrWhiteSpace)) parsedAddress = null;
+                            extractedMap[property.Name] = value;
+                            keyInformationTemp.Add((property.Name, value));
+                            if (!keyInformation.ContainsKey(property.Name))
+                            {
+                                keyInformation[property.Name] = value;
+                            }
                         }
 
-                        // CATEGORY
-                        if (root.TryGetProperty("category", out var catElem) && catElem.ValueKind == JsonValueKind.String)
+                        // Save key_information_temp.txt (all key-value pairs, one per line)
+                        if (keyInformationTemp.Count > 0)
                         {
-                            var cat = catElem.GetString();
-                            if (!string.IsNullOrWhiteSpace(cat) && !string.Equals(cat, "null", StringComparison.OrdinalIgnoreCase))
-                                matchedCategory = cat.Trim();
-                        }
-
-                        // KEY INFORMATION
-                        if (root.TryGetProperty("key_information", out var kiObj) && kiObj.ValueKind == JsonValueKind.Object)
-                        {
-                            var extractedMap = new Dictionary<string, string?>();
-                            // Create a temp list to store all key-value pairs (even duplicates)
-                            var keyInformationTemp = new List<(string Key, string? Value)>();
-
-                            foreach (var property in kiObj.EnumerateObject())
-                            {
-                                string value = property.Value.ValueKind switch
-                                {
-                                    JsonValueKind.String => property.Value.GetString() ?? string.Empty,
-                                    JsonValueKind.Number => property.Value.GetRawText(),
-                                    JsonValueKind.True => "true",
-                                    JsonValueKind.False => "false",
-                                    JsonValueKind.Null => null,
-                                    _ => property.Value.ToString()
-                                };
-                                extractedMap[property.Name] = value;
-                                keyInformationTemp.Add((property.Name, value));
-                                if (!keyInformation.ContainsKey(property.Name))
-                                {
-                                    keyInformation[property.Name] = value;
-                                }
-                            }
-                            if (categoryMatch != null)
-                            {
-                                keyInformation.Clear();
-                                foreach (var field in categoryMatch.Fields)
-                                {
-                                    var label = field.Name;
-                                    var key = field.Key;
-                                    string? value = extractedMap.TryGetValue(label, out var val) ? val : null;
-
-                                    keyInformation[key] = value;
-                                }
-                            }
-                            // Save key_information_temp.txt (all key-value pairs, one per line)
-                            if (keyInformationTemp.Count > 0)
-                            {
-                                var tempTxtPath = Path.Combine(textOutputDir, "key_information_temp.txt");
-                                var lines = keyInformationTemp.Select(kv => $"{kv.Key}: {kv.Value}");
-                                await System.IO.File.WriteAllLinesAsync(tempTxtPath, lines).ConfigureAwait(false);
-                            }
+                            var tempTxtPath = Path.Combine(textOutputDir, "key_information_temp.txt");
+                            var lines = keyInformationTemp.Select(kv => $"{kv.Key}: {kv.Value}");
+                            await System.IO.File.WriteAllLinesAsync(tempTxtPath, lines).ConfigureAwait(false);
                         }
                     }
+                    // CATEGORY
+                    if (root.TryGetProperty("category", out var catElem) && catElem.ValueKind == JsonValueKind.String)
+                    {
+                        var cat = catElem.GetString();
+                        if (!string.IsNullOrWhiteSpace(cat) && !string.Equals(cat, "null", StringComparison.OrdinalIgnoreCase))
+                            matchedCategory = cat.Trim();
+                    }
+                    // 6. Try to map matchedCategory (string) to actual category object
+                    
+                    var allCategories = ReadCategories();
+                    var categoryMatch = allCategories.FirstOrDefault(c =>
+                        string.Equals(c.Name?.Trim(), matchedCategory, StringComparison.OrdinalIgnoreCase));
+                    string? matchedCategoryName = categoryMatch?.Name;
+                    
+                    if (categoryMatch != null)
+                    {
+                        keyInformation.Clear();
+                        foreach (var field in categoryMatch.Fields)
+                        {
+                            var label = field.Name;
+                            var key = field.Key;
+                            string? value = extractedMap.TryGetValue(label, out var val) ? val : null;
+
+                            keyInformation[key] = value;
+                        }
+                    } 
+                    else
+                    {
+                        matchedCategory = null;
+                        keyInformation = null;
+                    }
                 }
-                catch (Exception ex)
-                {
-                    _logger.LogError(ex, "❌ Ollama analysis failed");
+                
                 }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "❌ Ollama analysis failed");
+            }
+
+            
 
             // 5. Try to map address → building
             if (parsedAddress != null)
