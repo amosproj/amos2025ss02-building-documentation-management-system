@@ -70,6 +70,7 @@ export class FileViewComponent {
  * - Fetch buildings, categories, and selected document data
  */
   ngOnInit(): void {
+    document.addEventListener('mousemove', this.handleMouseMove);
     // Watch for route param changes
     this.route.paramMap.subscribe(paramMap => {
       const idParam = paramMap.get('id');
