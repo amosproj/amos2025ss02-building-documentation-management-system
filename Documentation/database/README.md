@@ -8,11 +8,8 @@ The database is designed using PostgreSQL and includes the following core tables
 
 - **Users**: Stores user information and authentication details
 - **Buildings**: Contains information about buildings in the system
-- **Document Categories**: Hierarchical categories for document organization
-- **Documents**: The main table storing document metadata and references to files
-- **Document Tags**: Tagging system for documents
-- **Document Versions**: Version history for documents
-- **Document Permissions**: Access control for documents
+- **Documents**: The main table storing document metadata and references to files 
+
 
 ## Entity Relationship Diagram
 

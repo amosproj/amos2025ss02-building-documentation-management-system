@@ -10,11 +10,9 @@ namespace BitAndBeam.Data
 
         public DbSet<User> Users { get; set; }
         public DbSet<Building> Buildings { get; set; }
-        // public DbSet<DocumentCategory> DocumentCategories { get; set; }
+
         public DbSet<Document> Documents { get; set; }
-        public DbSet<DocumentTag> DocumentTags { get; set; }
-        public DbSet<DocumentTagRelation> DocumentTagRelations { get; set; }
-        public DbSet<DocumentPermission> DocumentPermissions { get; set; }
+
         public DbSet<BuildingDocumentRelation> BuildingDocumentRelations { get; set; }
         public DbSet<Organization> Organizations { get; set; }
 
@@ -37,35 +35,9 @@ namespace BitAndBeam.Data
             modelBuilder.Entity<User>()
                 .HasIndex(u => u.Email).IsUnique();
 
-            // DocumentTagRelation (many-to-many)
-            modelBuilder.Entity<DocumentTagRelation>()
-                .HasKey(dtr => new { dtr.DocumentId, dtr.TagId });
 
-            modelBuilder.Entity<DocumentTagRelation>()
-                .HasOne(dtr => dtr.Document)
-                .WithMany(d => d.DocumentTagRelations)
-                .HasForeignKey(dtr => dtr.DocumentId);
-            modelBuilder.Entity<DocumentTagRelation>()
-                .HasOne(dtr => dtr.Tag)
-                .WithMany(t => t.DocumentTagRelations)
-                .HasForeignKey(dtr => dtr.TagId);
 
-            // DocumentPermission (many-to-many)
-            modelBuilder.Entity<DocumentPermission>()
-                .HasKey(dp => new { dp.DocumentId, dp.UserId });
-            modelBuilder.Entity<DocumentPermission>()
-                .HasOne(dp => dp.Document)
-                .WithMany(d => d.DocumentPermissions)
-                .HasForeignKey(dp => dp.DocumentId);
-            modelBuilder.Entity<DocumentPermission>()
-                .HasOne(dp => dp.User)
-                .WithMany(u => u.DocumentPermissions)
-                .HasForeignKey(dp => dp.UserId);
-            modelBuilder.Entity<DocumentPermission>()
-                .HasOne(dp => dp.GrantedByUser)
-                .WithMany()
-                .HasForeignKey(dp => dp.GrantedBy)
-                .OnDelete(DeleteBehavior.SetNull);
+
 
             // BuildingDocumentRelation (many-to-many)
             modelBuilder.Entity<BuildingDocumentRelation>()
@@ -98,7 +70,6 @@ namespace BitAndBeam.Data
             modelBuilder.Entity<Document>()
                 .Property(d => d.CategoryName);
 
-            modelBuilder.Ignore<DocumentTag>();
 
             // Configure JSONB columns for Document
             modelBuilder.Entity<Document>()

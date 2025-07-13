@@ -12,14 +12,11 @@ namespace BitAndBeam.Services
         private readonly HttpClient _httpClient;
         private readonly string _ollamaBaseUrl;
         private readonly string _model;
-        private readonly int _maxPromptTokens;
-
         public OllamaService(HttpClient httpClient, IConfiguration configuration)
         {
             _httpClient = httpClient;
             _ollamaBaseUrl = configuration["Ollama:BaseUrl"];
             _model = configuration["Ollama:Model"];
-            _maxPromptTokens = int.Parse(configuration["Ollama:Options:MaxPromptTokens"]);
         }
 
         public async Task<string> GenerateAsync(string prompt)

@@ -15,9 +15,13 @@
                     <div class="upload-text-container">
                         <h3>Upload Documents</h3>
                         <p>Drag and drop files here or click to browse</p>
+                        <small *ngIf="uploading" style="color: #666;">Please wait while processing...</small>
                     </div>
                     <div class="upload-button-container">
-                      <button class="upload-btn" [disabled]="uploading" (click)="!uploading && fileInput.click()">Choose File</button>
+                      <button class="upload-btn" [disabled]="uploading" (click)="!uploading && fileInput.click()">
+                        <span *ngIf="!uploading">Choose File</span>
+                        <span *ngIf="uploading">Uploading...</span>
+                      </button>
                         <input
                             type="file"
                             #fileInput
@@ -30,6 +34,7 @@
                 <!-- Upload progress and status -->
                 <div *ngIf="uploading" class="upload-progress">
                     <div class="spinner"></div>
+                    <p style="margin: 0.5rem 0; color: #666;">Analyzing document with AI...</p>
                     <div *ngIf="uploadProgress > 0 && uploadProgress < 100" class="progress-bar-container">
                         <div class="progress-bar" [style.width]="uploadProgress + '%'">
                             {{ uploadProgress }}%
@@ -39,18 +44,37 @@
 
                 <!-- Success message -->
                 <div *ngIf="successMessage" class="success-message">
-                    <i class="fas fa-check-circle"></i> {{ successMessage }}
+                    <i class="fas fa-check-circle"></i> 
+                    <div>
+                        <div>{{ successMessage }}</div>
+                        <small *ngIf="uploadResponse?.suggestedCategoryName || uploadResponse?.suggestedBuildingName" 
+                               style="display: block; margin-top: 4px; opacity: 0.8;">
+                            Review and confirm the AI suggestions in the popup.
+                        </small>
+                    </div>
                 </div>
 
                 <!-- Error message -->
                 <div *ngIf="errorMessage" class="error-message">
-                    <i class="fas fa-exclamation-circle"></i> {{ errorMessage }}
+                    <i class="fas fa-exclamation-circle"></i> 
+                    <div>
+                        <div>{{ errorMessage }}</div>
+                        <small style="display: block; margin-top: 4px; opacity: 0.8;">
+                            Please try again or contact support if the problem persists.
+                        </small>
+                    </div>
                 </div>
             </div>
 
             <div class="welcome-section">
                 <h1>Welcome to BitAndBeam Document Management</h1>
                 <p>To get started, upload and view your documents, in PDFs, images, etc.</p>
+                <p>Our AI will automatically analyze your documents to:</p>
+                <ul>
+                    <li>Extract addresses and suggest matching buildings</li>
+                    <li>Identify document types and suggest categories</li>
+                    <li>Extract key information based on document category</li>
+                </ul>
                 <p>Interact with the AI assistant to learn about the uploaded documents. You can attach files into context of conversation by:</p>
                 <ul>
                     <li>Opening the file of interest</li>
@@ -66,11 +90,13 @@
     </div>
 </div>
 
-<!-- Document metadata popup -->
+<!-- Document metadata popup with AI suggestions -->
 <app-document-metadata-popup
   *ngIf="showMetadataPopup && uploadedDocumentId"
-  [documentId]="uploadedDocumentId!"
-  [documentData]="uploadedDocument"
+  [documentId]="uploadedDocumentId"
+  [documentName]="documentName"
+  [suggestedCategoryName]="suggestedCategoryName"
+  [suggestedBuildingId]="suggestedBuildingId"
   (closePopup)="closeMetadataPopup()"
-  (saveMetadata)="saveDocumentMetadata($event)"
-></app-document-metadata-popup>
+  (saveMetadata)="saveDocumentMetadata($event)">
+</app-document-metadata-popup>

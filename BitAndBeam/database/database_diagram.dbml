@@ -53,32 +53,10 @@ Table documents {
   key_information jsonb
 }
 
-Table document_tags {
-  tag_id serial [pk]
-  name varchar(50) [unique, not null]
-  created_at timestamp [default: `CURRENT_TIMESTAMP`]
-}
+ 
 
-Table document_tag_relations {
-  document_id integer [ref: > documents.document_id]
-  tag_id integer [ref: > document_tags.tag_id]
-  
-  indexes {
-    (document_id, tag_id) [pk]
-  }
-}
 
-Table document_permissions {
-  document_id integer [ref: > documents.document_id]
-  user_id integer [ref: > users.user_id]
-  permission_type varchar(20) [default: 'read']
-  granted_at timestamp [default: `CURRENT_TIMESTAMP`]
-  granted_by integer [ref: > users.user_id]
-  
-  indexes {
-    (document_id, user_id) [pk]
-  }
-}
+
 
 
 Table organizations {

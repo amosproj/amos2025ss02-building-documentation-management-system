@@ -210,10 +210,8 @@ namespace BitAndBeam.Controllers
             }
             catch (Exception ex)
             {
-                Console.WriteLine("‼️ ERROR during SaveChanges: " + ex.Message);
                 return StatusCode(500, ex.Message);
             }
-
 
             //await _context.SaveChangesAsync();
             return NoContent();

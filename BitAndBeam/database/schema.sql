@@ -61,31 +61,8 @@ CREATE TABLE "documents" (
     "key_information" JSONB -- Stores extracted key information in JSON format
 );
 
--- Document Tags Table
-CREATE TABLE "document_tags" (
-    "tag_id" SERIAL PRIMARY KEY,
-    "name" VARCHAR(50) NOT NULL UNIQUE,
-    "created_at" TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
-);
 
--- Document-Tag Relationship (Many-to-Many)
-CREATE TABLE "document_tag_relations" (
-    "document_id" INTEGER REFERENCES "documents" ("document_id") ON DELETE CASCADE,
-    "tag_id" INTEGER REFERENCES "document_tags" ("tag_id") ON DELETE CASCADE,
-    PRIMARY KEY ("document_id", "tag_id")
-);
-
--- Document Access Permissions (Many-to-Many)
-CREATE TABLE "document_permissions" (
-    "document_id" INTEGER REFERENCES "documents" ("document_id") ON DELETE CASCADE,
-    "user_id" INTEGER REFERENCES "users" ("user_id") ON DELETE CASCADE,
-    "permission_type" VARCHAR(20) CHECK (permission_type IN ('read', 'write', 'admin')) DEFAULT 'read',
-    "granted_at" TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
-    "granted_by" INTEGER REFERENCES "users" ("user_id") ON DELETE SET NULL,
-    PRIMARY KEY ("document_id", "user_id")
-);
-
-
+ 
 -- Building-Document Relationship (Many-to-Many for documents related to multiple buildings)
 CREATE TABLE "building_document_relations" (
     "building_id" INTEGER REFERENCES "buildings" ("building_id") ON DELETE CASCADE,
@@ -96,8 +73,7 @@ CREATE TABLE "building_document_relations" (
 
 -- Create indexes for performance
 CREATE INDEX idx_documents_building_id ON documents(building_id); 
-CREATE INDEX idx_documents_uploaded_by ON documents(uploaded_by);
-CREATE INDEX idx_document_tags_name ON document_tags(name);
+CREATE INDEX idx_documents_uploaded_by ON documents(uploaded_by); 
 CREATE INDEX idx_documents_key_information ON documents USING GIN (key_information);
 
 -- Add trigger to update last_modified timestamp

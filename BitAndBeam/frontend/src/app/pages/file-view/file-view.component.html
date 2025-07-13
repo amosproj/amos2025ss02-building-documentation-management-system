@@ -1,6 +1,6 @@
 <!-- file-view.component.html -->
 <div class="layout">
-  <app-sidebar>  </app-sidebar>
+  <app-sidebar></app-sidebar>
   <div class="main-area">
     <div class="file-view-container">
 
@@ -41,8 +41,8 @@
             style="display: block; height: 100%; width: 100%; background: transparent;">
           </pdf-viewer>
         </section>
-        <!-- Metadata Panel-->
-        <!-- ✅ Editable Metadata Panel -->
+
+        <!-- ✅ Enhanced Metadata Panel -->
         <aside class="metadata-panel" [class.collapsed]="isMetadataPanelCollapsed">
           <div class="metadata-panel-header">
             <h3 *ngIf="!isMetadataPanelCollapsed">Edit Metadata</h3>
@@ -56,20 +56,79 @@
           <div class="metadata-content">
             <div class="metadata-item">
               <label for="building-select"><strong>Building:</strong></label>
-              <select id="building-select" [(ngModel)]="selectedBuildingId" (change)="checkForChanges()" (ngModelChange)="hasChanges = true">
+              <select id="building-select" 
+                      [(ngModel)]="selectedBuildingId" 
+                      (ngModelChange)="hasChanges = true"
+                      [disabled]="isAnalyzing">
                 <option [ngValue]="null">No Building</option>
                 <option *ngFor="let b of buildings" [ngValue]="b.id">{{ b.name }}</option>
               </select>
             </div>
+
+            <!-- ✅ Enhanced Category Section -->
             <div class="metadata-item">
               <label for="category-select"><strong>Category:</strong></label>
-              <select id="category-select" [(ngModel)]="selectedCategoryName" (change)="onCategoryChange()" (ngModelChange)="hasChanges = true">
-                <option [ngValue]="null">No Category</option>
-                <option *ngFor="let c of categories" [ngValue]="c.name">{{ c.name }}</option>
-              </select>
+              <div class="category-with-analyze">
+                <select id="category-select" 
+                        [(ngModel)]="selectedCategoryName" 
+                        (ngModelChange)="onCategoryChange()"
+                        [disabled]="isAnalyzing">
+                  <!-- ✅ No Category option -->
+                  <option [ngValue]="null">No Category</option>
+                  
+                  <!-- ✅ All available categories -->
+                  <optgroup label="Available Categories" *ngIf="categories && categories.length > 0">
+                    <option *ngFor="let c of categories; trackBy: trackByCategory" [ngValue]="c.name">
+                      {{ c.name }}
+                    </option>
+                  </optgroup>
+                  
+                  <!-- ✅ Debug info if no categories loaded -->
+                  <optgroup label="Debug Info" *ngIf="!categories || categories.length === 0">
+                    <option disabled>No categories available</option>
+                  </optgroup>
+                </select>
+                
+                <!-- ✅ Enhanced Analyze button -->
+                <button class="analyze-btn" 
+                        (click)="analyzeWithNewCategory()" 
+                        [disabled]="!canAnalyze || isAnalyzing"
+                        [title]="getAnalyzeButtonTooltip()"
+                        [class.analyzing]="isAnalyzing">
+                  <span *ngIf="!isAnalyzing">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <circle cx="11" cy="11" r="8"></circle>
+                      <path d="m21 21-4.35-4.35"></path>
+                      <path d="M11 8v6"></path>
+                      <path d="M8 11h6"></path>
+                    </svg>
+                    Analyze
+                  </span>
+                  <span *ngIf="isAnalyzing" class="analyzing-spinner">
+                    <div class="mini-spinner"></div>
+                    Analyzing...
+                  </span>
+                </button>
+              </div>
             </div>
+            
+            <!-- ✅ Enhanced Analysis Status Message -->
+            <div *ngIf="analysisMessage" 
+                 class="analysis-status" 
+                 [class.success]="analysisSuccess" 
+                 [class.error]="!analysisSuccess"
+                 [class.processing]="isAnalyzing">
+              <div class="analysis-content">
+                <span *ngIf="isAnalyzing" class="analysis-spinner">
+                  <div class="mini-spinner"></div>
+                </span>
+                {{ analysisMessage }}
+              </div>
+            </div>
+
+            <!-- ✅ Parsed Metadata Table -->
             <div *ngIf="parsedMetadata.length > 0">
-              <h3>📄 Metadata</h3>
+              <h4>Document Metadata</h4>
               <table>
                 <tr *ngFor="let item of parsedMetadata">
                   <td><strong>{{ item.label }}:</strong></td>
@@ -77,65 +136,54 @@
                 </tr>
               </table>
             </div>
+
+            <!-- ✅ Key Information Section -->
             <div class="ollama-info" *ngIf="keyInfo">
-              <h3>Extracted Information</h3>
-              <!-- B. Category -->
+              <!-- Category Display -->
               <div *ngIf="selectedCategoryName">
                 <h4>Detected Category</h4>
                 <p>{{ selectedCategoryName }}</p>
               </div>
-              <!-- C. Key Information -->
+              
+              <!-- Key Information -->
               <div>
-                <h4> Key Information</h4>
+                <h4>Key Information</h4>
                 <ng-container *ngIf="keyInformation.length > 0; else noKeyInfo">
                   <ul>
                     <li *ngFor="let item of keyInformation">
                       <strong>{{ item.label }}:</strong>
-                      <input
-                        [(ngModel)]="item.value"
-                        (ngModelChange)="checkForChanges()"
-                        (blur)="touchedFields[item.label] = true"
-                      />
-                      <!-- 🟥 Validation message -->
-                      <div class="validation-message"
-                          *ngIf="isFieldRequired(item.label) && touchedFields[item.label] && !item.value?.trim()">
-                        <small style="color: red;">This field is required.</small>
-                      </div>
+                      <input type="text" 
+                             [(ngModel)]="item.value" 
+                             (ngModelChange)="hasChanges = true"
+                             [disabled]="isAnalyzing"/>
                     </li>
-                </ul>
+                  </ul>
                 </ng-container>
                 <ng-template #noKeyInfo>
                   <p>No key information found.</p>
                 </ng-template>
               </div>
             </div>
-            <!-- A. Suggested Address -->
-            <!--
-              <div *ngIf="keyInfo.suggestedAddress">
-                <h4>Suggested Address</h4>
-                <ul>
-                  <li><strong>Street:</strong>
-                    <input type="text" [(ngModel)]="keyInfo.suggestedAddress.street" />
-                  </li>
-                  <li><strong>House Number:</strong>
-                    <input type="text" [(ngModel)]="keyInfo.suggestedAddress.house_number" />
-                  </li>
-                  <li><strong>ZIP Code:</strong>
-                    <input type="text" [(ngModel)]="keyInfo.suggestedAddress.zip_code" />
-                  </li>
-                  <li><strong>City:</strong>
-                    <input type="text" [(ngModel)]="keyInfo.suggestedAddress.city" />
-                  </li>
-                </ul>
-              </div>-->
           </div>
+
+          <!-- ✅ Action Buttons -->
           <div class="meta-actions">
-              <button class="save-btn" (click)="saveMetadataChanges()" [disabled]="!hasChanges || loading">
-                {{ loading ? 'Saving...' : 'Save Changes' }}
-              </button>
-              <button class="download-btn" (click)="downloadFile()">Download</button>
-              <button class="delete-btn" (click)="deleteFile()">Delete</button>
-            </div>
+            <button class="save-btn" 
+                    (click)="saveMetadataChanges()" 
+                    [disabled]="!hasChanges || loading || isAnalyzing">
+              {{ loading ? 'Saving...' : 'Save Changes' }}
+            </button>
+            <button class="download-btn" 
+                    (click)="downloadFile()"
+                    [disabled]="isAnalyzing">
+              Download
+            </button>
+            <button class="delete-btn" 
+                    (click)="deleteFile()"
+                    [disabled]="isAnalyzing">
+              Delete
+            </button>
+          </div>
         </aside>
 
         <!-- ✅ Toast Notification -->
@@ -146,10 +194,11 @@
     </div>
   </div>
 </div>
+
+<!-- ✅ AI Assistant Component -->
 <app-ai-assistant
   *ngIf="selectedFile?.id && selectedFile?.name"
   [globalMode]="false"
   [documentId]="selectedFile?.id"
   [documentTitle]="selectedFile?.name">
 </app-ai-assistant>
-

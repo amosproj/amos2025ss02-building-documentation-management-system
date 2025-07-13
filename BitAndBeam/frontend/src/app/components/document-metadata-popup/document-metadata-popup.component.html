@@ -3,33 +3,46 @@
   <div class="notification" *ngIf="showNotification" [ngClass]="{'success': notificationType === 'success', 'error': notificationType === 'error'}">
     <span class="notification-icon">{{ notificationType === 'success' ? '✅' : '❌' }}</span>
     <span class="notification-message">{{ notificationMessage }}</span>
+    <!-- Show spinner for key information extraction -->
+    <div class="spinner" *ngIf="isExtractingKeyInfo && notificationType === 'success'"></div>
   </div>
   
   <div class="popup-content">
     <div class="popup-header">
       <h2>Document Details</h2>
-      <button class="close-button" (click)="onClose()" aria-label="Close">×</button>
+      <button class="close-button" (click)="onClose()" aria-label="Close" [disabled]="isExtractingKeyInfo">×</button>
     </div>
     
     <div class="popup-body">
       <p class="document-name">📄 <strong>{{ documentName }}</strong></p>
       
+      <!-- Show AI suggestions info only if suggestions exist -->
+      <div class="suggestion-info" *ngIf="suggestedCategoryName || suggestedBuildingId">
+        <div class="suggestion-header">
+          <span class="suggestion-icon">🤖</span>
+          <span class="suggestion-text">AI has analyzed your document and made suggestions below</span>
+        </div>
+      </div>
+      
       <div class="form-group">
         <label for="categorySelect">Document Category:</label>
+        
         <div class="category-selection-container">
-          <select id="categorySelect" [(ngModel)]="selectedCategoryName" (ngModelChange)="onCategoryChange($event)">
+          <select id="categorySelect" [(ngModel)]="selectedCategoryName" (ngModelChange)="onCategoryChange($event)" [disabled]="isExtractingKeyInfo">
             <!-- No Category option -->
             <option [ngValue]="null">No Category</option>
             
             <!-- Available categories options -->
-            <optgroup label="Available Categories" *ngIf="categories.length > 0">
-              <option *ngFor="let category of categories" [value]="category.name">
+            <optgroup label="Available Categories" *ngIf="categories && categories.length > 0">
+              <option *ngFor="let category of categories; trackBy: trackByCategory" [value]="category.name">
                 {{ category.name }}
               </option>
             </optgroup>
             
-            <!-- Manual input option -->
-            <option [value]="OTHER_CATEGORY_OPTION">Other...</option>
+            <!-- Show debug info if no categories -->
+            <optgroup label="Debug Info" *ngIf="!categories || categories.length === 0">
+              <option disabled>No categories loaded - check console</option>
+            </optgroup>
           </select>
         </div>
         
@@ -41,12 +54,13 @@
               [(ngModel)]="otherCategoryName" 
               placeholder="Enter new category name"
               class="other-input"
+              [disabled]="isExtractingKeyInfo"
             >
             <button 
               type="button" 
               (click)="createNewCategory()" 
               class="add-category-button"
-              [disabled]="!otherCategoryName.trim()"
+              [disabled]="!otherCategoryName.trim() || isExtractingKeyInfo"
             >
               Add
             </button>
@@ -57,7 +71,7 @@
       <div class="form-group">
         <label for="buildingSelect">Building:</label>
         <div class="building-selection-container">
-          <select id="buildingSelect" [(ngModel)]="selectedBuildingId">
+          <select id="buildingSelect" [(ngModel)]="selectedBuildingId" [disabled]="isExtractingKeyInfo">
             <!-- No Building option -->
             <option [ngValue]="null">No Building</option>
             
@@ -68,16 +82,35 @@
               </option>
             </optgroup>
           </select>
-          <!-- Create new building button that navigates to building form -->
-          
+        </div>
+      </div>
+
+      <!-- Loading indicator for key information extraction -->
+      <div class="extraction-status" *ngIf="isExtractingKeyInfo">
+        <div class="extraction-message">
+          <div class="spinner-inline"></div>
+          <span>Extracting key information from document...</span>
+        </div>
+        <div class="extraction-note">
+          This may take a few moments. Please wait...
         </div>
       </div>
     </div>
     
     <div class="popup-footer">
-      <button class="cancel-button" (click)="onClose()">Cancel</button>
-      <button class="save-button" (click)="onSave()" [disabled]="isOtherCategory && !otherCategoryName.trim()">
-        Save
+      <button class="cancel-button" (click)="onClose()" [disabled]="isExtractingKeyInfo">
+        Cancel
+      </button>
+      <button 
+        class="save-button" 
+        (click)="onSave()" 
+        [disabled]="(isOtherCategory && !otherCategoryName.trim()) || isExtractingKeyInfo"
+        [class.loading]="isExtractingKeyInfo"
+      >
+        <span *ngIf="!isExtractingKeyInfo">Save</span>
+        <span *ngIf="isExtractingKeyInfo" class="loading-content">
+          <span class="loading-text">Processing...</span>
+        </span>
       </button>
     </div>
   </div>

@@ -50,6 +50,16 @@
   font-weight: 500;
 }
 
+/* Spinner in notification */
+.spinner {
+  width: 16px;
+  height: 16px;
+  border: 2px solid transparent;
+  border-top: 2px solid #28a745;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
 @keyframes slide-down {
   0% {
     top: -50px;
@@ -61,11 +71,16 @@
   }
 }
 
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
 .popup-content {
   background-color: white;
   border-radius: 8px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-  width: 450px;
+  width: 500px;
   max-width: 90%;
   overflow: hidden;
   animation: popup-fade-in 0.3s ease-out;
@@ -93,8 +108,13 @@
   color: #777;
 }
 
-.close-button:hover {
+.close-button:hover:not(:disabled) {
   color: #333;
+}
+
+.close-button:disabled {
+  color: #ccc;
+  cursor: not-allowed;
 }
 
 .popup-body {
@@ -105,6 +125,48 @@
   margin-bottom: 20px;
   font-size: 1rem;
   color: #444;
+}
+
+/* Suggestion info styles - more subtle now */
+.suggestion-info {
+  background-color: #f0f8ff;
+  border: 1px solid #b0d4ff;
+  border-radius: 6px;
+  padding: 10px 12px;
+  margin-bottom: 16px;
+  border-left: 3px solid #4a90e2;
+}
+
+.suggestion-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.suggestion-icon {
+  font-size: 16px;
+}
+
+.suggestion-text {
+  font-weight: 500;
+  color: #2c3e50;
+  font-size: 14px;
+}
+
+.suggestion-details {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-top: 8px;
+}
+
+.suggestion-item {
+  font-size: 13px;
+  color: #5a6c7d;
+}
+
+.suggestion-item strong {
+  color: #2c3e50;
 }
 
 .form-group {
@@ -134,6 +196,12 @@
   color: #333;
   background-color: #fff;
   flex: 1;
+}
+
+.form-group select:disabled {
+  background-color: #f8f9fa;
+  color: #6c757d;
+  cursor: not-allowed;
 }
 
 .form-group select optgroup {
@@ -256,6 +324,47 @@
   font-size: 1rem;
 }
 
+.other-input:disabled {
+  background-color: #f8f9fa;
+  color: #6c757d;
+  cursor: not-allowed;
+}
+
+/* Extraction status styles */
+.extraction-status {
+  background-color: #e3f2fd;
+  border: 1px solid #2196f3;
+  border-radius: 6px;
+  padding: 16px;
+  margin-top: 20px;
+  text-align: center;
+}
+
+.extraction-message {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  margin-bottom: 8px;
+  font-weight: 500;
+  color: #1976d2;
+}
+
+.extraction-note {
+  font-size: 13px;
+  color: #666;
+  font-style: italic;
+}
+
+.spinner-inline {
+  width: 20px;
+  height: 20px;
+  border: 2px solid transparent;
+  border-top: 2px solid #2196f3;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
 .popup-footer {
   display: flex;
   justify-content: flex-end;
@@ -270,6 +379,9 @@
   font-size: 0.9rem;
   cursor: pointer;
   transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
 .cancel-button {
@@ -282,6 +394,8 @@
   background-color: #007bff;
   color: white;
   border: 1px solid #007bff;
+  min-width: 120px;
+  justify-content: center;
 }
 
 .save-button:disabled {
@@ -290,12 +404,21 @@
   cursor: not-allowed;
 }
 
-.cancel-button:hover {
+.cancel-button:hover:not(:disabled) {
   background-color: #e4e4e4;
 }
 
 .save-button:hover:not(:disabled) {
   background-color: #0069d9;
+}
+
+.button-spinner {
+  width: 16px;
+  height: 16px;
+  border: 2px solid transparent;
+  border-top: 2px solid white;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
 }
 
 @keyframes popup-fade-in {

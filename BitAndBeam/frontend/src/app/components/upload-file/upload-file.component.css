@@ -278,7 +278,7 @@ html, body {
   box-shadow: var(--card-shadow);
 }
 
-.upload-container:hover {
+.upload-container:hover:not(.uploading) {
   border-color: #369995;
   background-color: rgba(69, 195, 184, 0.05);
 }
@@ -287,6 +287,12 @@ html, body {
   border-color: #369995;
   background-color: rgba(69, 195, 184, 0.1);
   transform: scale(1.01);
+}
+
+.upload-container.uploading {
+  border-color: #ccc;
+  background-color: #f9f9f9;
+  cursor: not-allowed;
 }
 
 .upload-icon-container {
@@ -299,6 +305,11 @@ html, body {
 .upload-icon {
   font-size: 3.5rem;
   color: var(--accent-color, #45c3b8);
+  opacity: 0.8;
+}
+
+.upload-container.uploading .upload-icon {
+  opacity: 0.5;
 }
 
 .upload-text-container {
@@ -331,22 +342,33 @@ html, body {
   font-size: 1rem;
   font-weight: 600;
   cursor: pointer;
-  transition: background-color 0.3s ease, transform 0.2s ease;
+  transition: all 0.3s ease;
+  min-width: 120px;
 }
 
-.upload-btn:hover {
+.upload-btn:hover:not(:disabled) {
   background-color: #369995;
   transform: translateY(-2px);
 }
 
-.upload-btn:active {
+.upload-btn:active:not(:disabled) {
   transform: translateY(0);
+}
+
+.upload-btn:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+  transform: none;
 }
 
 .upload-progress {
   margin: 1rem auto;
   text-align: center;
   max-width: 600px;
+  padding: 1.5rem;
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  border: 1px solid #e9ecef;
 }
 
 .spinner {
@@ -361,22 +383,75 @@ html, body {
 }
 
 .progress-bar-container {
-  height: 8px;
+  height: 12px;
   background-color: #e0e0e0;
-  border-radius: 4px;
-  margin: 0.5rem auto;
+  border-radius: 6px;
+  margin: 1rem auto;
   overflow: hidden;
+  max-width: 400px;
 }
 
 .progress-bar {
   height: 100%;
-  background-color: var(--accent-color, #45c3b8);
-  border-radius: 4px;
+  background: linear-gradient(90deg, #45c3b8 0%, #369995 100%);
+  border-radius: 6px;
   text-align: center;
-  line-height: 8px;
+  line-height: 12px;
   font-size: 10px;
   color: white;
   transition: width 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+}
+
+/* Enhanced success and error messages */
+.success-message,
+.error-message {
+  padding: 16px 20px;
+  border-radius: 8px;
+  margin-top: 16px;
+  display: flex;
+  align-items: flex-start;
+  animation: fadeIn 0.3s ease;
+  font-size: 0.95rem;
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.success-message {
+  background-color: rgba(72, 187, 120, 0.1);
+  color: #2f855a;
+  border: 1px solid rgba(72, 187, 120, 0.2);
+  border-left: 4px solid #48bb78;
+}
+
+.error-message {
+  background-color: rgba(245, 101, 101, 0.1);
+  color: #e53e3e;
+  border: 1px solid rgba(245, 101, 101, 0.2);
+  border-left: 4px solid #f56565;
+}
+
+.success-message i,
+.error-message i {
+  margin-right: 12px;
+  font-size: 1.1rem;
+  margin-top: 2px;
+  flex-shrink: 0;
+}
+
+.success-message > div,
+.error-message > div {
+  flex: 1;
+}
+
+.success-message small,
+.error-message small {
+  font-size: 0.85rem;
+  opacity: 0.9;
 }
 
 /* Responsive adjustments */
@@ -393,6 +468,22 @@ html, body {
   
   .upload-button-container {
     margin-top: 0.8rem;
+  }
+
+  .upload-btn {
+    width: 100%;
+    padding: 0.8rem 1rem;
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
 }
 
@@ -461,13 +552,6 @@ html, body {
   box-shadow: 0 0 5px rgba(69,195,184,0.6);
 }
 
-
-.error-message {
-  color: red;
-  font-size: 0.9em;
-  margin-bottom: 6px;
-}
-
 .send-btn {
   background-color: #45c3b8;
   border: 1px solid #45c3b8;
@@ -501,47 +585,6 @@ html, body {
 
 .toggle-history-btn:hover {
   background-color: #369995;
-}
-
-/* Success and error messages */
-.success-message,
-.error-message {
-  padding: 10px 16px;
-  border-radius: 6px;
-  margin-top: 10px;
-  display: flex;
-  align-items: center;
-  animation: fadeIn 0.3s ease;
-  font-size: 0.9rem;
-}
-
-.success-message {
-  background-color: rgba(72, 187, 120, 0.1);
-  color: #2f855a;
-  border: 1px solid rgba(72, 187, 120, 0.2);
-}
-
-.error-message {
-  background-color: rgba(245, 101, 101, 0.1);
-  color: #e53e3e;
-  border: 1px solid rgba(245, 101, 101, 0.2);
-}
-
-.success-message i,
-.error-message i {
-  margin-right: 8px;
-  font-size: 1rem;
-}
-
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(-10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
 }
 
 /* AI assistant container styling */
