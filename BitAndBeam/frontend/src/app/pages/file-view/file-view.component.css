@@ -306,3 +306,9 @@
   flex-direction: column;
   margin-bottom: 1rem;
 }
+
+.ollama-info li strong {
+  margin-bottom: 0.25rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
