@@ -383,16 +383,30 @@
   z-index: 200;
 }
 
-.top-left {
+.top-left,
+.top-right {
   display: flex;
   align-items: center;
   gap: 1rem;
 }
 
 .top-right {
-  display: flex;
-  align-items: center;
   gap: 1rem;
+  flex-shrink: 0;
+}
+
+.section-title {
+  font-size: 1rem;
+  font-weight: bold;
+  color: var(--text-primary);
+  white-space: nowrap;
+}
+
+.top-bar .metadata-toggle-btn {
+  position: relative;
+  top: unset;
+  right: unset;
+  z-index: auto;
 }
 
 .top-bar .logo-img {
