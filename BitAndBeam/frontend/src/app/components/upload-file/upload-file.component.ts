@@ -7,6 +7,7 @@ import { AiAssistantComponent } from '../ai-assistant/ai-assistant.component';
 import { DocumentMetadataPopupComponent } from '../document-metadata-popup/document-metadata-popup.component';
 import type { AxiosProgressEvent, AxiosResponse } from 'axios';
 import { SidebarRefreshService } from '../../services/sidebar-refresh.service';
+import { TopBarComponent } from '../top-bar/top-bar.component';
 
 @Component({
   selector: 'app-upload-file',
@@ -16,6 +17,7 @@ import { SidebarRefreshService } from '../../services/sidebar-refresh.service';
   imports: [
     CommonModule,
     SidebarComponent,
+    TopBarComponent,
     AiAssistantComponent,
     DocumentMetadataPopupComponent
   ]
