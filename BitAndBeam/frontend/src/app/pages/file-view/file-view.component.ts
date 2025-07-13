@@ -21,7 +21,7 @@ import { AiAssistantComponent } from '../../components/ai-assistant/ai-assistant
   selector: 'app-file-view',
   templateUrl: './file-view.component.html',
   styleUrls: ['./file-view.component.css'],
-  imports: [CommonModule, PdfViewerModule, SidebarComponent, FormsModule, AiAssistantComponent]
+  imports: [CommonModule, PdfViewerModule, SidebarComponent, TopBarComponent, FormsModule, AiAssistantComponent]
 })
 
 /**
