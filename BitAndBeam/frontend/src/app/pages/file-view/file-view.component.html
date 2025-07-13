@@ -70,15 +70,6 @@
                 <option *ngFor="let c of categories" [ngValue]="c.name">{{ c.name }}</option>
               </select>
             </div>
-            <div *ngIf="parsedMetadata.length > 0">
-              <h3>📄 Metadata</h3>
-              <table>
-                <tr *ngFor="let item of parsedMetadata">
-                  <td><strong>{{ item.label }}:</strong></td>
-                  <td>{{ item.value }}</td>
-                </tr>
-              </table>
-            </div>
             <div class="ollama-info" *ngIf="keyInfo">
               <h3>Extracted Information</h3>
               <!-- B. Category -->
@@ -110,6 +101,15 @@
                   <p>No key information found.</p>
                 </ng-template>
               </div>
+            </div>
+            <div *ngIf="parsedMetadata.length > 0">
+              <h3>📄 Metadata</h3>
+              <table>
+                <tr *ngFor="let item of parsedMetadata">
+                  <td><strong>{{ item.label }}:</strong></td>
+                  <td>{{ item.value }}</td>
+                </tr>
+              </table>
             </div>
             <!-- A. Suggested Address -->
             <!--
