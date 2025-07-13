@@ -4,6 +4,7 @@ import { CommonModule } from '@angular/common';
 import { PdfViewerModule } from 'ng2-pdf-viewer';
 import { ConfigService } from '../../config.service';
 import { SidebarComponent} from '../../components/sidebar/sidebar.component';
+import { TopBarComponent } from '../../components/top-bar/top-bar.component';
 import { BuildingService, DocumentItem, DocumentResponse } from '../../services/building.service';
 import { Configuration, DocumentsApi, Document as ApiDocument, DocumentMetadataPatchRequest } from '../../../api';
 import { CategoryService, Category } from '../../services/category.service';
