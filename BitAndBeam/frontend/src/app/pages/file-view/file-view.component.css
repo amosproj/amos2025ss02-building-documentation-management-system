@@ -382,3 +382,26 @@
   top: 0;
   z-index: 200;
 }
+
+.top-left {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.top-right {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.top-bar .logo-img {
+  width: 40px;
+  height: 40px;
+}
+
+.top-bar .app-name {
+  font-weight: bold;
+  font-size: 1.1rem;
+  color: var(--text-primary);
+}
