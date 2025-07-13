@@ -49,6 +49,7 @@ export class FileViewComponent implements OnInit, OnDestroy {
   loadingKeyInfo: boolean = false;
   keyInfo: any = null;
   hasChanges: boolean = false;
+  originalKeyInformation: { [key: string]: string } = {};
 
   // ✅ Analysis variables
   isAnalyzing: boolean = false;
@@ -422,6 +423,7 @@ export class FileViewComponent implements OnInit, OnDestroy {
       const newKeyInfo = selected.fields.map(field => {
         const existing = this.keyInformation.find(k => k.label === field.name);
         return {
+          key: field.key,
           label: field.name,
           value: existing?.value || ''
         };
