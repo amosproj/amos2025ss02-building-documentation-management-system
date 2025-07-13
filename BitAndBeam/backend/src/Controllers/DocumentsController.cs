@@ -294,7 +294,7 @@ namespace BitAndBeam.Controllers
                         break;
                     }
                 }
-            } 
+            }
 
             // 7. Save document WITHOUT key information (will be extracted after user confirmation)
             var document = new Document
