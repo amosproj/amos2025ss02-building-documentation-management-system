@@ -7,7 +7,6 @@
     <button class="home-btn" title="Home">🏠</button>
   </div>
   <div class="top-right">
-    <span class="section-title">Edit Metadata</span>
     <button class="metadata-toggle-btn" (click)="toggleMetadataPanel()" title="Toggle metadata">☰</button>
   </div>
 </div>
@@ -58,15 +57,7 @@
         <!-- ✅ Editable Metadata Panel -->
         <aside class="metadata-panel" [class.collapsed]="isMetadataPanelCollapsed">
           <div class="metadata-panel-header">
-            <h3 *ngIf="!isMetadataPanelCollapsed">Edit Metadata</h3>
-            <button class="metadata-toggle-btn" (click)="toggleMetadataPanel()"
-                    [title]="isMetadataPanelCollapsed ? 'Expand metadata panel' : 'Collapse metadata panel'">
-              <!--<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-                <path fill-rule="evenodd" d="M12.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-2.293-2.293a1 1 0 010-1.414z" clip-rule="evenodd" />
-              </svg> -->
-              <!-- With a hamburger icon: -->
-              &#9776; <!-- ☰ Unicode character -->
-            </button>
+            <h3 *ngIf="!isMetadataPanelCollapsed">Document Details</h3>
           </div>
           <div class="metadata-content">
             <div class="metadata-item">
