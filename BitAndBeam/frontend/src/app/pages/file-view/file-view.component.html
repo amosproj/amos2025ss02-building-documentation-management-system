@@ -2,6 +2,15 @@
 <div class="layout">
   <app-sidebar>  </app-sidebar>
   <div class="main-area">
+    <div class="file-top-bar">
+      <div class="left-section">
+        <button class="home-btn" title="Home">🏠</button>
+        <span class="section-title">Edit Metadata</span>
+      </div>
+      <button class="metadata-toggle-btn" (click)="toggleMetadataPanel()" title="Toggle metadata">
+        ☰
+      </button>
+    </div>
     <div class="file-view-container">
 
       <!-- Not Found Message -->
