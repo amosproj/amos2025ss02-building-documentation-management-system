@@ -353,3 +353,19 @@
   font-weight: bold;
   color: var(--text-primary);
 }
+
+.home-btn,
+.metadata-toggle-btn {
+  background: transparent;
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  padding: 6px 10px;
+  font-size: 16px;
+  cursor: pointer;
+  color: var(--text-primary);
+}
+
+.home-btn:hover,
+.metadata-toggle-btn:hover {
+  background-color: var(--menu-hover-bg);
+}
