@@ -314,10 +314,18 @@
 }
 
 .ollama-info li input {
-  width: 100%;
-  padding: 6px 8px;
-  font-size: 0.95rem;
+  max-width: 90%;
+  margin: 0 auto;
+  background-color: var(--bg-primary);
   border: 1px solid var(--border-color);
   border-radius: 4px;
+  padding: 6px 8px;
+  font-size: 0.95rem;
   box-sizing: border-box;
+  transition: border-color 0.2s ease;
+}
+
+.ollama-info li input:focus {
+  border-color: var(--accent-color);
+  outline: none;
 }
