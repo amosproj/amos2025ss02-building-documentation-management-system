@@ -355,6 +355,7 @@ export class FileViewComponent implements OnInit, OnDestroy {
             const match = this.categories.find(c => c.name === this.selectedCategoryName);
             if (match && Array.isArray(match.fields)) {
               this.keyInformation = match.fields.map(f => ({
+                key: f.key,
                 label: f.name,
                 value: ''
               }));
