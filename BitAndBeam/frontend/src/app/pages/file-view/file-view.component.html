@@ -109,25 +109,6 @@
                 </tr>
               </table>
             </div>
-            <!-- A. Suggested Address -->
-            <!--
-              <div *ngIf="keyInfo.suggestedAddress">
-                <h4>Suggested Address</h4>
-                <ul>
-                  <li><strong>Street:</strong>
-                    <input type="text" [(ngModel)]="keyInfo.suggestedAddress.street" />
-                  </li>
-                  <li><strong>House Number:</strong>
-                    <input type="text" [(ngModel)]="keyInfo.suggestedAddress.house_number" />
-                  </li>
-                  <li><strong>ZIP Code:</strong>
-                    <input type="text" [(ngModel)]="keyInfo.suggestedAddress.zip_code" />
-                  </li>
-                  <li><strong>City:</strong>
-                    <input type="text" [(ngModel)]="keyInfo.suggestedAddress.city" />
-                  </li>
-                </ul>
-              </div>-->
           </div>
           <div class="meta-actions">
               <button class="save-btn" (click)="saveMetadataChanges()" [disabled]="!hasChanges || loading">
