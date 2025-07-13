@@ -92,17 +92,15 @@
 }
 
 .metadata-toggle-btn {
-  background-color: var(--bg-primary); /* or white */
+  background-color: var(--bg-primary);
   border: 1px solid var(--border-color);
-  border-radius: 6px;
-  padding: 6px;
+  border-radius: 8px;
+  padding: 8px 12px;
   color: var(--text-primary);
   font-size: 18px;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-  position: absolute;
-  top: 12px;
-  right: 12px;
-  z-index: 1000;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  cursor: pointer;
+  transition: background-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
 }
 
 .metadata-toggle-btn:hover {
@@ -133,6 +131,12 @@
 }
 
 .metadata-panel.collapsed .metadata-content {
+  opacity: 0;
+  pointer-events: none;
+  display: none;
+}
+
+.metadata-panel.collapsed .meta-actions {
   opacity: 0;
   pointer-events: none;
   display: none;
