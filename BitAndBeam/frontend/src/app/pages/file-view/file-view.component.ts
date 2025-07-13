@@ -60,6 +60,9 @@ export class FileViewComponent implements OnInit, OnDestroy {
   private destroy$ = new Subject<void>();
   private blobUrl: string | null = null;
 
+  // For tracking touched fields in validation
+  touchedFields: { [key: string]: boolean } = {};
+
   constructor(
     private config: ConfigService,
     private route: ActivatedRoute,
