@@ -122,7 +122,7 @@ namespace BitAndBeam.Controllers
             // -- Initialize result fields
             Dictionary<string, string>? parsedAddress = null;
             string? matchedCategory = null;
-            
+            string? matchedCategoryName = null;
             Building? matchedBuilding = null;
             Dictionary<string, string?> keyInformation = new();
 
@@ -225,7 +225,7 @@ namespace BitAndBeam.Controllers
                     var allCategories = ReadCategories();
                     var categoryMatch = allCategories.FirstOrDefault(c =>
                         string.Equals(c.Name?.Trim(), matchedCategory, StringComparison.OrdinalIgnoreCase));
-                    string? matchedCategoryName = categoryMatch?.Name;
+                    matchedCategoryName = categoryMatch?.Name;
                     
                     if (categoryMatch != null)
                     {
