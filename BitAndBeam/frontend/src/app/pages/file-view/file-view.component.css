@@ -67,10 +67,11 @@
 }
 
 .metadata-panel.collapsed {
-  flex: 0 0 40px;
-  min-width: 40px;
+  flex: 0 0 0;
+  min-width: 0;
   padding: 0;
   overflow: hidden;
+  border-left: none;
 }
 
 .metadata-panel-header {
