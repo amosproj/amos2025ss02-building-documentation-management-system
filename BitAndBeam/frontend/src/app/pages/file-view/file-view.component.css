@@ -147,6 +147,7 @@ html, body {
   overflow-y: auto;
   padding-bottom: 0px; /* makes space for buttons at bottom */
   max-height: none; /* adjust this as needed */
+  min-height: 0;
 }
 
 .metadata-panel.collapsed .metadata-content {
@@ -392,53 +393,4 @@ html, body {
 .home-btn:hover,
 .metadata-toggle-btn:hover {
   background-color: var(--menu-hover-bg);
-}
-
-.top-bar {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 0.75rem 1rem;
-  background-color: var(--bg-secondary);
-  border-bottom: 1px solid var(--border-color);
-  position: sticky;
-  top: 0;
-  z-index: 200;
-}
-
-.top-left,
-.top-right {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-}
-
-.top-right {
-  gap: 1rem;
-  flex-shrink: 0;
-}
-
-.section-title {
-  font-size: 1rem;
-  font-weight: bold;
-  color: var(--text-primary);
-  white-space: nowrap;
-}
-
-.top-bar .metadata-toggle-btn {
-  position: relative;
-  top: unset;
-  right: unset;
-  z-index: auto;
-}
-
-.top-bar .logo-img {
-  width: 40px;
-  height: 40px;
-}
-
-.top-bar .app-name {
-  font-weight: bold;
-  font-size: 1.1rem;
-  color: var(--text-primary);
 }
