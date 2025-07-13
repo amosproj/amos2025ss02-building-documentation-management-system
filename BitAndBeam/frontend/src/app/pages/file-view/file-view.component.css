@@ -30,6 +30,7 @@ html, body {
 .file-main-content {
   display: flex;
   flex: 1;
+  overflow: hidden;
 }
 
 .pdf-viewer {
@@ -60,25 +61,42 @@ html, body {
 }
 
 .metadata-panel {
+  width: 300px;
+  min-width: 300px;
+  max-width: 300px;
+  max-height: 100vh;
   display: flex;
   flex-direction: column;
-  flex: 1;
   height: 100%;
   background-color: var(--bg-secondary);
   padding: 1.5rem;
   border-left: 1px solid var(--border-color);
   position: relative;
   transition: all 0.3s ease;
-  min-width: 280px;
-  max-width: 500px;
+}
+
+.metadata-hover-indicator {
+  position: fixed;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 24px;
+  background-color: rgba(0, 0, 0, 0.1);
+  padding: 8px;
+  border-radius: 4px 0 0 4px;
+  cursor: default;
+  z-index: 1000;
+  user-select: none;
 }
 
 .metadata-panel.collapsed {
-  flex: 0 0 0;
-  min-width: 0;
-  padding: 0;
+  transform: translateX(100%);
+  pointer-events: none;
   overflow: hidden;
   border-left: none;
+  width: 0 !important;
+  min-width: 0 !important;
+  padding: 0 !important;
 }
 
 .metadata-panel-header {
