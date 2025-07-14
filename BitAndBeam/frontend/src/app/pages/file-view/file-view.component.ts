@@ -329,6 +329,11 @@ export class FileViewComponent implements OnInit, OnDestroy {
           } else {
               this.keyInformation = [];
             }
+            // ✅ Store original key information for restoration
+            this.originalKeyInformation = {};
+            this.keyInformation.forEach(k => {
+              this.originalKeyInformation[k.label.toLowerCase().replace(/ /g, '_')] = k.value || '';
+            });
 
               const fileType = (doc.fileType ?? '').toLowerCase();
               this.isPdf = fileType === 'pdf';
