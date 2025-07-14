@@ -22,7 +22,10 @@ export class CategoryService {
   private categoriesSubject = new BehaviorSubject<Category[]>([]);
   categories$ = this.categoriesSubject.asObservable();
 
-  constructor(private config: ConfigService, private apiFactory: ApiClientFactory) {
+  constructor(
+    private config: ConfigService,
+    private apiFactory: ApiClientFactory,
+  ) {
     this.documentsApi = this.apiFactory.create(DocumentsApi);
 
     // Load categories from backend on initialization
@@ -30,7 +33,8 @@ export class CategoryService {
   }
 
   private loadCategoriesFromBackend(): void {
-    this.documentsApi.apiDocumentsCategoriesGet()
+    this.documentsApi
+      .apiDocumentsCategoriesGet()
       .then((response) => {
         // Handle the response properly - it might be directly the data or wrapped in response.data
         const categories = (response as any)?.data || response || [];
@@ -48,23 +52,31 @@ export class CategoryService {
   }
 
   // Assign document category using the OpenAPI SDK
-  assignDocumentCategory(documentId: number, categoryName: string | null, buildingId: number | null): Observable<any> {
+  assignDocumentCategory(
+    documentId: number,
+    categoryName: string | null,
+    buildingId: number | null,
+  ): Observable<any> {
     const patchRequest = { categoryName, buildingId };
-    
+
     return from(
-      this.documentsApi.apiDocumentsIdPatch(documentId, patchRequest)
-        .then(response => response || {})
+      this.documentsApi
+        .apiDocumentsIdPatch(documentId, patchRequest)
+        .then((response) => response || {}),
     );
   }
 
   // Create a new category
-  createCategory(category: { name: string; description?: string }): Observable<Category> {
+  createCategory(category: {
+    name: string;
+    description?: string;
+  }): Observable<Category> {
     // In a real application, this would send the new category to the backend
     // For now, we'll just add it to our local array
     const newCategory: Category = {
       name: category.name,
       description: category.description,
-      fields: []
+      fields: [],
     };
 
     const currentCategories = this.categoriesSubject.value;

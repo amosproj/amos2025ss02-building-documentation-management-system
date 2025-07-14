@@ -11,7 +11,7 @@ import { Building as ApiBuilding } from '../../../api';
   standalone: true,
   imports: [CommonModule, FormsModule],
   templateUrl: './create-building.component.html',
-  styleUrls: ['./create-building.component.css']
+  styleUrls: ['./create-building.component.css'],
 })
 export class CreateBuildingComponent implements OnInit {
   ngOnInit() {
@@ -24,7 +24,7 @@ export class CreateBuildingComponent implements OnInit {
   building: Partial<ApiBuilding> & { latitude?: number; longitude?: number } = {
     name: '',
     streetName: '',
-    houseNumber:'',
+    houseNumber: '',
     postalCode: '',
     city: '',
     country: '',
@@ -33,30 +33,36 @@ export class CreateBuildingComponent implements OnInit {
     floors: null,
     description: '',
     latitude: undefined,
-    longitude: undefined
+    longitude: undefined,
   };
-
 
   successMessage = '';
   errorMessage = '';
 
   constructor(
-    private buildingService: BuildingService, 
+    private buildingService: BuildingService,
     private router: Router,
-    private themeService: ThemeService
+    private themeService: ThemeService,
   ) {}
 
   submitForm() {
-    if (!this.building.name?.trim() || !this.building.streetName?.trim() || !this.building.houseNumber?.trim() || !this.building.postalCode?.trim()
-      || !this.building.city?.trim() || !this.building.country?.trim() ) {
+    if (
+      !this.building.name?.trim() ||
+      !this.building.streetName?.trim() ||
+      !this.building.houseNumber?.trim() ||
+      !this.building.postalCode?.trim() ||
+      !this.building.city?.trim() ||
+      !this.building.country?.trim()
+    ) {
       this.errorMessage = 'Name and Address fields are required.';
       return;
     }
 
     // Create NpgsqlPoint from latitude and longitude
-    const coordinates = (this.building.latitude != null && this.building.longitude != null)
-      ? {x: this.building.longitude, y: this.building.latitude} // PostgreSQL point: (longitude, latitude)
-      : undefined;
+    const coordinates =
+      this.building.latitude != null && this.building.longitude != null
+        ? { x: this.building.longitude, y: this.building.latitude } // PostgreSQL point: (longitude, latitude)
+        : undefined;
 
     const building: Partial<ApiBuilding> = {
       name: this.building.name,
@@ -70,7 +76,7 @@ export class CreateBuildingComponent implements OnInit {
       floors: this.building.floors,
       description: this.building.description,
       buildingDocumentRelations: [],
-      coordinates: coordinates
+      coordinates: coordinates,
     };
 
     console.log('Creating building with data:', building);
@@ -84,7 +90,7 @@ export class CreateBuildingComponent implements OnInit {
       error: (err) => {
         console.error(err);
         this.errorMessage = 'Failed to create building. Please try again.';
-      }
+      },
     });
   }
 

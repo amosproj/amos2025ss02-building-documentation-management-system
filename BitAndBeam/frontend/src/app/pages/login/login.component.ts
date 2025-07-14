@@ -9,7 +9,7 @@ import { SessionService } from '../../services/session.service';
   standalone: true,
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css'],
-  imports: [CommonModule, FormsModule]
+  imports: [CommonModule, FormsModule],
 })
 export class LoginComponent implements OnInit {
   username = '';
@@ -19,7 +19,7 @@ export class LoginComponent implements OnInit {
   constructor(
     private session: SessionService,
     private router: Router,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
   ) {
     console.log('LoginComponent constructed');
   }
@@ -32,12 +32,16 @@ export class LoginComponent implements OnInit {
   }
 
   async login(): Promise<void> {
-    console.log('Login attempted with:', { username: this.username, password: this.password });
+    console.log('Login attempted with:', {
+      username: this.username,
+      password: this.password,
+    });
     const success = await this.session.login(this.username, this.password);
 
     if (success) {
       console.log('Login successful');
-      const returnUrl = this.route.snapshot.queryParamMap.get('returnUrl') || '/upload';
+      const returnUrl =
+        this.route.snapshot.queryParamMap.get('returnUrl') || '/upload';
       // ✅ Replace current history entry
       this.router.navigate([returnUrl], { replaceUrl: true });
     } else {

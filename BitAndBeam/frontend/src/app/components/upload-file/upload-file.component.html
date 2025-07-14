@@ -1,71 +1,90 @@
 <app-top-bar></app-top-bar>
 <div class="container">
-    <app-sidebar [currentRoute]="'upload'"></app-sidebar>
-    <div class="content-wrapper">
-        <div class="main-content">
-            <!-- New upload component section -->
-            <div class="upload-section">
-                <div class="upload-container"
-                     [class.drag-over]="isDragOver"
-                     (dragover)="onDragOver($event)"
-                     (dragleave)="onDragLeave($event)"
-                     (drop)="onDrop($event)">
-                    <div class="upload-icon-container">
-                        <span class="upload-icon">📄</span>
-                    </div>
-                    <div class="upload-text-container">
-                        <h3>Upload Documents</h3>
-                        <p>Drag and drop files here or click to browse</p>
-                        <small *ngIf="uploading" style="color: #666;">Please wait while processing...</small>
-                    </div>
-                    <div class="upload-button-container">
-                      <button class="upload-btn" [disabled]="uploading" (click)="!uploading && fileInput.click()">
-                        <span *ngIf="!uploading">Choose File</span>
-                        <span *ngIf="uploading">Uploading...</span>
-                      </button>
-                        <input
-                            type="file"
-                            #fileInput
-                            (change)="onFileSelected($event)"
-                            style="display: none"
-                            accept=".pdf,.docx,.txt,.png,.jpg,.jpeg">
-                    </div>
-                </div>
+  <app-sidebar [currentRoute]="'upload'"></app-sidebar>
+  <div class="content-wrapper">
+    <div class="main-content">
+      <!-- New upload component section -->
+      <div class="upload-section">
+        <div
+          class="upload-container"
+          [class.drag-over]="isDragOver"
+          (dragover)="onDragOver($event)"
+          (dragleave)="onDragLeave($event)"
+          (drop)="onDrop($event)"
+        >
+          <div class="upload-icon-container">
+            <span class="upload-icon">📄</span>
+          </div>
+          <div class="upload-text-container">
+            <h3>Upload Documents</h3>
+            <p>Drag and drop files here or click to browse</p>
+            <small *ngIf="uploading" style="color: #666"
+              >Please wait while processing...</small
+            >
+          </div>
+          <div class="upload-button-container">
+            <button
+              class="upload-btn"
+              [disabled]="uploading"
+              (click)="!uploading && fileInput.click()"
+            >
+              <span *ngIf="!uploading">Choose File</span>
+              <span *ngIf="uploading">Uploading...</span>
+            </button>
+            <input
+              type="file"
+              #fileInput
+              (change)="onFileSelected($event)"
+              style="display: none"
+              accept=".pdf,.docx,.txt,.png,.jpg,.jpeg"
+            />
+          </div>
+        </div>
 
-                <!-- Upload progress and status -->
-                <div *ngIf="uploading" class="upload-progress">
-                    <div class="spinner"></div>
-                    <p style="margin: 0.5rem 0; color: #666;">Analyzing document with AI...</p>
-                    <div *ngIf="uploadProgress > 0 && uploadProgress < 100" class="progress-bar-container">
-                        <div class="progress-bar" [style.width]="uploadProgress + '%'">
-                            {{ uploadProgress }}%
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Success message -->
-                <div *ngIf="successMessage" class="success-message">
-                    <i class="fas fa-check-circle"></i> 
-                    <div>
-                        <div>{{ successMessage }}</div>
-                        <small *ngIf="uploadResponse?.suggestedCategoryName || uploadResponse?.suggestedBuildingName" 
-                               style="display: block; margin-top: 4px; opacity: 0.8;">
-                            Review and confirm the AI suggestions in the popup.
-                        </small>
-                    </div>
-                </div>
-
-                <!-- Error message -->
-                <div *ngIf="errorMessage" class="error-message">
-                    <i class="fas fa-exclamation-circle"></i> 
-                    <div>
-                        <div>{{ errorMessage }}</div>
-                        <small style="display: block; margin-top: 4px; opacity: 0.8;">
-                            Please try again or contact support if the problem persists.
-                        </small>
-                    </div>
-                </div>
+        <!-- Upload progress and status -->
+        <div *ngIf="uploading" class="upload-progress">
+          <div class="spinner"></div>
+          <p style="margin: 0.5rem 0; color: #666">
+            Analyzing document with AI...
+          </p>
+          <div
+            *ngIf="uploadProgress > 0 && uploadProgress < 100"
+            class="progress-bar-container"
+          >
+            <div class="progress-bar" [style.width]="uploadProgress + '%'">
+              {{ uploadProgress }}%
             </div>
+          </div>
+        </div>
+
+        <!-- Success message -->
+        <div *ngIf="successMessage" class="success-message">
+          <i class="fas fa-check-circle"></i>
+          <div>
+            <div>{{ successMessage }}</div>
+            <small
+              *ngIf="
+                uploadResponse?.suggestedCategoryName ||
+                uploadResponse?.suggestedBuildingName
+              "
+              style="display: block; margin-top: 4px; opacity: 0.8"
+            >
+              Review and confirm the AI suggestions in the popup.
+            </small>
+          </div>
+        </div>
+
+        <!-- Error message -->
+        <div *ngIf="errorMessage" class="error-message">
+          <i class="fas fa-exclamation-circle"></i>
+          <div>
+            <div>{{ errorMessage }}</div>
+            <small style="display: block; margin-top: 4px; opacity: 0.8">
+              Please try again or contact support if the problem persists.
+            </small>
+          </div>
+        </div>
+      </div>
 
             <div class="welcome-section">
                 <p>To get started, upload and view your documents, in PDFs, images, etc.</p>
@@ -83,11 +102,11 @@
             </div>
         </div>
 
-        <!-- Enhanced AI Assistant without file upload -->
-        <div class="ai-assistant-container">
-            <app-ai-assistant></app-ai-assistant>
-        </div>
+    <!-- Enhanced AI Assistant without file upload -->
+    <div class="ai-assistant-container">
+      <app-ai-assistant></app-ai-assistant>
     </div>
+  </div>
 </div>
 
 <!-- Document metadata popup with AI suggestions -->
@@ -98,5 +117,6 @@
   [suggestedCategoryName]="suggestedCategoryName"
   [suggestedBuildingId]="suggestedBuildingId"
   (closePopup)="closeMetadataPopup()"
-  (saveMetadata)="saveDocumentMetadata($event)">
+  (saveMetadata)="saveDocumentMetadata($event)"
+>
 </app-document-metadata-popup>

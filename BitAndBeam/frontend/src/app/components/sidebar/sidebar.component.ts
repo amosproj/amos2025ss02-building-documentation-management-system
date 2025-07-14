@@ -3,10 +3,20 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { SessionService } from '../../services/session.service';
 import { FormsModule } from '@angular/forms';
-import { BuildingService, DocumentItem, Building } from '../../services/building.service';
+import {
+  BuildingService,
+  DocumentItem,
+  Building,
+} from '../../services/building.service';
 import { SidebarRefreshService } from '../../services/sidebar-refresh.service';
 import { ThemeService, ThemeMode } from '../../services/theme.service';
-import { trigger, transition, style, animate, state } from '@angular/animations';
+import {
+  trigger,
+  transition,
+  style,
+  animate,
+  state,
+} from '@angular/animations';
 
 @Component({
   standalone: true,
@@ -18,13 +28,19 @@ import { trigger, transition, style, animate, state } from '@angular/animations'
     trigger('dropdownAnimation', [
       transition(':enter', [
         style({ opacity: 0, transform: 'translateY(10px)' }),
-        animate('200ms ease-out', style({ opacity: 1, transform: 'translateY(0)' }))
+        animate(
+          '200ms ease-out',
+          style({ opacity: 1, transform: 'translateY(0)' }),
+        ),
       ]),
       transition(':leave', [
-        animate('150ms ease-in', style({ opacity: 0, transform: 'translateY(10px)' }))
-      ])
-    ])
-  ]
+        animate(
+          '150ms ease-in',
+          style({ opacity: 0, transform: 'translateY(10px)' }),
+        ),
+      ]),
+    ]),
+  ],
 })
 export class SidebarComponent {
   @Input() currentRoute: string = '';
@@ -33,32 +49,32 @@ export class SidebarComponent {
   isExplorerCollapsed = false;
   profileMenuOpen = false;
   expandedBuildings: Set<number | null> = new Set();
-  
+
   groupedDocuments: {
     buildingId: number | null;
     buildingName: string;
     documents: DocumentItem[];
     isExpanded?: boolean;
   }[] = [];
-  
+
   currentDocument: DocumentItem | null = null;
-  
+
   constructor(
     public session: SessionService,
     private router: Router,
     private route: ActivatedRoute,
     public buildingService: BuildingService,
     private sidebarRefreshService: SidebarRefreshService,
-    private themeService: ThemeService
+    private themeService: ThemeService,
   ) {}
-  
+
   ngOnInit(): void {
     // Ensure session is valid
     this.session.ensureSessionValid();
 
     // Get current document id from route if present
     let currentDocId: string | null = null;
-    this.route.paramMap.subscribe(params => {
+    this.route.paramMap.subscribe((params) => {
       currentDocId = params.get('id');
     });
 
@@ -81,7 +97,9 @@ export class SidebarComponent {
         // Set currentDocument if route has id
         if (currentDocId) {
           for (const group of this.groupedDocuments) {
-            const found = group.documents.find(doc => String(doc.id) === String(currentDocId));
+            const found = group.documents.find(
+              (doc) => String(doc.id) === String(currentDocId),
+            );
             if (found) {
               this.currentDocument = found;
               break;
@@ -89,26 +107,26 @@ export class SidebarComponent {
           }
         }
       },
-      error: (err) => console.error('Failed to load grouped documents', err)
+      error: (err) => console.error('Failed to load grouped documents', err),
     });
 
     // Subscribe to sidebar refresh
     this.sidebarRefreshService.refresh$.subscribe(() => {
       console.log('📣 Sidebar refresh triggered');
       this.buildingService.getGroupedDocuments().subscribe({
-        next: (data) => this.groupedDocuments = data,
-        error: (err) => console.error('Sidebar refresh failed', err)
+        next: (data) => (this.groupedDocuments = data),
+        error: (err) => console.error('Sidebar refresh failed', err),
       });
     });
-    
+
     // Subscribe to theme changes
     this.isDarkMode = this.themeService.isDarkMode();
-    this.themeService.darkMode$.subscribe(isDark => {
+    this.themeService.darkMode$.subscribe((isDark) => {
       this.isDarkMode = isDark;
     });
     // Subscribe to mode changes
     this.themeMode = this.themeService.getMode();
-    this.themeService.mode$.subscribe(mode => {
+    this.themeService.mode$.subscribe((mode) => {
       this.themeMode = mode;
     });
   }
@@ -124,24 +142,24 @@ export class SidebarComponent {
       event.stopPropagation();
       event.preventDefault();
     }
-    
+
     if (this.expandedBuildings.has(buildingId)) {
       this.expandedBuildings.delete(buildingId);
     } else {
       this.expandedBuildings.add(buildingId);
     }
-    
+
     // Save expanded state to localStorage
     this.saveExpandedState();
-    
+
     // Update the groupedDocuments with expansion state
     this.updateDocumentExpansionState();
   }
-  
+
   isBuildingExpanded(buildingId: number | null): boolean {
     return this.expandedBuildings.has(buildingId);
   }
-  
+
   private saveExpandedState(): void {
     try {
       const expandedArray = Array.from(this.expandedBuildings);
@@ -150,11 +168,11 @@ export class SidebarComponent {
       console.error('Error saving expanded buildings state', e);
     }
   }
-  
+
   private updateDocumentExpansionState(): void {
-    this.groupedDocuments = this.groupedDocuments.map(group => ({
+    this.groupedDocuments = this.groupedDocuments.map((group) => ({
       ...group,
-      isExpanded: this.expandedBuildings.has(group.buildingId)
+      isExpanded: this.expandedBuildings.has(group.buildingId),
     }));
   }
 
@@ -172,7 +190,9 @@ export class SidebarComponent {
   }
 
   navigateToHome(): void {
-    console.log('🏠 Navigating to home, checking user state before navigation:');
+    console.log(
+      '🏠 Navigating to home, checking user state before navigation:',
+    );
     this.session.debugUserState();
     this.router.navigate(['/upload']);
   }
@@ -184,15 +204,16 @@ export class SidebarComponent {
           console.log('Building deleted');
           // Refresh data after deletion
           this.buildingService.getGroupedDocuments().subscribe({
-            next: (data) => this.groupedDocuments = data,
-            error: (err) => console.error('Failed to reload grouped documents', err)
+            next: (data) => (this.groupedDocuments = data),
+            error: (err) =>
+              console.error('Failed to reload grouped documents', err),
           });
         },
-        error: (err) => console.error('Failed to delete building', err)
+        error: (err) => console.error('Failed to delete building', err),
       });
     }
   }
-  
+
   onThemeModeChange(event: Event) {
     const value = (event.target as HTMLSelectElement).value as ThemeMode;
     this.themeService.setMode(value);

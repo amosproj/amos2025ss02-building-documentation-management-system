@@ -1,13 +1,29 @@
 <div class="create-building-form">
   <!-- Theme is now managed globally via the sidebar -->
   <div class="form-header">
-    <button type="button" class="back-btn" (click)="goBack()" title="Go back to Upload Page">
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-        <path fill-rule="evenodd" d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z" clip-rule="evenodd" />
+    <button
+      type="button"
+      class="back-btn"
+      (click)="goBack()"
+      title="Go back to Upload Page"
+    >
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 20 20"
+        fill="currentColor"
+      >
+        <path
+          fill-rule="evenodd"
+          d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z"
+          clip-rule="evenodd"
+        />
       </svg>
       Back
     </button>
-    <h2>Create New Building <img src="assets/Building.png" alt="Building Icon" class="form-icon" /></h2>
+    <h2>
+      Create New Building
+      <img src="assets/Building.png" alt="Building Icon" class="form-icon" />
+    </h2>
   </div>
 
   <div *ngIf="errorMessage" class="error-message">{{ errorMessage }}</div>
@@ -18,66 +34,127 @@
       <div class="form-section form-section--required">
         <label>
           Name*
-          <input [(ngModel)]="building.name" name="name" required placeholder="Building name" />
+          <input
+            [(ngModel)]="building.name"
+            name="name"
+            required
+            placeholder="Building name"
+          />
         </label>
 
         <label>
           Street Name*
-          <input [(ngModel)]="building.streetName" name="streetName" required placeholder="e.g. Main Street" />
+          <input
+            [(ngModel)]="building.streetName"
+            name="streetName"
+            required
+            placeholder="e.g. Main Street"
+          />
         </label>
 
         <label>
           House Number*
-          <input [(ngModel)]="building.houseNumber" name="houseNumber" required placeholder="e.g. 42A" />
+          <input
+            [(ngModel)]="building.houseNumber"
+            name="houseNumber"
+            required
+            placeholder="e.g. 42A"
+          />
         </label>
 
         <label>
           Postal Code*
-          <input [(ngModel)]="building.postalCode" name="postalCode" required placeholder="e.g. 12345" />
+          <input
+            [(ngModel)]="building.postalCode"
+            name="postalCode"
+            required
+            placeholder="e.g. 12345"
+          />
         </label>
 
         <label>
           City*
-          <input [(ngModel)]="building.city" name="city" required placeholder="e.g. Berlin" />
+          <input
+            [(ngModel)]="building.city"
+            name="city"
+            required
+            placeholder="e.g. Berlin"
+          />
         </label>
 
         <label>
           Country*
-          <input [(ngModel)]="building.country" name="country" required placeholder="e.g. Germany" />
+          <input
+            [(ngModel)]="building.country"
+            name="country"
+            required
+            placeholder="e.g. Germany"
+          />
         </label>
-        
+
         <p class="required-note">Fields marked by * are required</p>
       </div>
 
       <div class="form-section form-section--optional">
         <label>
           Construction Year
-          <input type="number" [(ngModel)]="building.constructionYear" name="constructionYear" placeholder="e.g. 1990" />
+          <input
+            type="number"
+            [(ngModel)]="building.constructionYear"
+            name="constructionYear"
+            placeholder="e.g. 1990"
+          />
         </label>
 
         <label>
           Total Area (m²)
-          <input type="number" [(ngModel)]="building.totalArea" name="totalArea" placeholder="e.g. 250" />
+          <input
+            type="number"
+            [(ngModel)]="building.totalArea"
+            name="totalArea"
+            placeholder="e.g. 250"
+          />
         </label>
 
         <label>
           Floors
-          <input type="number" [(ngModel)]="building.floors" name="floors" placeholder="e.g. 5" />
+          <input
+            type="number"
+            [(ngModel)]="building.floors"
+            name="floors"
+            placeholder="e.g. 5"
+          />
         </label>
 
         <label>
           Description
-          <textarea [(ngModel)]="building.description" name="description" placeholder="Describe the building..."></textarea>
+          <textarea
+            [(ngModel)]="building.description"
+            name="description"
+            placeholder="Describe the building..."
+          ></textarea>
         </label>
 
         <label>
           Latitude
-          <input type="number" id="latitude" [(ngModel)]="building.latitude" name="latitude" placeholder="e.g. 52.5200" />
+          <input
+            type="number"
+            id="latitude"
+            [(ngModel)]="building.latitude"
+            name="latitude"
+            placeholder="e.g. 52.5200"
+          />
         </label>
 
         <label>
           Longitude
-          <input type="number" id="longitude" [(ngModel)]="building.longitude" name="longitude" placeholder="e.g. 13.4050" />
+          <input
+            type="number"
+            id="longitude"
+            [(ngModel)]="building.longitude"
+            name="longitude"
+            placeholder="e.g. 13.4050"
+          />
         </label>
       </div>
     </div>

@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterOutlet , Router } from '@angular/router';
+import { RouterOutlet, Router } from '@angular/router';
 import { AiAssistantComponent } from './components/ai-assistant/ai-assistant.component';
 import { ThemeService } from './services/theme.service';
 
@@ -28,14 +28,20 @@ import { ThemeService } from './services/theme.service';
     <router-outlet></router-outlet>
 
     <!-- Global AI Assistant Widget that appears on all pages -->
-    <app-ai-assistant *ngIf="!isDocumentPage" [globalMode]="true"></app-ai-assistant>
+    <app-ai-assistant
+      *ngIf="!isDocumentPage"
+      [globalMode]="true"
+    ></app-ai-assistant>
   `,
 })
 export class AppComponent {
   title = 'BitAndBeam';
   isDocumentPage = false;
 
-  constructor(private themeService: ThemeService, private router: Router) {
+  constructor(
+    private themeService: ThemeService,
+    private router: Router,
+  ) {
     this.router.events.subscribe(() => {
       this.isDocumentPage = this.router.url.startsWith('/documents/');
     });

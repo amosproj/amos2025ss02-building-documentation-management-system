@@ -5,8 +5,10 @@ import { SessionService } from './session.service';
 
 @Injectable({ providedIn: 'root' })
 export class ApiClientFactory {
-  constructor(private config: ConfigService, private session: SessionService) {}
-
+  constructor(
+    private config: ConfigService,
+    private session: SessionService,
+  ) {}
 
   create<T>(type: new (cfg: Configuration) => T): T {
     const token = this.session.getToken();
@@ -17,9 +19,9 @@ export class ApiClientFactory {
       // ✅ Axios clients require headers to be explicitly passed
       baseOptions: {
         headers: {
-          Authorization: token ? `Bearer ${token}` : ''
-        }
-      }
+          Authorization: token ? `Bearer ${token}` : '',
+        },
+      },
     });
     return new type(config);
   }

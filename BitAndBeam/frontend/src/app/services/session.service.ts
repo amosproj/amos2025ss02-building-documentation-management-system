@@ -31,7 +31,10 @@ export class SessionService {
 
   private authApi: AuthApi;
 
-  constructor(private router: Router, private configService: ConfigService) {
+  constructor(
+    private router: Router,
+    private configService: ConfigService,
+  ) {
     const apiUrl = this.configService.apiUrl;
     const apiConfig = new Configuration({ basePath: apiUrl });
     this.authApi = new AuthApi(apiConfig);
@@ -92,7 +95,12 @@ export class SessionService {
       try {
         const decoded = jwt_decode<DecodedToken>(token);
         const now = Date.now() / 1000;
-        console.log('🔍 Token decoded, expires at:', new Date(decoded.exp * 1000), 'current time:', new Date());
+        console.log(
+          '🔍 Token decoded, expires at:',
+          new Date(decoded.exp * 1000),
+          'current time:',
+          new Date(),
+        );
         if (decoded.exp <= now) {
           console.log('❌ Token expired, logging out');
           this.logout();
@@ -127,14 +135,16 @@ export class SessionService {
     console.log('🐛 Current user state:', {
       token: this.getToken() ? 'exists' : 'null',
       user: this.currentUser,
-      isAuthenticated: this.isAuthenticated()
+      isAuthenticated: this.isAuthenticated(),
     });
   }
 
   // Force session check and restoration if needed
   ensureSessionValid(): void {
     if (!this.currentUser && this.getToken()) {
-      console.log('🔧 User data missing but token exists, restoring session...');
+      console.log(
+        '🔧 User data missing but token exists, restoring session...',
+      );
       this.restoreSession();
     }
   }

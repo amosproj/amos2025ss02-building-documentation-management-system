@@ -1,18 +1,29 @@
-import { Component, EventEmitter, Input, OnInit, Output, OnDestroy } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  Input,
+  OnInit,
+  Output,
+  OnDestroy,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { BuildingService, Building, DocumentResponse } from '../../services/building.service';
+import {
+  BuildingService,
+  Building,
+  DocumentResponse,
+} from '../../services/building.service';
 import { CategoryService, Category } from '../../services/category.service';
 import { DocumentsApi, DocumentMetadataPatchRequest } from '../../../api/api';
 import { ApiClientFactory } from '../../services/api-client.factory';
-import { SidebarRefreshService }  from '../../services/sidebar-refresh.service';
+import { SidebarRefreshService } from '../../services/sidebar-refresh.service';
 
 @Component({
   selector: 'app-document-metadata-popup',
   standalone: true,
   imports: [CommonModule, FormsModule],
   templateUrl: './document-metadata-popup.component.html',
-  styleUrls: ['./document-metadata-popup.component.css']
+  styleUrls: ['./document-metadata-popup.component.css'],
 })
 export class DocumentMetadataPopupComponent implements OnInit, OnDestroy {
   @Input() documentId: number | null = null;
@@ -21,7 +32,10 @@ export class DocumentMetadataPopupComponent implements OnInit, OnDestroy {
   @Input() suggestedCategoryName: string | null = null;
   @Input() suggestedBuildingId: number | null = null;
   @Output() closePopup = new EventEmitter<void>();
-  @Output() saveMetadata = new EventEmitter<{categoryName: string | null, buildingId: number | null}>();
+  @Output() saveMetadata = new EventEmitter<{
+    categoryName: string | null;
+    buildingId: number | null;
+  }>();
 
   // Initialize as empty arrays to prevent undefined errors
   buildings: Building[] = [];
@@ -45,7 +59,7 @@ export class DocumentMetadataPopupComponent implements OnInit, OnDestroy {
     private buildingService: BuildingService,
     private categoryService: CategoryService,
     private apiFactory: ApiClientFactory,
-    private sidebarRefreshService: SidebarRefreshService
+    private sidebarRefreshService: SidebarRefreshService,
   ) {}
 
   ngOnInit(): void {
@@ -66,15 +80,24 @@ export class DocumentMetadataPopupComponent implements OnInit, OnDestroy {
     console.log('📂 Available categories:', this.categories.length);
 
     // Priority 1: Use suggested values from upload response (for new uploads)
-    if (this.suggestedCategoryName !== null && this.suggestedCategoryName !== undefined) {
+    if (
+      this.suggestedCategoryName !== null &&
+      this.suggestedCategoryName !== undefined
+    ) {
       this.selectedCategoryName = this.suggestedCategoryName;
       console.log('✅ Using suggested category:', this.suggestedCategoryName);
-    } 
+    }
     // Priority 2: Use existing document data (for editing existing documents)
-    else if (this.documentData?.categoryName !== null && this.documentData?.categoryName !== undefined) {
+    else if (
+      this.documentData?.categoryName !== null &&
+      this.documentData?.categoryName !== undefined
+    ) {
       this.selectedCategoryName = this.documentData.categoryName;
-      console.log('✅ Using existing document category:', this.documentData.categoryName);
-    } 
+      console.log(
+        '✅ Using existing document category:',
+        this.documentData.categoryName,
+      );
+    }
     // Priority 3: No category selected
     else {
       this.selectedCategoryName = null;
@@ -82,15 +105,22 @@ export class DocumentMetadataPopupComponent implements OnInit, OnDestroy {
     }
 
     // Similar logic for building
-    if (this.suggestedBuildingId !== null && this.suggestedBuildingId !== undefined) {
+    if (
+      this.suggestedBuildingId !== null &&
+      this.suggestedBuildingId !== undefined
+    ) {
       this.selectedBuildingId = this.suggestedBuildingId;
       console.log('✅ Using suggested building ID:', this.suggestedBuildingId);
-    } 
-    else if (this.documentData?.buildingId !== null && this.documentData?.buildingId !== undefined) {
+    } else if (
+      this.documentData?.buildingId !== null &&
+      this.documentData?.buildingId !== undefined
+    ) {
       this.selectedBuildingId = this.documentData.buildingId;
-      console.log('✅ Using existing document building ID:', this.documentData.buildingId);
-    } 
-    else {
+      console.log(
+        '✅ Using existing document building ID:',
+        this.documentData.buildingId,
+      );
+    } else {
       this.selectedBuildingId = null;
       console.log('⚪ No building pre-selected');
     }
@@ -103,35 +133,44 @@ export class DocumentMetadataPopupComponent implements OnInit, OnDestroy {
         console.log('✅ BuildingService response:', data);
         // Ensure buildings is always an array
         this.buildings = Array.isArray(data) ? data : [];
-        console.log('✅ Loaded buildings:', this.buildings.length, this.buildings);
+        console.log(
+          '✅ Loaded buildings:',
+          this.buildings.length,
+          this.buildings,
+        );
       },
       error: (err) => {
         console.error('❌ Failed to fetch buildings', err);
         this.buildings = [];
-      }
+      },
     });
   }
 
   loadCategories(): void {
     console.log('🏷️ Loading categories...');
-    
+
     // Primary method: Try using DocumentsApi directly
     const documentsApi = this.apiFactory.create(DocumentsApi);
-    documentsApi.apiDocumentsCategoriesGet()
+    documentsApi
+      .apiDocumentsCategoriesGet()
       .then((response: any) => {
         console.log('✅ Raw categories response:', response);
-        
+
         // Safely extract categories from response
         this.categories = this.extractCategoriesFromResponse(response);
-        
-        console.log('✅ Processed categories:', this.categories.length, this.categories);
-        
+
+        console.log(
+          '✅ Processed categories:',
+          this.categories.length,
+          this.categories,
+        );
+
         // Set initial values after categories are loaded
         this.setInitialValues();
       })
       .catch((err: any) => {
         console.error('❌ DocumentsApi categories failed:', err);
-        
+
         // Fallback: Try CategoryService
         console.log('🔄 Trying CategoryService as fallback...');
         this.categoryService.getCategories().subscribe({
@@ -143,16 +182,22 @@ export class DocumentMetadataPopupComponent implements OnInit, OnDestroy {
           },
           error: (fallbackErr) => {
             console.error('❌ CategoryService also failed:', fallbackErr);
-            
+
             // Last resort: Hardcode categories for testing
             console.log('🔧 Using hardcoded categories as last resort');
             this.categories = [
-              { name: 'Energieausweis', description: 'Energy certificate documents' },
-              { name: 'Antrag auf Baugenehmigung', description: 'Building permit applications' },
-              { name: 'Bebauungsplan', description: 'Development plans' }
+              {
+                name: 'Energieausweis',
+                description: 'Energy certificate documents',
+              },
+              {
+                name: 'Antrag auf Baugenehmigung',
+                description: 'Building permit applications',
+              },
+              { name: 'Bebauungsplan', description: 'Development plans' },
             ];
             this.setInitialValues();
-          }
+          },
         });
       });
   }
@@ -164,26 +209,32 @@ export class DocumentMetadataPopupComponent implements OnInit, OnDestroy {
     if (!response) return [];
 
     let categoriesData = response.data || response;
-    
+
     // If the response has a categories property, use it
     if (categoriesData.categories && Array.isArray(categoriesData.categories)) {
       return categoriesData.categories;
     }
-    
+
     // If the data itself is an array, use it
     if (Array.isArray(categoriesData)) {
       return categoriesData;
     }
-    
+
     // If it's an object with numeric keys (like {0: {...}, 1: {...}}), convert to array
-    if (categoriesData && typeof categoriesData === 'object' && !Array.isArray(categoriesData)) {
+    if (
+      categoriesData &&
+      typeof categoriesData === 'object' &&
+      !Array.isArray(categoriesData)
+    ) {
       const keys = Object.keys(categoriesData);
-      const isNumericKeys = keys.every(key => !isNaN(Number(key)));
+      const isNumericKeys = keys.every((key) => !isNaN(Number(key)));
       if (isNumericKeys) {
-        return keys.map(key => categoriesData[key]).filter(item => item && typeof item === 'object');
+        return keys
+          .map((key) => categoriesData[key])
+          .filter((item) => item && typeof item === 'object');
       }
     }
-    
+
     // Default to empty array
     return [];
   }
@@ -205,19 +256,21 @@ export class DocumentMetadataPopupComponent implements OnInit, OnDestroy {
       return;
     }
 
-    this.categoryService.createCategory({ name: this.otherCategoryName }).subscribe({
-      next: (newCategory: Category) => {
-        this.loadCategories(); // reloads the list, avoids duplicates
-        this.selectedCategoryName = newCategory.name;
-        this.isOtherCategory = false;
-        this.otherCategoryName = '';
-        this.showSuccessNotification('New category created successfully');
-      },
-      error: (err: Error) => {
-        console.error('Failed to create category', err);
-        this.showErrorNotification('Failed to create category');
-      }
-    });
+    this.categoryService
+      .createCategory({ name: this.otherCategoryName })
+      .subscribe({
+        next: (newCategory: Category) => {
+          this.loadCategories(); // reloads the list, avoids duplicates
+          this.selectedCategoryName = newCategory.name;
+          this.isOtherCategory = false;
+          this.otherCategoryName = '';
+          this.showSuccessNotification('New category created successfully');
+        },
+        error: (err: Error) => {
+          console.error('Failed to create category', err);
+          this.showErrorNotification('Failed to create category');
+        },
+      });
   }
 
   onClose(): void {
@@ -232,60 +285,83 @@ export class DocumentMetadataPopupComponent implements OnInit, OnDestroy {
     }
 
     // Determine categoryName based on selection
-    const categoryName: string | null = this.isOtherCategory ? this.otherCategoryName : this.selectedCategoryName;
+    const categoryName: string | null = this.isOtherCategory
+      ? this.otherCategoryName
+      : this.selectedCategoryName;
 
-    console.log('💾 Saving with category:', categoryName, 'and building:', this.selectedBuildingId);
+    console.log(
+      '💾 Saving with category:',
+      categoryName,
+      'and building:',
+      this.selectedBuildingId,
+    );
 
     // Show processing message immediately
     this.isExtractingKeyInfo = true;
 
     // Make both API calls in parallel if category is selected
     if (categoryName && categoryName.trim()) {
-      this.saveWithKeyExtraction(this.documentId, categoryName, this.selectedBuildingId);
+      this.saveWithKeyExtraction(
+        this.documentId,
+        categoryName,
+        this.selectedBuildingId,
+      );
     } else {
       // Just update metadata without key extraction
-      this.updateDocumentMetadata(this.documentId, categoryName, this.selectedBuildingId);
+      this.updateDocumentMetadata(
+        this.documentId,
+        categoryName,
+        this.selectedBuildingId,
+      );
     }
   }
 
   /**
    * Save metadata and extract key information with better error handling
    */
-  private saveWithKeyExtraction(documentId: number, categoryName: string, buildingId: number | null): void {
+  private saveWithKeyExtraction(
+    documentId: number,
+    categoryName: string,
+    buildingId: number | null,
+  ): void {
     const documentsApi = this.apiFactory.create(DocumentsApi);
 
     // Prepare patch request
     const patchRequest: DocumentMetadataPatchRequest = {
       categoryName: categoryName,
-      buildingId: buildingId
+      buildingId: buildingId,
     };
 
     console.log('🔄 Saving document metadata...');
 
     // First save the metadata
-    documentsApi.apiDocumentsIdPatch(documentId, patchRequest)
+    documentsApi
+      .apiDocumentsIdPatch(documentId, patchRequest)
       .then((metadataResponse) => {
         console.log('✅ Document metadata saved successfully');
-        
+
         // Now try to extract key information
         console.log('🔍 Attempting to extract key information...');
-        
+
         this.extractKeyInformationPromise(documentId, categoryName)
           .then((extractionResponse) => {
             console.log('✅ Key information extracted successfully');
             this.isExtractingKeyInfo = false;
             this.showSuccessNotification('Document processed successfully!');
-            
+
             setTimeout(() => {
               this.completeSave(categoryName, buildingId);
             }, 500);
           })
           .catch((extractionError) => {
-            console.warn('⚠️ Key extraction failed, but document was saved:', extractionError);
+            console.warn(
+              '⚠️ Key extraction failed, but document was saved:',
+              extractionError,
+            );
             this.isExtractingKeyInfo = false;
             // Don't show error - document was saved successfully
             this.showSuccessNotification('Document saved successfully!');
-            
+
             setTimeout(() => {
               this.completeSave(categoryName, buildingId);
             }, 500);
@@ -301,118 +377,61 @@ export class DocumentMetadataPopupComponent implements OnInit, OnDestroy {
   /**
    * Extract key information as a promise
    */
-  private extractKeyInformationPromise(documentId: number, categoryName: string): Promise<any> {
+  private async extractKeyInformationPromise(
+    documentId: number,
+    categoryName: string,
+  ): Promise<any> {
     const documentsApi = this.apiFactory.create(DocumentsApi);
-    
-    // Try to use the OpenAPI client method if it exists
-    const extractMethod = (documentsApi as any).apiDocumentsIdExtractKeyInformationPost 
-                       || (documentsApi as any).apiDocumentsDocumentIdExtractKeyInformationPost
-                       || (documentsApi as any).extractKeyInformation;
 
-    if (extractMethod && typeof extractMethod === 'function') {
-      console.log('✅ Using OpenAPI client method for key extraction');
-      return extractMethod.call(documentsApi, documentId, { categoryName: categoryName });
-    } else {
-      console.log('⚠️ OpenAPI method not found, using manual HTTP call');
-      
-      // Fallback to manual HTTP call
-      return import('axios').then(axios => {
-        const authConfig = this.getAuthenticatedAxiosConfig();
-        return axios.default.post(
-          `${authConfig.baseURL}/api/Documents/${documentId}/extract-key-information`,
-          { categoryName: categoryName },
-          authConfig
-        );
-      });
+    try {
+      const response =
+        await documentsApi.apiDocumentsIdExtractKeyInformationPost(documentId, {
+          categoryName: categoryName,
+        });
+      console.log('✅ Key information extraction response:', response);
+      return response;
+    } catch (error) {
+      console.error('❌ Key information extraction failed:', error);
+      return await Promise.reject('Key information extraction failed');
     }
   }
 
-  private updateDocumentMetadata(documentId: number, categoryName: string | null, buildingId: number | null): void {
+  private updateDocumentMetadata(
+    documentId: number,
+    categoryName: string | null,
+    buildingId: number | null,
+  ): void {
     const patchRequest: DocumentMetadataPatchRequest = {
       categoryName: categoryName,
-      buildingId: buildingId
+      buildingId: buildingId,
     };
 
     console.log('🔄 Sending PATCH request:', patchRequest);
 
     const documentsApi = this.apiFactory.create(DocumentsApi);
 
-    documentsApi.apiDocumentsIdPatch(documentId, patchRequest).then(response => {
-      console.log('✅ Document metadata updated:', response.data);
-      this.isExtractingKeyInfo = false;
-      this.completeSave(categoryName, buildingId);
-    }).catch(error => {
-      console.error('❌ Failed to update document metadata', error);
-      this.isExtractingKeyInfo = false;
-      this.showErrorNotification('Failed to update document metadata');
-    });
+    documentsApi
+      .apiDocumentsIdPatch(documentId, patchRequest)
+      .then((response) => {
+        console.log('✅ Document metadata updated:', response.data);
+        this.isExtractingKeyInfo = false;
+        this.completeSave(categoryName, buildingId);
+      })
+      .catch((error) => {
+        console.error('❌ Failed to update document metadata', error);
+        this.isExtractingKeyInfo = false;
+        this.showErrorNotification('Failed to update document metadata');
+      });
   }
 
-  private getAuthenticatedAxiosConfig(): any {
-    try {
-      const documentsApi = this.apiFactory.create(DocumentsApi);
-      const apiInstance = documentsApi as any;
-      
-      const config: any = {
-        baseURL: window.location.origin.replace(':4200', ':5001').replace(':8080', ':5001'),
-        headers: {}
-      };
-
-      // Try to extract auth headers from the existing API client
-      if (apiInstance.configuration) {
-        const authConfig = apiInstance.configuration;
-        if (authConfig.apiKey) {
-          config.headers['Authorization'] = `Bearer ${authConfig.apiKey}`;
-        }
-        if (authConfig.accessToken) {
-          config.headers['Authorization'] = `Bearer ${authConfig.accessToken}`;
-        }
-      }
-
-      // Try to get auth from the default axios instance if available
-      if (apiInstance.defaults?.headers?.common?.Authorization) {
-        config.headers['Authorization'] = apiInstance.defaults.headers.common.Authorization;
-      }
-
-      // Get CSRF token if available
-      const csrfToken = this.getCsrfToken();
-      if (csrfToken) {
-        config.headers['X-CSRF-TOKEN'] = csrfToken;
-      }
-
-      console.log('🔐 Auth config prepared:', { ...config, headers: { ...config.headers, Authorization: config.headers.Authorization ? '[HIDDEN]' : undefined } });
-      
-      return config;
-    } catch (error) {
-      console.error('❌ Failed to get auth config:', error);
-      return {
-        baseURL: window.location.origin.replace(':4200', ':5001').replace(':8080', ':5001')
-      };
-    }
-  }
-
-  private getCsrfToken(): string | null {
-    // Try to get CSRF token from meta tag
-    const csrfMeta = document.querySelector('meta[name="csrf-token"]') as HTMLMetaElement;
-    if (csrfMeta) {
-      return csrfMeta.content;
-    }
-    
-    // Try to get from cookie
-    const csrfCookie = document.cookie.split(';')
-      .find(cookie => cookie.trim().startsWith('XSRF-TOKEN='));
-    if (csrfCookie) {
-      return decodeURIComponent(csrfCookie.split('=')[1]);
-    }
-    
-    return null;
-  }
-
-  private completeSave(categoryName: string | null, buildingId: number | null): void {
+  private completeSave(
+    categoryName: string | null,
+    buildingId: number | null,
+  ): void {
     // Emit metadata saved event
     this.saveMetadata.emit({ categoryName, buildingId });
     this.sidebarRefreshService.triggerRefresh();
-    
+
     // Close popup immediately
     this.onClose();
   }
@@ -425,7 +444,7 @@ export class DocumentMetadataPopupComponent implements OnInit, OnDestroy {
     this.notificationMessage = message;
     this.showNotification = true;
     this.clearNotificationTimeout();
-    
+
     // Don't auto-hide if we're processing
     if (!this.isExtractingKeyInfo) {
       this.notificationTimeout = setTimeout(() => {

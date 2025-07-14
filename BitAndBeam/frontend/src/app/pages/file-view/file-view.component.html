@@ -4,7 +4,6 @@
   <app-sidebar></app-sidebar>
   <div class="main-area">
     <div class="file-view-container">
-
       <!-- Not Found Message -->
       <div *ngIf="notFound" class="not-found">
         <p>Document Not Found</p>
@@ -12,26 +11,145 @@
 
       <!-- Main File Content -->
       <div class="file-main-content" *ngIf="selectedFile">
-
-        <section class="image-viewer" *ngIf="isImage" (mouseenter)="showToolbar = true" (mouseleave)="showToolbar = false" style="position: relative;">
+        <section
+          class="image-viewer"
+          *ngIf="isImage"
+          (mouseenter)="showToolbar = true"
+          (mouseleave)="showToolbar = false"
+          style="position: relative"
+        >
           <img
             [src]="selectedFile.url"
             alt="Document Image"
             [style.transform]="'scale(' + imageZoom + ')'"
-            style="display: block; max-width: 100%; max-height: 100%; margin: auto; object-fit: contain; transition: transform 0.2s;">
-          <div class="viewer-toolbar" *ngIf="showToolbar" style="position: absolute; top: 10px; right: 10px; background: rgba(0,0,0,0.6); border-radius: 4px; padding: 4px; display: flex; gap: 8px; z-index: 10;">
-            <button (click)="zoomIn()" title="Zoom In" style="color: white; background: none; border: none; font-size: 20px; cursor: pointer;">+</button>
-            <button (click)="zoomOut()" title="Zoom Out" style="color: white; background: none; border: none; font-size: 20px; cursor: pointer;">-</button>
-            <button (click)="resetZoom()" title="Reset Zoom" style="color: white; background: none; border: none; font-size: 20px; cursor: pointer;">⟳</button>
+            style="
+              display: block;
+              max-width: 100%;
+              max-height: 100%;
+              margin: auto;
+              object-fit: contain;
+              transition: transform 0.2s;
+            "
+          />
+          <div
+            class="viewer-toolbar"
+            *ngIf="showToolbar"
+            style="
+              position: absolute;
+              top: 10px;
+              right: 10px;
+              background: rgba(0, 0, 0, 0.6);
+              border-radius: 4px;
+              padding: 4px;
+              display: flex;
+              gap: 8px;
+              z-index: 10;
+            "
+          >
+            <button
+              (click)="zoomIn()"
+              title="Zoom In"
+              style="
+                color: white;
+                background: none;
+                border: none;
+                font-size: 20px;
+                cursor: pointer;
+              "
+            >
+              +
+            </button>
+            <button
+              (click)="zoomOut()"
+              title="Zoom Out"
+              style="
+                color: white;
+                background: none;
+                border: none;
+                font-size: 20px;
+                cursor: pointer;
+              "
+            >
+              -
+            </button>
+            <button
+              (click)="resetZoom()"
+              title="Reset Zoom"
+              style="
+                color: white;
+                background: none;
+                border: none;
+                font-size: 20px;
+                cursor: pointer;
+              "
+            >
+              ⟳
+            </button>
           </div>
         </section>
 
         <!-- ✅ PDF viewer -->
-        <section class="pdf-viewer" *ngIf="isPdf" (mouseenter)="showToolbar = true" (mouseleave)="showToolbar = false" style="position: relative;">
-          <div class="viewer-toolbar" *ngIf="showToolbar" style="position: absolute; top: 10px; right: 24px; background: rgba(0,0,0,0.7); border-radius: 4px; padding: 4px; display: flex; gap: 8px; z-index: 20;">
-            <button (click)="zoomIn()" title="Zoom In" style="color: white; background: none; border: none; font-size: 20px; cursor: pointer;">+</button>
-            <button (click)="zoomOut()" title="Zoom Out" style="color: white; background: none; border: none; font-size: 20px; cursor: pointer;">-</button>
-            <button (click)="resetZoom()" title="Reset Zoom" style="color: white; background: none; border: none; font-size: 20px; cursor: pointer;">⟳</button>
+        <section
+          class="pdf-viewer"
+          *ngIf="isPdf"
+          (mouseenter)="showToolbar = true"
+          (mouseleave)="showToolbar = false"
+          style="position: relative"
+        >
+          <div
+            class="viewer-toolbar"
+            *ngIf="showToolbar"
+            style="
+              position: absolute;
+              top: 10px;
+              right: 24px;
+              background: rgba(0, 0, 0, 0.7);
+              border-radius: 4px;
+              padding: 4px;
+              display: flex;
+              gap: 8px;
+              z-index: 20;
+            "
+          >
+            <button
+              (click)="zoomIn()"
+              title="Zoom In"
+              style="
+                color: white;
+                background: none;
+                border: none;
+                font-size: 20px;
+                cursor: pointer;
+              "
+            >
+              +
+            </button>
+            <button
+              (click)="zoomOut()"
+              title="Zoom Out"
+              style="
+                color: white;
+                background: none;
+                border: none;
+                font-size: 20px;
+                cursor: pointer;
+              "
+            >
+              -
+            </button>
+            <button
+              (click)="resetZoom()"
+              title="Reset Zoom"
+              style="
+                color: white;
+                background: none;
+                border: none;
+                font-size: 20px;
+                cursor: pointer;
+              "
+            >
+              ⟳
+            </button>
           </div>
           <pdf-viewer
             [src]="selectedFile.url"
@@ -39,7 +157,13 @@
             [zoom]="pdfZoom"
             [render-text]="true"
             [original-size]="false"
-            style="display: block; height: 100%; width: 100%; background: transparent;">
+            style="
+              display: block;
+              height: 100%;
+              width: 100%;
+              background: transparent;
+            "
+          >
           </pdf-viewer>
         </section>
         <div class="metadata-hover-indicator" *ngIf="isMetadataPanelCollapsed">
@@ -56,12 +180,16 @@
           <div class="metadata-content">
             <div class="metadata-item">
               <label for="building-select"><strong>Building:</strong></label>
-              <select id="building-select" 
-                      [(ngModel)]="selectedBuildingId" 
-                      (ngModelChange)="hasChanges = true"
-                      [disabled]="isAnalyzing">
+              <select
+                id="building-select"
+                [(ngModel)]="selectedBuildingId"
+                (ngModelChange)="hasChanges = true"
+                [disabled]="isAnalyzing"
+              >
                 <option [ngValue]="null">No Building</option>
-                <option *ngFor="let b of buildings" [ngValue]="b.id">{{ b.name }}</option>
+                <option *ngFor="let b of buildings" [ngValue]="b.id">
+                  {{ b.name }}
+                </option>
               </select>
             </div>
 
@@ -69,34 +197,57 @@
             <div class="metadata-item">
               <label for="category-select"><strong>Category:</strong></label>
               <div class="category-with-analyze">
-                <select id="category-select" 
-                        [(ngModel)]="selectedCategoryName" 
-                        (ngModelChange)="onCategoryChange()"
-                        [disabled]="isAnalyzing">
+                <select
+                  id="category-select"
+                  [(ngModel)]="selectedCategoryName"
+                  (ngModelChange)="onCategoryChange()"
+                  [disabled]="isAnalyzing"
+                >
                   <!-- ✅ No Category option -->
                   <option [ngValue]="null">No Category</option>
-                  
+
                   <!-- ✅ All available categories -->
-                  <optgroup label="Available Categories" *ngIf="categories && categories.length > 0">
-                    <option *ngFor="let c of categories; trackBy: trackByCategory" [ngValue]="c.name">
+                  <optgroup
+                    label="Available Categories"
+                    *ngIf="categories && categories.length > 0"
+                  >
+                    <option
+                      *ngFor="let c of categories; trackBy: trackByCategory"
+                      [ngValue]="c.name"
+                    >
                       {{ c.name }}
                     </option>
                   </optgroup>
-                  
+
                   <!-- ✅ Debug info if no categories loaded -->
-                  <optgroup label="Debug Info" *ngIf="!categories || categories.length === 0">
+                  <optgroup
+                    label="Debug Info"
+                    *ngIf="!categories || categories.length === 0"
+                  >
                     <option disabled>No categories available</option>
                   </optgroup>
                 </select>
-                
+
                 <!-- ✅ Enhanced Analyze button -->
-                <button class="analyze-btn" 
-                        (click)="analyzeWithNewCategory()" 
-                        [disabled]="!canAnalyze || isAnalyzing"
-                        [title]="getAnalyzeButtonTooltip()"
-                        [class.analyzing]="isAnalyzing">
+                <button
+                  class="analyze-btn"
+                  (click)="analyzeWithNewCategory()"
+                  [disabled]="!canAnalyze || isAnalyzing"
+                  [title]="getAnalyzeButtonTooltip()"
+                  [class.analyzing]="isAnalyzing"
+                >
                   <span *ngIf="!isAnalyzing">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="16"
+                      height="16"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    >
                       <circle cx="11" cy="11" r="8"></circle>
                       <path d="m21 21-4.35-4.35"></path>
                       <path d="M11 8v6"></path>
@@ -111,13 +262,15 @@
                 </button>
               </div>
             </div>
-            
+
             <!-- ✅ Enhanced Analysis Status Message -->
-            <div *ngIf="analysisMessage" 
-                 class="analysis-status" 
-                 [class.success]="analysisSuccess" 
-                 [class.error]="!analysisSuccess"
-                 [class.processing]="isAnalyzing">
+            <div
+              *ngIf="analysisMessage"
+              class="analysis-status"
+              [class.success]="analysisSuccess"
+              [class.error]="!analysisSuccess"
+              [class.processing]="isAnalyzing"
+            >
               <div class="analysis-content">
                 <span *ngIf="isAnalyzing" class="analysis-spinner">
                   <div class="mini-spinner"></div>
@@ -131,7 +284,9 @@
               <h4>Document Metadata</h4>
               <table>
                 <tr *ngFor="let item of parsedMetadata">
-                  <td><strong>{{ item.label }}:</strong></td>
+                  <td>
+                    <strong>{{ item.label }}:</strong>
+                  </td>
                   <td>{{ item.value }}</td>
                 </tr>
               </table>
@@ -144,7 +299,7 @@
                 <h4>Detected Category</h4>
                 <p>{{ selectedCategoryName }}</p>
               </div>
-              
+
               <!-- Key Information -->
               <div>
                 <h4>Key Information</h4>
@@ -152,10 +307,12 @@
                   <ul>
                     <li *ngFor="let item of keyInformation">
                       <strong>{{ item.label }}:</strong>
-                      <input type="text" 
-                             [(ngModel)]="item.value" 
-                             (ngModelChange)="hasChanges = true"
-                             [disabled]="isAnalyzing"/>
+                      <input
+                        type="text"
+                        [(ngModel)]="item.value"
+                        (ngModelChange)="hasChanges = true"
+                        [disabled]="isAnalyzing"
+                      />
                     </li>
                   </ul>
                 </ng-container>
@@ -177,19 +334,25 @@
 
           <!-- ✅ Action Buttons -->
           <div class="meta-actions">
-            <button class="save-btn" 
-                    (click)="saveMetadataChanges()" 
-                    [disabled]="!hasChanges || loading || isAnalyzing">
-              {{ loading ? 'Saving...' : 'Save Changes' }}
+            <button
+              class="save-btn"
+              (click)="saveMetadataChanges()"
+              [disabled]="!hasChanges || loading || isAnalyzing"
+            >
+              {{ loading ? "Saving..." : "Save Changes" }}
             </button>
-            <button class="download-btn" 
-                    (click)="downloadFile()"
-                    [disabled]="isAnalyzing">
+            <button
+              class="download-btn"
+              (click)="downloadFile()"
+              [disabled]="isAnalyzing"
+            >
               Download
             </button>
-            <button class="delete-btn" 
-                    (click)="deleteFile()"
-                    [disabled]="isAnalyzing">
+            <button
+              class="delete-btn"
+              (click)="deleteFile()"
+              [disabled]="isAnalyzing"
+            >
               Delete
             </button>
           </div>
@@ -209,5 +372,6 @@
   *ngIf="selectedFile?.id && selectedFile?.name"
   [globalMode]="false"
   [documentId]="selectedFile?.id"
-  [documentTitle]="selectedFile?.name">
+  [documentTitle]="selectedFile?.name"
+>
 </app-ai-assistant>

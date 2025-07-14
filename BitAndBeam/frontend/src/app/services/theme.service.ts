@@ -4,7 +4,7 @@ import { BehaviorSubject, Observable } from 'rxjs';
 export type ThemeMode = 'light' | 'dark' | 'device';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class ThemeService {
   private modeSubject = new BehaviorSubject<ThemeMode>('device');
@@ -40,7 +40,10 @@ export class ThemeService {
   private applyThemeMode(mode: ThemeMode) {
     // Remove previous listener
     if (this.mediaQuery && this.mediaQuery.removeEventListener) {
-      this.mediaQuery.removeEventListener('change', this.handleSystemThemeChange);
+      this.mediaQuery.removeEventListener(
+        'change',
+        this.handleSystemThemeChange,
+      );
     }
 
     if (mode === 'light') {
@@ -68,4 +71,3 @@ export class ThemeService {
     }
   }
 }
-
