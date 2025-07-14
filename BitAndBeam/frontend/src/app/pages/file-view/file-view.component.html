@@ -279,19 +279,6 @@
               </div>
             </div>
 
-            <!-- ✅ Parsed Metadata Table -->
-            <div *ngIf="parsedMetadata.length > 0">
-              <h4>Document Metadata</h4>
-              <table>
-                <tr *ngFor="let item of parsedMetadata">
-                  <td>
-                    <strong>{{ item.label }}:</strong>
-                  </td>
-                  <td>{{ item.value }}</td>
-                </tr>
-              </table>
-            </div>
-
             <!-- ✅ Key Information Section -->
             <div class="ollama-info" *ngIf="keyInfo">
               <!-- Category Display -->
