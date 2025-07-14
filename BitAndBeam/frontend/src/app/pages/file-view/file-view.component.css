@@ -10,6 +10,8 @@ html, body {
 .layout {
   display: flex;
   height: 100vh;
+  min-height: 0;
+  overflow: hidden;
 }
 
 .main-area {
