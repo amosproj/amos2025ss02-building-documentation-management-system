@@ -24,12 +24,14 @@ html, body {
   flex: 1;
   overflow: hidden;
   background-color: var(--bg-primary);
+  min-height: 0; /* ✅ prevents children from expanding beyond bounds */
 }
 
 .file-main-content {
   display: flex;
   flex: 1;
-  overflow: hidden;
+  overflow-y: auto; /* ✅ allows scrolling only when needed */
+  overflow-x: hidden;
 }
 
 .pdf-viewer {
