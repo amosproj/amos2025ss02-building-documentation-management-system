@@ -460,33 +460,33 @@ export class FileViewComponent implements OnInit, OnDestroy {
    * ✅ Enhanced onCategoryChange method
    */
   onCategoryChange(): void {
-    // Clear any previous analysis messages when category changes
     this.analysisMessage = '';
 
-    // ✅ Load field template for new category if available
-    if (!Array.isArray(this.categories)) {
-      console.warn('Categories is not an array');
-      return;
-    }
+  const selected = this.categories.find(
+    (c) => c.name === this.selectedCategoryName,
+  );
 
-    const selected = this.categories.find(
-      (c) => c.name === this.selectedCategoryName,
-    );
-    if (selected && Array.isArray(selected.fields)) {
-      // Load field template but keep existing values if they match
-      const newKeyInfo = selected.fields.map((field) => {
-        const existing = this.keyInformation.find(
-          (k) => k.label === field.name,
-        );
-        return {
-          label: field.name,
-          value: existing?.value || '',
-        };
-      });
-      this.keyInformation = newKeyInfo;
-    }
+  if (!selected || !Array.isArray(selected.fields)) return;
 
-    this.hasChanges = true;
+  if (this.selectedCategoryName === this.originalCategoryName) {
+    // ✅ User switched back to original category — restore original key info
+    this.keyInformation = Object.entries(this.originalKeyInformation).map(([key, value]) => ({
+      label: key.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase()),
+      value: value
+    }));
+  } else {
+    // 🔄 Category really changed — build fields based on new template
+    this.keyInformation = selected.fields.map((field) => {
+      const existing = this.keyInformation.find((k) => k.label === field.name);
+      return {
+        label: field.name,
+        value: existing?.value || '',
+      };
+    });
+  }
+
+  // ✅ Now intelligently check for real changes
+  this.checkForChanges();
   }
 
   /**
