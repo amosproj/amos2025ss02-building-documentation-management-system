@@ -32,8 +32,8 @@ html, body {
 .file-main-content {
   display: flex;
   flex: 1;
-  overflow-y: auto; /* ✅ allows scrolling only when needed */
-  overflow-x: hidden;
+  overflow: hidden;
+  min-height: 0;
 }
 
 .pdf-viewer {
@@ -41,6 +41,7 @@ html, body {
   padding: 1.5rem;
   overflow-y: auto;
   background-color: var(--bg-primary);
+  min-height: 0;
 }
 
 .image-viewer {
@@ -48,6 +49,7 @@ html, body {
   padding: 0.5rem;
   overflow: auto;
   background-color: var(--bg-primary);
+  min-height: 0; /* NEW */
 }
 
 .image-viewer img {
@@ -77,6 +79,8 @@ html, body {
   border-left: 1px solid var(--border-color);
   position: relative;
   transition: all 0.3s ease;
+  overflow: hidden;
+  min-height: 0;
 }
 
 .metadata-hover-indicator {
@@ -152,8 +156,7 @@ html, body {
   padding-bottom: 0px; /* makes space for buttons at bottom */
   max-height: none; /* adjust this as needed */
   min-height: 0;
-  padding-bottom: 0px;
-  max-height: none;
+  overflow-x: hidden;
 }
 
 .metadata-panel.collapsed .metadata-content {
