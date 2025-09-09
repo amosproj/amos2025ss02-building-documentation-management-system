@@ -1,3 +1,4 @@
+<app-top-bar></app-top-bar>
 <div class="container">
   <app-sidebar [currentRoute]="'upload'"></app-sidebar>
   <div class="content-wrapper">
@@ -85,27 +86,21 @@
         </div>
       </div>
 
-      <div class="welcome-section">
-        <h1>Welcome to BitAndBeam Document Management</h1>
-        <p>
-          To get started, upload and view your documents, in PDFs, images, etc.
-        </p>
-        <p>Our AI will automatically analyze your documents to:</p>
-        <ul>
-          <li>Extract addresses and suggest matching buildings</li>
-          <li>Identify document types and suggest categories</li>
-          <li>Extract key information based on document category</li>
-        </ul>
-        <p>
-          Interact with the AI assistant to learn about the uploaded documents.
-          You can attach files into context of conversation by:
-        </p>
-        <ul>
-          <li>Opening the file of interest</li>
-          <li>Selecting the file of interest in chat area</li>
-        </ul>
-      </div>
-    </div>
+            <div class="welcome-section">
+                <p>To get started, upload and view your documents, in PDFs, images, etc.</p>
+                <p>Our AI will automatically analyze your documents to:</p>
+                <ul>
+                    <li>Extract addresses and suggest matching buildings</li>
+                    <li>Identify document types and suggest categories</li>
+                    <li>Extract key information based on document category</li>
+                </ul>
+                <p>Interact with the AI assistant to learn about the uploaded documents. You can attach files into context of conversation by:</p>
+                <ul>
+                    <li>Opening the file of interest</li>
+                    <li>Selecting the file of interest in chat area</li>
+                </ul>
+            </div>
+        </div>
 
     <!-- Enhanced AI Assistant without file upload -->
     <div class="ai-assistant-container">

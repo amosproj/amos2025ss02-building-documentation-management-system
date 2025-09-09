@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
+import { TopBarComponent } from '../top-bar/top-bar.component';
 import { ThemeService, ThemeMode } from '../../services/theme.service';
 import { BuildingService } from '../../services/building.service';
 import { Building as ApiBuilding } from '../../../api';
@@ -9,7 +10,7 @@ import { Building as ApiBuilding } from '../../../api';
 @Component({
   selector: 'app-create-building',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, TopBarComponent],
   templateUrl: './create-building.component.html',
   styleUrls: ['./create-building.component.css'],
 })

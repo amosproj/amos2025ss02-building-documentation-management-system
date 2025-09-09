@@ -1,0 +1,79 @@
+.top-bar {
+  display: flex;
+  align-items: center;
+  position: sticky;
+  top: 0;
+  z-index: 200;
+  padding: 0.75rem 1rem;
+  background-color: var(--bg-secondary);
+  border-bottom: 1px solid var(--border-color);
+}
+
+.top-center {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.welcome-text {
+  font-size: 1.2rem;
+  font-weight: bold;
+  margin: 0;
+  color: var(--text-primary);
+  white-space: nowrap;
+}
+
+.welcome-section h1 {
+  font-size: 1.2rem;
+  font-weight: bold;
+  margin: 0;
+  color: var(--text-primary);
+  white-space: nowrap;
+}
+
+.top-left {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-shrink: 0;
+}
+
+
+.top-right {
+  gap: 1rem;
+  flex-shrink: 0;
+}
+
+.section-title {
+  font-size: 1rem;
+  font-weight: bold;
+  color: var(--text-primary);
+  white-space: nowrap;
+}
+
+.top-bar .metadata-toggle-btn {
+  position: relative;
+  top: unset;
+  right: unset;
+  z-index: auto;
+}
+
+.top-bar .logo-img {
+  width: 40px;
+  height: 40px;
+  cursor: pointer;
+}
+
+.logo-img {
+  width: 40px;
+  height: 40px;
+  cursor: pointer;
+}
+
+.top-bar .app-name {
+  font-weight: bold;
+  font-size: 1.1rem;
+  color: var(--text-primary);
+}
+

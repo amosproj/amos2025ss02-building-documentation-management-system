@@ -3,18 +3,10 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { PdfViewerModule } from 'ng2-pdf-viewer';
 import { ConfigService } from '../../config.service';
-import { SidebarComponent } from '../../components/sidebar/sidebar.component';
-import {
-  BuildingService,
-  DocumentItem,
-  DocumentResponse,
-} from '../../services/building.service';
-import {
-  Configuration,
-  DocumentsApi,
-  Document as ApiDocument,
-  DocumentMetadataPatchRequest,
-} from '../../../api';
+import { SidebarComponent} from '../../components/sidebar/sidebar.component';
+import { TopBarComponent } from '../../components/top-bar/top-bar.component';
+import { BuildingService, DocumentItem, DocumentResponse } from '../../services/building.service';
+import { Configuration, DocumentsApi, Document as ApiDocument, DocumentMetadataPatchRequest } from '../../../api';
 import { CategoryService, Category } from '../../services/category.service';
 import { ApiClientFactory } from '../../services/api-client.factory';
 import { SidebarRefreshService } from '../../services/sidebar-refresh.service';
@@ -31,13 +23,7 @@ import { from } from 'rxjs';
   selector: 'app-file-view',
   templateUrl: './file-view.component.html',
   styleUrls: ['./file-view.component.css'],
-  imports: [
-    CommonModule,
-    PdfViewerModule,
-    SidebarComponent,
-    FormsModule,
-    AiAssistantComponent,
-  ],
+  imports: [CommonModule, PdfViewerModule, SidebarComponent, TopBarComponent, FormsModule, AiAssistantComponent]
 })
 export class FileViewComponent implements OnInit, OnDestroy {
   selectedFile: DocumentItem | null = null;
@@ -48,8 +34,9 @@ export class FileViewComponent implements OnInit, OnDestroy {
   categories: Category[] = []; // Current categories in dropdown
   allCategories: Category[] = []; // All available categories
   selectedBuildingId: number | null = null;
+  originalBuildingId: number | null = null;
   selectedCategoryName: string | null = null;
-  originalCategoryName: string | null = null; // For tracking changes
+  originalCategoryName: string | null = null;
   loading = false;
   toastMessage = '';
   isMetadataPanelCollapsed = false;
@@ -61,6 +48,8 @@ export class FileViewComponent implements OnInit, OnDestroy {
   metadataRaw: string = '';
   parsedMetadata: { label: string; value: string }[] = [];
   keyInformation: { label: string; value: string | null }[] = [];
+  originalKeyInformation: { [key: string]: string | null } = {};
+  touchedFields: { [label: string]: boolean } = {};
   loadingKeyInfo: boolean = false;
   keyInfo: any = null;
   hasChanges: boolean = false;
@@ -92,6 +81,7 @@ export class FileViewComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
+    document.addEventListener('mousemove', this.handleMouseMove);
     // Watch for route param changes
     this.route.paramMap.pipe(takeUntil(this.destroy$)).subscribe((paramMap) => {
       const idParam = paramMap.get('id');
@@ -112,16 +102,6 @@ export class FileViewComponent implements OnInit, OnDestroy {
       this.loadBuildingsAndCategories();
       this.loadDocument(id);
     });
-  }
-
-  ngOnDestroy(): void {
-    this.destroy$.next();
-    this.destroy$.complete();
-
-    // Clean up blob URL
-    if (this.blobUrl) {
-      URL.revokeObjectURL(this.blobUrl);
-    }
   }
 
   /**
@@ -341,18 +321,19 @@ export class FileViewComponent implements OnInit, OnDestroy {
                 ],
               };
 
-              if (doc.keyInformation) {
-                this.keyInformation = Object.entries(doc.keyInformation).map(
-                  ([key, value]) => ({
-                    label: key
-                      .replace(/_/g, ' ')
-                      .replace(/\b\w/g, (c) => c.toUpperCase()),
-                    value: value !== null ? String(value) : 'N/A',
-                  }),
-                );
-              } else {
-                this.keyInformation = [];
-              }
+          if (doc.keyInformation) {
+            this.keyInformation = Object.entries(doc.keyInformation).map(([key, value]) => ({
+              label: key.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase()),  // Pretty label
+              value: value !== null ? String(value) : 'N/A'  // Force even nulls to show
+            }));
+          } else {
+              this.keyInformation = [];
+            }
+            // ✅ Store original key information for restoration
+            this.originalKeyInformation = {};
+            this.keyInformation.forEach(k => {
+              this.originalKeyInformation[k.label.toLowerCase().replace(/ /g, '_')] = k.value || '';
+            });
 
               const fileType = (doc.fileType ?? '').toLowerCase();
               this.isPdf = fileType === 'pdf';
@@ -479,33 +460,33 @@ export class FileViewComponent implements OnInit, OnDestroy {
    * ✅ Enhanced onCategoryChange method
    */
   onCategoryChange(): void {
-    // Clear any previous analysis messages when category changes
     this.analysisMessage = '';
 
-    // ✅ Load field template for new category if available
-    if (!Array.isArray(this.categories)) {
-      console.warn('Categories is not an array');
-      return;
-    }
+  const selected = this.categories.find(
+    (c) => c.name === this.selectedCategoryName,
+  );
 
-    const selected = this.categories.find(
-      (c) => c.name === this.selectedCategoryName,
-    );
-    if (selected && Array.isArray(selected.fields)) {
-      // Load field template but keep existing values if they match
-      const newKeyInfo = selected.fields.map((field) => {
-        const existing = this.keyInformation.find(
-          (k) => k.label === field.name,
-        );
-        return {
-          label: field.name,
-          value: existing?.value || '',
-        };
-      });
-      this.keyInformation = newKeyInfo;
-    }
+  if (!selected || !Array.isArray(selected.fields)) return;
 
-    this.hasChanges = true;
+  if (this.selectedCategoryName === this.originalCategoryName) {
+    // ✅ User switched back to original category — restore original key info
+    this.keyInformation = Object.entries(this.originalKeyInformation).map(([key, value]) => ({
+      label: key.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase()),
+      value: value
+    }));
+  } else {
+    // 🔄 Category really changed — build fields based on new template
+    this.keyInformation = selected.fields.map((field) => {
+      const existing = this.keyInformation.find((k) => k.label === field.name);
+      return {
+        label: field.name,
+        value: existing?.value || '',
+      };
+    });
+  }
+
+  // ✅ Now intelligently check for real changes
+  this.checkForChanges();
   }
 
   /**
@@ -701,4 +682,89 @@ export class FileViewComponent implements OnInit, OnDestroy {
     this.imageZoom = 1;
     this.pdfZoom = 1;
   }
+ /**
+ * Checks if a given field label is marked as mandatory
+ * in the selected category's field list.
+ */
+  isFieldRequired(label: string): boolean {
+    const category = this.categories.find(c => c.name === this.selectedCategoryName);
+    return !!category?.fields?.find(f => f.name === label && f.mandatory);
+  }
+
+  /**
+ * Tries to guess the input type for a field based on its label.
+ */
+  getInputType(label: string): string {
+    const lower = label.toLowerCase();
+    if (lower.includes('datum') || lower.includes('date')) return 'date';
+    if (lower.includes('zahl') || lower.includes('nummer') || lower.includes('anzahl')) return 'number';
+    return 'text';
+  }
+  
+  /**
+ * Compares the current form state with the original state to determine
+ * if changes were actually made (used to toggle Save button).
+ */
+  checkForChanges(): void {
+    const currentInfo = Object.fromEntries(
+      this.keyInformation.map(k => [k.label.toLowerCase().replace(/ /g, '_'), k.value || ''])
+    );
+
+    const categoryChanged = this.selectedCategoryName !== this.originalCategoryName;
+    const buildingChanged = this.selectedBuildingId !== this.originalBuildingId;
+
+    const metadataChanged = Object.keys(currentInfo).some(key =>
+      currentInfo[key] !== this.originalKeyInformation[key]
+    );
+
+    this.hasChanges = categoryChanged || buildingChanged || metadataChanged;
+  }
+  withinPanel = false;
+
+  handleMouseMove = (event: MouseEvent) => {
+    const screenWidth = window.innerWidth;
+    const cursorX = event.clientX;
+
+    const withinEdgeZone = screenWidth - cursorX <= 40;
+
+    if (withinEdgeZone || this.withinPanel) {
+      if (this.isMetadataPanelCollapsed) {
+        this.isMetadataPanelCollapsed = false;
+      }
+    } else {
+      if (!this.isMetadataPanelCollapsed) {
+        this.isMetadataPanelCollapsed = true;
+      }
+    }
+  };
+
+  /**
+ * Generates empty key information fields from a category,
+ * and initializes touched state for validation tracking.
+ */
+  private generateKeyInfoFromCategory(category: Category): { label: string; value: string }[] {
+    this.touchedFields = {};
+    if (!Array.isArray(category.fields)) {
+      return [];
+    }
+
+    return category.fields.map(field => {
+      this.touchedFields[field.name] = false;
+      return {
+        label: field.name,
+        value: ''
+      };
+    });
+  }
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
+
+    // Clean up blob URL
+    if (this.blobUrl) {
+      URL.revokeObjectURL(this.blobUrl);
+    }
+    document.removeEventListener('mousemove', this.handleMouseMove);
+  }
+
 }
